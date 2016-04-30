@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Benchmark</string>
+    <string name="testString">this is just a test string</string>
+    <string name="begin">BEGIN</string>
+    <string name="message">Calculate your CPU score.</string>
+    <string name="output">Press BEGIN to start seeing results...</string>
+</resources>
