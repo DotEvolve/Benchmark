@@ -7,19 +7,22 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
+import com.appnext.ads.interstitial.Interstitial;
+import com.appnext.core.callbacks.OnAdClosed;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 public class MainActivity extends AppCompatActivity {
+    Interstitial interstitial_Ad;
     private TextView scorer;
     private TextView result;
     private String testString;
-
     private String HashValue;
-
     private String MD5Value;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +31,30 @@ public class MainActivity extends AppCompatActivity {
         result = (TextView) findViewById(R.id.textResult);
         scorer = (TextView) findViewById(R.id.textScore);
         testString = getResources().getString(R.string.testString);
+
+        AdView mAdView = (AdView) findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
+
+        interstitial_Ad = new Interstitial(this, "77164ac1-2662-4ad5-96d6-04e0953f3550");
+        interstitial_Ad.loadAd();
+
+        interstitial_Ad.setOnAdClosedCallback(new OnAdClosed() {
+            @Override
+            public void onAdClosed() {
+                requestNewInterstitial();
+            }
+        });
+
+        AnalyticsTrackers.initialize(this);
+    }
+
+    private void requestNewInterstitial() {
+        AdRequest adRequest = new AdRequest.Builder()
+                .addTestDevice("SEE_YOUR_LOGCAT_TO_GET_YOUR_DEVICE_ID")
+                .build();
+
+        interstitial_Ad.loadAd();
     }
 
     public void onBeginClick(View view) {
@@ -39,6 +66,11 @@ public class MainActivity extends AppCompatActivity {
         long ttLong;
         long ttLongMD5;
         long ttLongLOOP;
+
+        output = "Calculating score...";
+        result.setText(output);
+
+        interstitial_Ad.showAd();
 
         ttLongLOOP = System.nanoTime();
         for (int i = 0; i < 99999999; i++) ;
@@ -66,8 +98,11 @@ public class MainActivity extends AppCompatActivity {
                 "\nTime Taken: " + ttLongString;
         output += "\n\nMD5 hash: \n" + MD5Value +
                 "\n\nTime Taken: " + ttLongStringMD5;
+
         result.setText(output);
         scorer.setText(scoreString);
+
+        interstitial_Ad.showAd();
     }
 
     public void computeSHAhash(String password) {

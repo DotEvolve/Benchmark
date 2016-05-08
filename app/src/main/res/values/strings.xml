@@ -4,4 +4,5 @@
     <string name="begin">BEGIN</string>
     <string name="message">Calculate your CPU score.</string>
     <string name="output">Press BEGIN to start seeing results...</string>
+    <string name="admob_banner_ad_unit_id">ca-app-pub-1629925633976163/2725815137</string>
 </resources>
