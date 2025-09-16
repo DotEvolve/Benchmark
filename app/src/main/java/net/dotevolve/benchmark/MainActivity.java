@@ -1,27 +1,37 @@
 package net.dotevolve.benchmark;
 
 import android.os.Bundle;
-
-import com.google.android.material.snackbar.Snackbar;
+import android.util.Base64;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.Button;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
-
-import android.view.View;
-
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
 
 import net.dotevolve.benchmark.databinding.ActivityMainBinding;
 
-import android.view.Menu;
-import android.view.MenuItem;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final Logger logger = LoggerFactory.getLogger(MainActivity.class);
+
     private AppBarConfiguration appBarConfiguration;
-    private ActivityMainBinding binding;
+    private ActivityMainBinding binding; // Declare binding
+    private TextView scorer;
+    private TextView result;
+    private String testString;
+    private String HashValue;
+    private String MD5Value;
+
+    private int showAds = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,46 +42,115 @@ public class MainActivity extends AppCompatActivity {
 
         setSupportActionBar(binding.toolbar);
 
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-        appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
-        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
+        result = findViewById(R.id.textResult); // Or use binding.contentMain.textResult if content_main is given an ID and bound
+        scorer = findViewById(R.id.textScore);   // Or use binding.contentMain.textScore
+        testString = getResources().getString(R.string.testString);
 
-        binding.fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAnchorView(R.id.fab)
-                        .setAction("Action", null).show();
-            }
-        });
+        Button mBeginButton = findViewById(R.id.button); // Or use binding.contentMain.button
+        mBeginButton.setOnClickListener(v -> compute());
+
+        requestNewInterstitial();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
     @Override
-    public boolean onSupportNavigateUp() {
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-        return NavigationUI.navigateUp(navController, appBarConfiguration)
-                || super.onSupportNavigateUp();
+    protected void onDestroy() {
+        super.onDestroy();
+        // If you were using binding for views that need to be cleared, do it here.
+        // For example, binding = null; but typically not needed for Activity level bindings.
+    }
+
+    private void requestNewInterstitial() {
+    }
+
+    public void compute() {
+        String ttLongString;
+        String ttLongStringMD5;
+        String output;
+        long ttLong;
+        long ttLongMD5;
+        long ttLongLOOP;
+
+        output = "Calculating score...";
+        result.setText(output);
+
+        ttLongLOOP = System.nanoTime();
+        Long ttLong2LOOP = System.nanoTime() - ttLongLOOP;
+
+        ttLong = System.nanoTime();
+        for (int i = 0; i < 100000; i++)
+            computeSHAHash(testString);
+        Long ttLong2 = System.nanoTime() - ttLong;
+        ttLongString = ttLong2.toString();
+
+        ttLongMD5 = System.nanoTime();
+        for (int i = 0; i < 100000; i++)
+            computeMD5hash(testString);
+        Long ttLong2MD5 = System.nanoTime() - ttLongMD5;
+        ttLongStringMD5 = ttLong2MD5.toString();
+
+        Integer score = Math.round(ttLong2LOOP / 10000000);
+        Integer score2 = Math.round(ttLong2 / 10000000);
+        Integer score3 = Math.round(ttLong2MD5 / 10000000);
+        Integer scoreAvg = (score + score2 + score3) / 3;
+        String scoreString = scoreAvg.toString();
+
+        output = "SHA1 hash: \n" + HashValue +
+                "\nTime Taken: " + ttLongString;
+        output += "\n\nMD5 hash: \n" + MD5Value +
+                "\n\nTime Taken: " + ttLongStringMD5;
+
+        result.setText(output);
+        scorer.setText(scoreString);
+    }
+
+    public void computeSHAHash(String password) {
+        MessageDigest mdSha1 = null;
+        try {
+            mdSha1 = MessageDigest.getInstance("SHA-1");
+        } catch (NoSuchAlgorithmException e1) {
+            logger.error("Benchmark: {}", "Error initializing SHA1");
+        }
+        assert mdSha1 != null;
+        mdSha1.update(password.getBytes(StandardCharsets.US_ASCII));
+        byte[] data = mdSha1.digest();
+        StringBuilder sb = new StringBuilder();
+        String hex;
+        hex = Base64.encodeToString(data, 0, data.length, 0);
+        sb.append(hex);
+        HashValue = sb.toString();
+    }
+
+    public void computeMD5hash(String password) {
+        try {
+            MessageDigest digest = java.security.MessageDigest.getInstance("MD5");
+            digest.update(password.getBytes());
+            byte[] messageDigest = digest.digest();
+            StringBuilder MD5Hash = new StringBuilder();
+            for (byte aMessageDigest : messageDigest) {
+                StringBuilder h = new StringBuilder(
+                        Integer.toHexString(0xFF & aMessageDigest));
+                while (h.length() < 2)
+                    h.insert(0, "0");
+                MD5Hash.append(h);
+            }
+            MD5Value = MD5Hash.toString();
+        } catch (NoSuchAlgorithmException e) {
+            logger.error("Benchmark: {}", "Error initializing MD5");
+        }
     }
 }
