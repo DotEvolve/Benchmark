@@ -16,7 +16,6 @@
     <Button
         android:id="@+id/button"
         style="@style/ButtonTheme"
-        android:onClick="onBeginClick"
         android:text="@string/begin"
         app:layout_constraintTop_toBottomOf="@id/textMessage"
         app:layout_constraintStart_toStartOf="parent"
