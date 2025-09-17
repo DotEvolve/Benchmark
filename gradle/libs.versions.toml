@@ -11,10 +11,13 @@ navigationFragment = "2.9.4"
 navigationUi = "2.9.4"
 playServicesAds = "24.6.0"
 userMessagingPlatform = "3.2.0"
+firebaseCrashlytics = "20.0.1"
+googleFirebaseFirebasePerf = "2.0.1"
 
 [libraries]
 firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
+firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics", version.ref = "firebaseCrashlytics" }
 firebase-crashlytics-ndk = { module = "com.google.firebase:firebase-crashlytics-ndk" }
 firebase-perf = { module = "com.google.firebase:firebase-perf" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -30,4 +33,5 @@ user-messaging-platform = { module = "com.google.android.ump:user-messaging-plat
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
+google-firebase-firebase-perf = { id = "com.google.firebase.firebase-perf", version.ref = "googleFirebaseFirebasePerf" }
 

@@ -4,6 +4,7 @@ plugins {
     id("com.google.gms.google-services")
 
     id("com.google.firebase.crashlytics")
+    alias(libs.plugins.google.firebase.firebase.perf)
 }
 
 android {
@@ -60,6 +61,7 @@ android {
 dependencies {
 
     implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.crashlytics)
     implementation(libs.firebase.crashlytics.ndk)
     implementation(libs.firebase.analytics)
     implementation(libs.firebase.perf)
