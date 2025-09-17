@@ -9,8 +9,8 @@ material = "1.13.0"
 constraintlayout = "2.2.1"
 navigationFragment = "2.9.4"
 navigationUi = "2.9.4"
-slf4jAndroid = "1.7.36"
-slf4jApi = "2.0.17"
+playServicesAds = "24.6.0"
+userMessagingPlatform = "3.2.0"
 
 [libraries]
 firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
@@ -25,8 +25,8 @@ material = { group = "com.google.android.material", name = "material", version.r
 constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 navigation-fragment = { group = "androidx.navigation", name = "navigation-fragment", version.ref = "navigationFragment" }
 navigation-ui = { group = "androidx.navigation", name = "navigation-ui", version.ref = "navigationUi" }
-slf4j-android = { module = "org.slf4j:slf4j-android", version.ref = "slf4jAndroid" }
-slf4j-api = { module = "org.slf4j:slf4j-api", version.ref = "slf4jApi" }
+play-services-ads = { module = "com.google.android.gms:play-services-ads", version.ref = "playServicesAds" }
+user-messaging-platform = { module = "com.google.android.ump:user-messaging-platform", version.ref = "userMessagingPlatform" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

@@ -12,6 +12,12 @@
     <string name="begin">BEGIN</string>
     <string name="message">Calculate your CPU score.</string>
     <string name="output">Press BEGIN to start seeing results…</string>
-    <string name="admob_banner_ad_unit_id">ca-app-pub-1629925633976163/2725815137</string>
+
+    <string name="admob_app_id">ca-app-pub-5026356504898268~7555850254</string>
+    <string name="admob_banner_ad_unit_id">ca-app-pub-5026356504898268/1589207707</string>
+    <!-- This is a sample AdMob ad unit ID for testing purposes. -->
+<!--    <string name="admob_banner_ad_unit_id">ca-app-pub-3940256099942544/9214589741</string>-->
+    <string name="test_device_hashed_id">TEST_DEVICE_HASHED_ID</string>
+
     <string name="todo">TODO</string>
 </resources>

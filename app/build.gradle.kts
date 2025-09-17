@@ -27,6 +27,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.getByName("debug")
         }
     }
     compileOptions {
@@ -44,9 +45,8 @@ dependencies {
     implementation(libs.firebase.crashlytics.ndk)
     implementation(libs.firebase.analytics)
     implementation(libs.firebase.perf)
-
-    implementation(libs.slf4j.api)
-    implementation(libs.slf4j.android)
+    implementation(libs.play.services.ads)
+    implementation(libs.user.messaging.platform)
 
     implementation(libs.appcompat)
     implementation(libs.material)

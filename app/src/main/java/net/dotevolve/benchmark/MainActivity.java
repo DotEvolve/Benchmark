@@ -2,55 +2,182 @@ package net.dotevolve.benchmark;
 
 import android.os.Bundle;
 import android.util.Base64;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.ui.AppBarConfiguration;
 
-import net.dotevolve.benchmark.databinding.ActivityMainBinding;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdSize;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.RequestConfiguration;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import net.dotevolve.benchmark.databinding.ActivityMainBinding;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Collections;
+import java.util.Objects;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final Logger logger = LoggerFactory.getLogger(MainActivity.class);
+    private static final String TAG = "MainActivity"; // Define TAG constant
+    // Placeholder for your actual test device ID
+    protected static String TEST_DEVICE_HASHED_ID;
 
     private AppBarConfiguration appBarConfiguration;
-    private ActivityMainBinding binding; // Declare binding
+    private ActivityMainBinding binding;
+
     private TextView scorer;
     private TextView result;
+
     private String testString;
     private String HashValue;
     private String MD5Value;
 
-    private int showAds = 2;
+    private final AtomicBoolean isMobileAdsInitializeCalled = new AtomicBoolean(false);
+    private AdView adView; // This will be the programmatically created AdView
+    private AdView adContainerView;
+    private String BANNER_AD_UNIT_ID;
+
+    private GoogleMobileAdsConsentManager googleMobileAdsConsentManager;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        TEST_DEVICE_HASHED_ID = getResources().getString(R.string.test_device_hashed_id);
+
+        setupUI();
+        setupAds();
+
+//        Log.d(TAG, "Starting AdInspector...");
+//        MobileAds.openAdInspector(
+//                this,
+//                new OnAdInspectorClosedListener() {
+//                    public void onAdInspectorClosed(@Nullable AdInspectorError error) {
+//                        // Error will be non-null if ad inspector closed due to an error.
+//                    }
+//                });
+    }
+
+    private void setupUI() {
         setSupportActionBar(binding.toolbar);
 
-        result = findViewById(R.id.textResult); // Or use binding.contentMain.textResult if content_main is given an ID and bound
-        scorer = findViewById(R.id.textScore);   // Or use binding.contentMain.textScore
+        result = findViewById(R.id.textResult);
+        scorer = findViewById(R.id.textScore);
+
+        adContainerView = findViewById(R.id.adContainerView);
+
         testString = getResources().getString(R.string.testString);
 
-        Button mBeginButton = findViewById(R.id.button); // Or use binding.contentMain.button
+        Button mBeginButton = findViewById(R.id.button);
         mBeginButton.setOnClickListener(v -> compute());
-
-        requestNewInterstitial();
     }
+
+    private void setupAds() {
+        Log.d(TAG, "Google Mobile Ads SDK Version: " + MobileAds.getVersion());
+        BANNER_AD_UNIT_ID = getString(R.string.admob_banner_ad_unit_id); // Initialize here
+
+        // Ensure adContainerView is part of your activity_main.xml or its includes
+        // and has the ID "adContainerView"
+        // Attempt to get it from binding first
+        if (binding.getRoot().findViewById(R.id.adContainerView) instanceof FrameLayout) {
+             adContainerView = binding.getRoot().findViewById(R.id.adContainerView);
+        } else {
+             Log.e(TAG, "adContainerView not found in binding or is not a FrameLayout. Check layout IDs.");
+             // Ads requiring this container might not load without further action.
+        }
+
+        googleMobileAdsConsentManager =
+                GoogleMobileAdsConsentManager.getInstance(getApplicationContext());
+        googleMobileAdsConsentManager.gatherConsent(
+                this,
+                consentError -> {
+                    if (consentError != null) {
+                        // Consent not obtained in current session.
+                        Log.w(TAG,
+                                String.format("%s: %s", consentError.getErrorCode(), consentError.getMessage()));
+                    }
+
+                    if (googleMobileAdsConsentManager.canRequestAds()) {
+                        initializeMobileAdsSdk();
+                    }
+
+                    if (googleMobileAdsConsentManager.isPrivacyOptionsRequired()) {
+                        // Regenerate the options menu to include a privacy setting.
+                        invalidateOptionsMenu();
+                    }
+                });
+
+        // This sample attempts to load ads using consent obtained in the previous session.
+        if (googleMobileAdsConsentManager.canRequestAds()) {
+            initializeMobileAdsSdk();
+        }
+    }
+
+
+    private void initializeMobileAdsSdk() {
+        if (isMobileAdsInitializeCalled.getAndSet(true)) {
+            return;
+        }
+
+        MobileAds.setRequestConfiguration(
+                new RequestConfiguration.Builder()
+                        .setTestDeviceIds(Collections.singletonList(TEST_DEVICE_HASHED_ID))
+                        .build());
+
+        new Thread(() -> {
+            MobileAds.initialize(this, initializationStatus -> {
+                Log.d(TAG, "Google Mobile Ads SDK Initialized.");
+                runOnUiThread(this::loadBanner); // Programmatic banner
+                requestNewInterstitial(); // Load interstitial after initialization
+            });
+        }).start();
+    }
+
+    private void loadBanner() {
+        if (adContainerView == null) {
+            Log.e(TAG, "adContainerView is null. Cannot load banner.");
+             // Attempt to find it by ID if it wasn't available via binding directly earlier
+            View potentialContainer = findViewById(R.id.adContainerView);
+            if (potentialContainer instanceof FrameLayout) {
+                adContainerView = (AdView) potentialContainer;
+            } else {
+                Log.e(TAG, "Fallback: adContainerView still not found or not a FrameLayout.");
+                return; // Critical: cannot proceed to load banner
+            }
+        }
+
+        // Destroy existing adView if it exists
+        if (adView != null) {
+            adView.destroy();
+        }
+        adContainerView.removeAllViews(); // Clear previous ads
+
+        adView = new AdView(this);
+        adView.setAdUnitId(BANNER_AD_UNIT_ID);
+        adView.setAdSize(AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(this, 360));
+
+        adContainerView.addView(adView);
+
+        AdRequest adRequest = new AdRequest.Builder().build();
+        adView.loadAd(adRequest);
+        Log.d(TAG, "Banner ad loading requested.");
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -67,17 +194,68 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    // Add onSupportNavigateUp for NavController integration
     @Override
-    protected void onDestroy() {
+    public boolean onSupportNavigateUp() {
+        return true;
+    }
+
+    @Override
+    public void onPause() {
+        if (adView != null) {
+            adView.pause();
+        }
+        super.onPause();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (adView != null) {
+            adView.resume();
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        if (adView != null) {
+            adView.destroy();
+        }
         super.onDestroy();
-        // If you were using binding for views that need to be cleared, do it here.
-        // For example, binding = null; but typically not needed for Activity level bindings.
     }
 
     private void requestNewInterstitial() {
+        Log.d(TAG, "requestNewInterstitial called - TODO: Implement interstitial ad loading logic.");
+        // TODO: Implement your interstitial ad loading logic here
+        // Example:
+        // InterstitialAd.load(this, "YOUR_INTERSTITIAL_AD_UNIT_ID", new AdRequest.Builder().build(),
+        //     new InterstitialAdLoadCallback() {
+        //         @Override
+        //         public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
+        //             // The mInterstitialAd reference will be null until
+        //             // an ad is loaded.
+        //             mInterstitialAd = interstitialAd;
+        //             Log.i(TAG, "onAdLoaded");
+        //             // TODO: interstitialAd.show(MainActivity.this); (when appropriate)
+        //         }
+        //
+        //         @Override
+        //         public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+        //             // Handle the error
+        //             Log.d(TAG, loadAdError.toString());
+        //             mInterstitialAd = null;
+        //         }
+        //     });
     }
 
     public void compute() {
+        String methodTag = Objects.requireNonNull(new Object() {}.getClass().getEnclosingMethod()).getName();
+
+        if (result == null || scorer == null) {
+            Log.e(TAG, "compute() called, but result/scorer TextViews are null in MainActivity.");
+            return;
+        }
+
         String ttLongString;
         String ttLongStringMD5;
         String output;
@@ -89,25 +267,25 @@ public class MainActivity extends AppCompatActivity {
         result.setText(output);
 
         ttLongLOOP = System.nanoTime();
-        Long ttLong2LOOP = System.nanoTime() - ttLongLOOP;
+        long ttLong2LOOP = System.nanoTime() - ttLongLOOP;
 
         ttLong = System.nanoTime();
         for (int i = 0; i < 100000; i++)
             computeSHAHash(testString);
-        Long ttLong2 = System.nanoTime() - ttLong;
-        ttLongString = ttLong2.toString();
+        long ttLong2 = System.nanoTime() - ttLong;
+        ttLongString = Long.toString(ttLong2);
 
         ttLongMD5 = System.nanoTime();
         for (int i = 0; i < 100000; i++)
             computeMD5hash(testString);
-        Long ttLong2MD5 = System.nanoTime() - ttLongMD5;
-        ttLongStringMD5 = ttLong2MD5.toString();
+        long ttLong2MD5 = System.nanoTime() - ttLongMD5;
+        ttLongStringMD5 = Long.toString(ttLong2MD5);
 
-        Integer score = Math.round(ttLong2LOOP / 10000000);
-        Integer score2 = Math.round(ttLong2 / 10000000);
-        Integer score3 = Math.round(ttLong2MD5 / 10000000);
-        Integer scoreAvg = (score + score2 + score3) / 3;
-        String scoreString = scoreAvg.toString();
+        Integer score = Math.round((float) ttLong2LOOP / 10000000);
+        Integer score2 = Math.round((float) ttLong2 / 10000000);
+        Integer score3 = Math.round((float) ttLong2MD5 / 10000000);
+        int scoreAvg = (score + score2 + score3) / 3;
+        String scoreString = Integer.toString(scoreAvg);
 
         output = "SHA1 hash: \n" + HashValue +
                 "\nTime Taken: " + ttLongString;
@@ -123,7 +301,7 @@ public class MainActivity extends AppCompatActivity {
         try {
             mdSha1 = MessageDigest.getInstance("SHA-1");
         } catch (NoSuchAlgorithmException e1) {
-            logger.error("Benchmark: {}", "Error initializing SHA1");
+            Log.e(TAG, "Benchmark: Error initializing SHA1");
         }
         assert mdSha1 != null;
         mdSha1.update(password.getBytes(StandardCharsets.US_ASCII));
@@ -150,7 +328,7 @@ public class MainActivity extends AppCompatActivity {
             }
             MD5Value = MD5Hash.toString();
         } catch (NoSuchAlgorithmException e) {
-            logger.error("Benchmark: {}", "Error initializing MD5");
+            Log.e(TAG, "Benchmark: Error initializing MD5");
         }
     }
 }
