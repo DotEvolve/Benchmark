@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
 
     private final AtomicBoolean isMobileAdsInitializeCalled = new AtomicBoolean(false);
     private AdView adView; // This will be the programmatically created AdView
-    private AdView adContainerView;
+    private FrameLayout adContainerView; // Changed from AdView to FrameLayout
     private String BANNER_AD_UNIT_ID;
     private String INTERSTITIAL_AD_UNIT_ID;
 
@@ -104,8 +104,11 @@ public class MainActivity extends AppCompatActivity {
         BANNER_AD_UNIT_ID = getString(R.string.admob_banner_ad_unit_id);
         INTERSTITIAL_AD_UNIT_ID = getString(R.string.admob_interstitial_ad_unit_id);
 
-        if (binding.getRoot().findViewById(R.id.adContainerView) instanceof FrameLayout) {
-             adContainerView = binding.getRoot().findViewById(R.id.adContainerView);
+        // Since adContainerView is now FrameLayout, this check is still valid.
+        // The findViewById will return a FrameLayout, which matches the (new) type of adContainerView.
+        View container = binding.getRoot().findViewById(R.id.adContainerView);
+        if (container instanceof FrameLayout) {
+             adContainerView = (FrameLayout) container;
         } else {
              Log.e(TAG, "adContainerView not found in binding or is not a FrameLayout. Check layout IDs.");
         }
@@ -161,7 +164,8 @@ public class MainActivity extends AppCompatActivity {
              // Attempt to find it by ID if it wasn't available via binding directly earlier
             View potentialContainer = findViewById(R.id.adContainerView);
             if (potentialContainer instanceof FrameLayout) {
-                adContainerView = (AdView) potentialContainer;
+                // Corrected cast to FrameLayout
+                adContainerView = (FrameLayout) potentialContainer;
             } else {
                 Log.e(TAG, "Fallback: adContainerView still not found or not a FrameLayout.");
                 return; // Critical: cannot proceed to load banner
