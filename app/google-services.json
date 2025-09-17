@@ -1,0 +1,70 @@
+{
+  "project_info": {
+    "project_number": "682300155558",
+    "firebase_url": "https://cpu-benchmark.firebaseio.com",
+    "project_id": "cpu-benchmark",
+    "storage_bucket": "cpu-benchmark.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:682300155558:android:7d3d43db3b6b30767bb667",
+        "android_client_info": {
+          "package_name": "net.dotevolve.benchmark"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "682300155558-amunb83tlh5s8ssbln39j5jt59l0e4lo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": ""
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "682300155558-amunb83tlh5s8ssbln39j5jt59l0e4lo.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      },
+      "admob_app_id": "ca-app-pub-5026356504898268~7555850254"
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:682300155558:android:5be611dee4d3c2597bb667",
+        "android_client_info": {
+          "package_name": "net.dotevolve.benchmark.debug"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "682300155558-amunb83tlh5s8ssbln39j5jt59l0e4lo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": ""
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "682300155558-amunb83tlh5s8ssbln39j5jt59l0e4lo.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
