@@ -1,26 +1,37 @@
 {
   "project_info": {
-    "project_number": "YOUR_PROJECT_NUMBER",
-    "firebase_url": "https://YOUR_PROJECT_ID.firebaseio.com",
-    "project_id": "YOUR_PROJECT_ID",
-    "storage_bucket": "YOUR_PROJECT_ID.appspot.com"
+    "project_number": "682300155558",
+    "firebase_url": "https://cpu-benchmark.firebaseio.com",
+    "project_id": "cpu-benchmark",
+    "storage_bucket": "cpu-benchmark.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:682300155558:android:7d3d43db3b6b30767bb667",
         "android_client_info": {
-          "package_name": "com.example.yourdummyapp"
+          "package_name": "net.dotevolve.benchmark"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "682300155558-amunb83tlh5s8ssbln39j5jt59l0e4lo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
-          "current_key": "YOUR_DUMMY_API_KEY"
+          "current_key": ""
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "682300155558-amunb83tlh5s8ssbln39j5jt59l0e4lo.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

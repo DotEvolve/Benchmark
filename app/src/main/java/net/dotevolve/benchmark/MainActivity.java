@@ -26,7 +26,6 @@ import com.google.android.gms.ads.RequestConfiguration;
 import com.google.android.gms.ads.interstitial.InterstitialAd;
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 
-import net.dotevolve.benchmark.BuildConfig;
 import net.dotevolve.benchmark.databinding.ActivityMainBinding;
 
 import java.nio.charset.StandardCharsets;
@@ -101,17 +100,14 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupAds() {
         Log.d(TAG, "Google Mobile Ads SDK Version: " + MobileAds.getVersion());
-        BANNER_AD_UNIT_ID = getString(R.string.admob_banner_ad_unit_id); // Initialize here
-        INTERSTITIAL_AD_UNIT_ID = getString(R.string.admob_interstitial_ad_unit_id); // Initialize here
 
-        // Ensure adContainerView is part of your activity_main.xml or its includes
-        // and has the ID "adContainerView"
-        // Attempt to get it from binding first
+        BANNER_AD_UNIT_ID = getString(R.string.admob_banner_ad_unit_id);
+        INTERSTITIAL_AD_UNIT_ID = getString(R.string.admob_interstitial_ad_unit_id);
+
         if (binding.getRoot().findViewById(R.id.adContainerView) instanceof FrameLayout) {
              adContainerView = binding.getRoot().findViewById(R.id.adContainerView);
         } else {
              Log.e(TAG, "adContainerView not found in binding or is not a FrameLayout. Check layout IDs.");
-             // Ads requiring this container might not load without further action.
         }
 
         googleMobileAdsConsentManager =
@@ -154,8 +150,9 @@ public class MainActivity extends AppCompatActivity {
         new Thread(() -> MobileAds.initialize(this, initializationStatus -> {
             Log.d(TAG, "Google Mobile Ads SDK Initialized.");
             runOnUiThread(this::loadBanner); // Programmatic banner
-            requestNewInterstitial(); // Load interstitial after initialization
         })).start();
+
+        requestNewInterstitial(); // Load interstitial after initialization
     }
 
     private void loadBanner() {
@@ -249,7 +246,7 @@ public class MainActivity extends AppCompatActivity {
     public void requestNewInterstitial() {
         final boolean[] adIsLoading = {false};
         // Request a new ad if one isn't already loaded.
-        if (adIsLoading[0] || mInterstitialAd != null) {
+        if (mInterstitialAd != null) {
             return;
         }
         adIsLoading[0] = true;
