@@ -27,14 +27,30 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+        }
+        debug {
+//            applicationIdSuffix = ".debug"
+//            versionNameSuffix = "-debug"
+            isMinifyEnabled = false
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
             signingConfig = signingConfigs.getByName("debug")
+            resValue("string", "admob_app_id", "ca-app-pub-3940256099942544~3347511713")
+            resValue("string", "admob_banner_ad_unit_id", "ca-app-pub-3940256099942544/9214589741")
+            resValue("string", "admob_interstitial_ad_unit_id", "ca-app-pub-3940256099942544/1033173712")
+
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
+
     buildFeatures {
+        buildConfig = true
         viewBinding = true
     }
 }

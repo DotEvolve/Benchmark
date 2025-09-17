@@ -9,16 +9,24 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.ui.AppBarConfiguration;
 
+import com.google.android.gms.ads.AdError;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.FullScreenContentCallback;
+import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.RequestConfiguration;
+import com.google.android.gms.ads.interstitial.InterstitialAd;
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 
+import net.dotevolve.benchmark.BuildConfig;
 import net.dotevolve.benchmark.databinding.ActivityMainBinding;
 
 import java.nio.charset.StandardCharsets;
@@ -48,6 +56,9 @@ public class MainActivity extends AppCompatActivity {
     private AdView adView; // This will be the programmatically created AdView
     private AdView adContainerView;
     private String BANNER_AD_UNIT_ID;
+    private String INTERSTITIAL_AD_UNIT_ID;
+
+    private InterstitialAd mInterstitialAd;
 
     private GoogleMobileAdsConsentManager googleMobileAdsConsentManager;
 
@@ -63,14 +74,15 @@ public class MainActivity extends AppCompatActivity {
         setupUI();
         setupAds();
 
-//        Log.d(TAG, "Starting AdInspector...");
-//        MobileAds.openAdInspector(
-//                this,
-//                new OnAdInspectorClosedListener() {
-//                    public void onAdInspectorClosed(@Nullable AdInspectorError error) {
-//                        // Error will be non-null if ad inspector closed due to an error.
-//                    }
-//                });
+        if (BuildConfig.DEBUG) {
+            Log.d(TAG, "Starting AdInspector...");
+            MobileAds.openAdInspector(
+                    this,
+                    error -> {});
+        } else {
+            // Code to execute in release mode
+            Log.d(TAG, "Release build - AdInspector not opened automatically.");
+        }
     }
 
     private void setupUI() {
@@ -90,6 +102,7 @@ public class MainActivity extends AppCompatActivity {
     private void setupAds() {
         Log.d(TAG, "Google Mobile Ads SDK Version: " + MobileAds.getVersion());
         BANNER_AD_UNIT_ID = getString(R.string.admob_banner_ad_unit_id); // Initialize here
+        INTERSTITIAL_AD_UNIT_ID = getString(R.string.admob_interstitial_ad_unit_id); // Initialize here
 
         // Ensure adContainerView is part of your activity_main.xml or its includes
         // and has the ID "adContainerView"
@@ -128,7 +141,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
     private void initializeMobileAdsSdk() {
         if (isMobileAdsInitializeCalled.getAndSet(true)) {
             return;
@@ -139,13 +151,11 @@ public class MainActivity extends AppCompatActivity {
                         .setTestDeviceIds(Collections.singletonList(TEST_DEVICE_HASHED_ID))
                         .build());
 
-        new Thread(() -> {
-            MobileAds.initialize(this, initializationStatus -> {
-                Log.d(TAG, "Google Mobile Ads SDK Initialized.");
-                runOnUiThread(this::loadBanner); // Programmatic banner
-                requestNewInterstitial(); // Load interstitial after initialization
-            });
-        }).start();
+        new Thread(() -> MobileAds.initialize(this, initializationStatus -> {
+            Log.d(TAG, "Google Mobile Ads SDK Initialized.");
+            runOnUiThread(this::loadBanner); // Programmatic banner
+            requestNewInterstitial(); // Load interstitial after initialization
+        })).start();
     }
 
     private void loadBanner() {
@@ -224,29 +234,97 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
-    private void requestNewInterstitial() {
-        Log.d(TAG, "requestNewInterstitial called - TODO: Implement interstitial ad loading logic.");
-        // TODO: Implement your interstitial ad loading logic here
-        // Example:
-        // InterstitialAd.load(this, "YOUR_INTERSTITIAL_AD_UNIT_ID", new AdRequest.Builder().build(),
-        //     new InterstitialAdLoadCallback() {
-        //         @Override
-        //         public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
-        //             // The mInterstitialAd reference will be null until
-        //             // an ad is loaded.
-        //             mInterstitialAd = interstitialAd;
-        //             Log.i(TAG, "onAdLoaded");
-        //             // TODO: interstitialAd.show(MainActivity.this); (when appropriate)
-        //         }
-        //
-        //         @Override
-        //         public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
-        //             // Handle the error
-        //             Log.d(TAG, loadAdError.toString());
-        //             mInterstitialAd = null;
-        //         }
-        //     });
+    private void showInterstitial() {
+        // Show the ad if it's ready. Otherwise restart the game.
+        if (mInterstitialAd != null) {
+            mInterstitialAd.show(this);
+        } else {
+            Log.d(TAG, "The interstitial ad is still loading.");
+            if (googleMobileAdsConsentManager.canRequestAds()) {
+                requestNewInterstitial();
+            }
+        }
     }
+
+    public void requestNewInterstitial() {
+        final boolean[] adIsLoading = {false};
+        // Request a new ad if one isn't already loaded.
+        if (adIsLoading[0] || mInterstitialAd != null) {
+            return;
+        }
+        adIsLoading[0] = true;
+        InterstitialAd.load(
+                this,
+                INTERSTITIAL_AD_UNIT_ID,
+                new AdRequest.Builder().build(),
+                new InterstitialAdLoadCallback() {
+                    @Override
+                    public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
+                        Log.d(TAG, "Ad was loaded.");
+                        MainActivity.this.mInterstitialAd = interstitialAd;
+                        adIsLoading[0] = false;
+                        if (BuildConfig.DEBUG)
+                            Toast.makeText(MainActivity.this, "Ad Loaded", Toast.LENGTH_SHORT).show();
+
+                        interstitialAd.setFullScreenContentCallback(
+                                new FullScreenContentCallback() {
+                                    @Override
+                                    public void onAdDismissedFullScreenContent() {
+                                        // Called when fullscreen content is dismissed.
+                                        Log.d(TAG, "The ad was dismissed.");
+                                        // Make sure to set your reference to null so you don't
+                                        // show it a second time.
+                                        MainActivity.this.mInterstitialAd = null;
+                                    }
+
+                                    @Override
+                                    public void onAdFailedToShowFullScreenContent(@NonNull AdError adError) {
+                                        // Called when fullscreen content failed to show.
+                                        Log.d(TAG, "The ad failed to show.");
+                                        // Make sure to set your reference to null so you don't
+                                        // show it a second time.
+                                        MainActivity.this.mInterstitialAd = null;
+                                    }
+
+                                    @Override
+                                    public void onAdShowedFullScreenContent() {
+                                        // Called when fullscreen content is shown.
+                                        Log.d(TAG, "The ad was shown.");
+                                    }
+
+                                    @Override
+                                    public void onAdImpression() {
+                                        // Called when an impression is recorded for an ad.
+                                        Log.d(TAG, "The ad recorded an impression.");
+                                    }
+
+                                    @Override
+                                    public void onAdClicked() {
+                                        // Called when ad is clicked.
+                                        Log.d(TAG, "The ad was clicked.");
+                                    }
+                                });
+                    }
+
+                    @Override
+                    public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                        Log.d(TAG, loadAdError.getMessage());
+                        mInterstitialAd = null;
+                        adIsLoading[0] = false;
+                        String error =
+                                String.format(
+                                        java.util.Locale.US,
+                                        "domain: %s, code: %d, message: %s",
+                                        loadAdError.getDomain(),
+                                        loadAdError.getCode(),
+                                        loadAdError.getMessage());
+                        if (BuildConfig.DEBUG)
+                            Toast.makeText(MainActivity.this,
+                                            "onAdFailedToLoad() with error: " + error, Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
 
     public void compute() {
         String methodTag = Objects.requireNonNull(new Object() {}.getClass().getEnclosingMethod()).getName();
@@ -291,6 +369,8 @@ public class MainActivity extends AppCompatActivity {
                 "\nTime Taken: " + ttLongString;
         output += "\n\nMD5 hash: \n" + MD5Value +
                 "\n\nTime Taken: " + ttLongStringMD5;
+
+        showInterstitial();
 
         result.setText(output);
         scorer.setText(scoreString);
