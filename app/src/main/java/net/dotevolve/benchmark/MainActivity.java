@@ -13,7 +13,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.navigation.ui.AppBarConfiguration;
 
 import com.google.android.gms.ads.AdError;
 import com.google.android.gms.ads.AdRequest;
@@ -32,7 +31,6 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Collections;
-import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class MainActivity extends AppCompatActivity {
@@ -41,7 +39,6 @@ public class MainActivity extends AppCompatActivity {
     // Placeholder for your actual test device ID
     protected static String TEST_DEVICE_HASHED_ID;
 
-    private AppBarConfiguration appBarConfiguration;
     private ActivityMainBinding binding;
 
     private TextView scorer;
@@ -248,12 +245,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void requestNewInterstitial() {
-        final boolean[] adIsLoading = {false};
         // Request a new ad if one isn't already loaded.
         if (mInterstitialAd != null) {
             return;
         }
-        adIsLoading[0] = true;
         InterstitialAd.load(
                 this,
                 INTERSTITIAL_AD_UNIT_ID,
@@ -263,7 +258,6 @@ public class MainActivity extends AppCompatActivity {
                     public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
                         Log.d(TAG, "Ad was loaded.");
                         MainActivity.this.mInterstitialAd = interstitialAd;
-                        adIsLoading[0] = false;
                         if (BuildConfig.DEBUG)
                             Toast.makeText(MainActivity.this, "Ad Loaded", Toast.LENGTH_SHORT).show();
 
@@ -311,7 +305,6 @@ public class MainActivity extends AppCompatActivity {
                     public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
                         Log.d(TAG, loadAdError.getMessage());
                         mInterstitialAd = null;
-                        adIsLoading[0] = false;
                         String error =
                                 String.format(
                                         java.util.Locale.US,
@@ -326,10 +319,7 @@ public class MainActivity extends AppCompatActivity {
                 });
     }
 
-
     public void compute() {
-        String methodTag = Objects.requireNonNull(new Object() {}.getClass().getEnclosingMethod()).getName();
-
         if (result == null || scorer == null) {
             Log.e(TAG, "compute() called, but result/scorer TextViews are null in MainActivity.");
             return;
