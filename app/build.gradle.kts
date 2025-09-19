@@ -1,9 +1,11 @@
 plugins {
-
     alias(libs.plugins.android.application)
     alias(libs.plugins.google.gms.google.services)
     alias(libs.plugins.google.firebase.crashlytics)
     alias(libs.plugins.google.firebase.perf)
+
+    id("jacoco")
+    id("org.sonarqube") version "6.3.1.5724"
 }
 
 android {
@@ -29,6 +31,9 @@ android {
 
             // Enables resource shrinking.
             isShrinkResources = true
+
+            enableUnitTestCoverage = true
+            enableAndroidTestCoverage = true
 
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -85,4 +90,47 @@ dependencies {
 
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+}
+
+tasks.withType<Test>().configureEach {
+    configure<JacocoTaskExtension> {
+        isIncludeNoLocationClasses = true
+        excludes = listOf("jdk.internal.*")
+    }
+}
+
+tasks.register<JacocoReport>("jacocoTestReportDebug") {
+    description = "Generates Jacoco code coverage reports for the debug build."
+    group = "verification"
+
+    dependsOn("testDebugUnitTest", "createDebugCoverageReport")
+
+    sourceDirectories.setFrom(files("$projectDir/src/main/java"))
+    classDirectories.setFrom(
+        fileTree("$layout.buildDir/tmp/kotlin-classes/debug") {
+            exclude(
+                "**/R.class",
+                "**/R\$*.class",
+                "**/BuildConfig.*",
+                "**/Manifest*.*",
+                "**/*\$ViewBinder*.*", // For ViewBinding
+                "**/*\$ViewBinding*.*", // For ViewBinding
+                "**/*Module*.*", // Exclude Hilt/Dagger modules if any
+                "**/*Factory*.*", // Exclude Hilt/Dagger factories if any
+                "**/*_MembersInjector*.*" // Exclude Hilt/Dagger injectors if any
+            )
+        }
+    )
+    executionData.setFrom(
+        files(
+            layout.buildDirectory.file("outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec").get().asFile,
+            layout.buildDirectory.file("outputs/code_coverage/debugAndroidTest/connected/*coverage.ec").get().asFile
+        )
+    )
+
+    reports {
+        xml.required.set(true)
+        html.required.set(true)
+        csv.required.set(false)
+    }
 }
