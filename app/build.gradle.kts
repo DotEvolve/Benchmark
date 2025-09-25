@@ -16,8 +16,8 @@ android {
         applicationId = "net.dotevolve.benchmark"
         minSdk = 34
         targetSdk = 36
-        versionCode = 5
-        versionName = "4.0-hotfix"
+        versionCode = 6
+        versionName = "6.0.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
