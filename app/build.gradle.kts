@@ -16,8 +16,8 @@ android {
         applicationId = "net.dotevolve.benchmark"
         minSdk = 34
         targetSdk = 36
-        versionCode = 6
-        versionName = "6.0.0"
+        versionCode = 8
+        versionName = "8.0.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -32,9 +32,6 @@ android {
             // Enables resource shrinking.
             isShrinkResources = true
 
-            enableUnitTestCoverage = true
-            enableAndroidTestCoverage = true
-
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -44,7 +41,12 @@ android {
         debug {
             applicationIdSuffix = ".debug"
             versionNameSuffix = "-debug"
+
             isMinifyEnabled = false
+
+            enableUnitTestCoverage = true
+            enableAndroidTestCoverage = true
+
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
