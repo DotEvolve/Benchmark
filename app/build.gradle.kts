@@ -50,6 +50,7 @@ android {
                 "proguard-rules.pro"
             )
             signingConfig = signingConfigs.getByName("debug")
+            resValue("string", "app_name", "Benchmark.DEBUG")
             resValue("string", "admob_app_id", "ca-app-pub-3940256099942544~3347511713")
             resValue("string", "admob_banner_ad_unit_id", "ca-app-pub-3940256099942544/9214589741")
             resValue("string", "admob_interstitial_ad_unit_id", "ca-app-pub-3940256099942544/1033173712")
@@ -85,6 +86,7 @@ dependencies {
     implementation(libs.constraintlayout)
     implementation(libs.navigation.fragment)
     implementation(libs.navigation.ui)
+    implementation(libs.leanback)
 
     testImplementation(libs.junit)
 
