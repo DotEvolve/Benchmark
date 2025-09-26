@@ -18,6 +18,9 @@ navigationUi = "2.9.5"
 playServicesAds = "24.6.0"
 userMessagingPlatform = "3.2.0"
 leanback = "1.2.0"
+firebaseMessaging = "25.0.1"
+kotlin = "2.2.20"
+coreKtx = "1.17.0"
 
 [libraries]
 appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
@@ -38,10 +41,13 @@ navigation-ui = { group = "androidx.navigation", name = "navigation-ui", version
 play-services-ads = { module = "com.google.android.gms:play-services-ads", version.ref = "playServicesAds" }
 user-messaging-platform = { module = "com.google.android.ump:user-messaging-platform", version.ref = "userMessagingPlatform" }
 leanback = { group = "androidx.leanback", name = "leanback", version.ref = "leanback" }
+firebase-messaging = { group = "com.google.firebase", name = "firebase-messaging", version.ref = "firebaseMessaging" }
+core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 google-firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebaseCrashlyticsPlugin" }
 google-firebase-perf = { id = "com.google.firebase.firebase-perf", version.ref = "googleFirebasePerf" } # Corrected version ref based on [versions]
 google-gms-google-services = { id = "com.google.gms.google-services", version.ref = "gmsGoogleServices" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 
