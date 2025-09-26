@@ -91,6 +91,7 @@ dependencies {
     implementation(libs.firebase.perf)
     implementation(libs.play.services.ads)
     implementation(libs.user.messaging.platform)
+    implementation(libs.play.app.update)
 
     implementation(libs.appcompat)
     implementation(libs.material)

@@ -21,6 +21,7 @@ leanback = "1.2.0"
 firebaseMessaging = "25.0.1"
 kotlin = "2.2.20"
 coreKtx = "1.17.0"
+playAppUpdate = "2.1.0"
 
 [libraries]
 appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
@@ -43,6 +44,7 @@ user-messaging-platform = { module = "com.google.android.ump:user-messaging-plat
 leanback = { group = "androidx.leanback", name = "leanback", version.ref = "leanback" }
 firebase-messaging = { group = "com.google.firebase", name = "firebase-messaging", version.ref = "firebaseMessaging" }
 core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+play-app-update = { group = "com.google.android.play", name = "app-update", version.ref = "playAppUpdate" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
