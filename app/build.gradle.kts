@@ -93,6 +93,7 @@ dependencies {
     implementation(libs.user.messaging.platform)
     implementation(libs.play.app.update)
     implementation(libs.profileinstaller)
+    implementation(libs.activity.ktx)
 
     implementation(libs.appcompat)
     implementation(libs.material)

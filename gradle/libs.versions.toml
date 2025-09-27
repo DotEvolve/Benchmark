@@ -23,6 +23,7 @@ kotlin = "2.2.20"
 coreKtx = "1.17.0"
 playAppUpdate = "2.1.0"
 profileinstaller = "1.4.1"
+activityKtx = "1.11.0"
 
 [libraries]
 appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
@@ -47,6 +48,7 @@ firebase-messaging = { group = "com.google.firebase", name = "firebase-messaging
 core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 play-app-update = { group = "com.google.android.play", name = "app-update", version.ref = "playAppUpdate" }
 profileinstaller = { group = "androidx.profileinstaller", name = "profileinstaller", version.ref = "profileinstaller" }
+activity-ktx = { group = "androidx.activity", name = "activity-ktx", version.ref = "activityKtx" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
