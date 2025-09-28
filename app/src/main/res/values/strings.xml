@@ -20,4 +20,6 @@
     <string name="test_device_hashed_id">TEST_DEVICE_HASHED_ID</string>
 
     <string name="todo">TODO</string>
+
+    <string name="default_notification_channel_id" translatable="false">fcm_default_channel</string>
 </resources>

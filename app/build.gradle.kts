@@ -1,8 +1,11 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.google.gms.google.services)
     alias(libs.plugins.google.firebase.crashlytics)
     alias(libs.plugins.google.firebase.perf)
+    alias(libs.plugins.kotlin.android)
 
     id("jacoco")
     id("org.sonarqube") version "6.3.1.5724"
@@ -16,8 +19,8 @@ android {
         applicationId = "net.dotevolve.benchmark"
         minSdk = 34
         targetSdk = 36
-        versionCode = 8
-        versionName = "8.0.0"
+        versionCode = 10
+        versionName = "10.0.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -60,6 +63,10 @@ android {
         }
     }
 
+    firebaseCrashlytics {
+        nativeSymbolUploadEnabled = true
+    }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
@@ -68,6 +75,12 @@ android {
     buildFeatures {
         buildConfig = true
         viewBinding = true
+    }
+}
+
+kotlin {
+    compilerOptions {
+        jvmTarget.set(JvmTarget.JVM_17)
     }
 }
 
@@ -82,6 +95,9 @@ dependencies {
     implementation(libs.firebase.perf)
     implementation(libs.play.services.ads)
     implementation(libs.user.messaging.platform)
+    implementation(libs.play.app.update)
+    implementation(libs.profileinstaller)
+    implementation(libs.activity.ktx)
 
     implementation(libs.appcompat)
     implementation(libs.material)
@@ -89,6 +105,8 @@ dependencies {
     implementation(libs.navigation.fragment)
     implementation(libs.navigation.ui)
     implementation(libs.leanback)
+    implementation(libs.firebase.messaging)
+    implementation(libs.core.ktx)
 
     testImplementation(libs.junit)
 
