@@ -355,6 +355,58 @@ public class PerformanceMetrics {
         return PerformanceCategory.fromScore(score);
     }
     
+    // Historical tracking methods
+    public void saveToHistory(Context context) {
+        try {
+            PerformanceDatabaseHelper dbHelper = new PerformanceDatabaseHelper(context);
+            AdvancedMetrics advancedMetrics = new AdvancedMetrics(context);
+            dbHelper.insertBenchmarkResult(this, advancedMetrics);
+            Log.d(TAG, "Benchmark results saved to history");
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to save benchmark results to history", e);
+        }
+    }
+    
+    public static List<BenchmarkResult> getHistoricalResults(Context context, String deviceModel) {
+        try {
+            PerformanceDatabaseHelper dbHelper = new PerformanceDatabaseHelper(context);
+            return dbHelper.getAllBenchmarkResults(deviceModel);
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to get historical results", e);
+            return new ArrayList<>();
+        }
+    }
+    
+    public static List<BenchmarkResult> getRecentResults(Context context, String deviceModel, int days) {
+        try {
+            PerformanceDatabaseHelper dbHelper = new PerformanceDatabaseHelper(context);
+            return dbHelper.getRecentBenchmarkResults(deviceModel, days);
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to get recent results", e);
+            return new ArrayList<>();
+        }
+    }
+    
+    public static List<PerformanceTrend> getPerformanceTrends(Context context, String deviceModel, int days) {
+        try {
+            PerformanceDatabaseHelper dbHelper = new PerformanceDatabaseHelper(context);
+            return dbHelper.getPerformanceTrends(deviceModel, days);
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to get performance trends", e);
+            return new ArrayList<>();
+        }
+    }
+    
+    public static DeviceStatistics getDeviceStatistics(Context context, String deviceModel) {
+        try {
+            PerformanceDatabaseHelper dbHelper = new PerformanceDatabaseHelper(context);
+            return dbHelper.getDeviceStatistics(deviceModel);
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to get device statistics", e);
+            return null;
+        }
+    }
+    
     // Getters
     public int getOverallScore() { return overallScore; }
     public int getCryptoScore() { return cryptoScore; }

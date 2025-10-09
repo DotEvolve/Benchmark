@@ -33,8 +33,16 @@
     <string name="efficiency">Efficiency</string>
     <string name="stability">Stability</string>
     <string name="run_benchmark_first">Run benchmark first to view detailed metrics</string>
-    <string name="benchmark_in_progress">Benchmark in progress...</string>
+    <string name="benchmark_in_progress">Benchmark in progress…</string>
     <string name="benchmark_complete">Benchmark complete!</string>
+    
+    <!-- History and trends strings -->
+    <string name="performance_history">Performance History</string>
+    <string name="device_statistics">Device Statistics</string>
+    <string name="performance_trends">Performance Trends</string>
+    <string name="recent_results">Recent Results</string>
+    <string name="no_data_available">No data available</string>
+    <string name="loading">Loading...</string>
 
     <string name="default_notification_channel_id" translatable="false">fcm_default_channel</string>
 </resources>

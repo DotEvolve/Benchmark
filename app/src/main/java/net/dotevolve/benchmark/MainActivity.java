@@ -139,6 +139,10 @@ public class MainActivity extends AppCompatActivity {
                 runOnUiThread(() -> {
                     isBenchmarkRunning = false;
                     currentMetrics = metrics;
+                    
+                    // Save to historical database
+                    metrics.saveToHistory(MainActivity.this);
+                    
                     displayEnhancedResults();
                     showInterstitial();
                 });
@@ -300,6 +304,10 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 Toast.makeText(this, "Run benchmark first to view detailed metrics", Toast.LENGTH_SHORT).show();
             }
+            return true;
+        } else if (id == R.id.action_history) {
+            Intent intent = new Intent(this, HistoryActivity.class);
+            startActivity(intent);
             return true;
         }
         return super.onOptionsItemSelected(item);
