@@ -6,13 +6,11 @@ import android.util.Log;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
 
 /**
  * Enhanced benchmark engine with comprehensive performance testing
@@ -20,13 +18,13 @@ import javax.crypto.spec.SecretKeySpec;
 public class BenchmarkEngine {
     private static final String TAG = "BenchmarkEngine";
     
-    private PerformanceMetrics metrics;
-    private Context context;
-    private String testString;
+    private final PerformanceMetrics metrics;
+    private final Context context;
+    private final String testString;
     
     // Progress tracking
-    private AtomicInteger currentProgress = new AtomicInteger(0);
-    private int totalTests = 4; // SHA-1, MD5, AES, RSA
+    private final AtomicInteger currentProgress = new AtomicInteger(0);
+    private final int totalTests = 4; // SHA-1, MD5, AES, RSA
     
     public interface BenchmarkProgressCallback {
         void onProgressUpdate(int progress, String currentTest);

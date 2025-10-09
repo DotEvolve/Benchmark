@@ -12,4 +12,14 @@
         android:orderInCategory="200"
         android:title="@string/performance_history"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/action_toggle_schedule"
+        android:orderInCategory="300"
+        android:title="@string/schedule_daily_benchmark"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_toggle_dark_mode"
+        android:orderInCategory="400"
+        android:title="@string/toggle_dark_mode"
+        app:showAsAction="never" />
 </menu>

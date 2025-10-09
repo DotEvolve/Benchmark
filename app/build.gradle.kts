@@ -107,6 +107,7 @@ dependencies {
     implementation(libs.leanback)
     implementation(libs.firebase.messaging)
     implementation(libs.core.ktx)
+    implementation(libs.work.runtime)
 
     testImplementation(libs.junit)
 
