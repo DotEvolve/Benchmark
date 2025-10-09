@@ -5,8 +5,8 @@ constraintlayout = "2.2.1"
 espressoCore = "3.7.0"
 firebaseAppcheck = "19.0.1"
 firebaseAppcheckPlayintegrity = "19.0.1" # Added
-firebaseBom = "34.3.0"
-firebaseCrashlytics = "20.0.2"
+firebaseBom = "34.4.0"
+firebaseCrashlytics = "20.0.3"
 firebaseCrashlyticsPlugin = "3.0.6"
 gmsGoogleServices = "4.4.3"
 googleFirebasePerf = "2.0.1"
@@ -24,7 +24,7 @@ coreKtx = "1.17.0"
 playAppUpdate = "2.1.0"
 profileinstaller = "1.4.1"
 activityKtx = "1.11.0"
-work = "2.9.1"
+work = "2.10.5"
 
 [libraries]
 appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
