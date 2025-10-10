@@ -3,7 +3,6 @@ import net.dotevolve.benchmark.data.db.PerformanceDatabaseHelper;
 import net.dotevolve.benchmark.data.model.BenchmarkResult;
 import net.dotevolve.benchmark.data.model.DeviceStatistics;
 import net.dotevolve.benchmark.data.model.PerformanceTrend;
-import net.dotevolve.benchmark.core.AdvancedMetrics;
 
 import android.content.Context;
 import android.os.Build;
@@ -87,7 +86,7 @@ public class PerformanceMetrics {
         androidVersion = "Android " + Build.VERSION.RELEASE;
         cpuCores = Runtime.getRuntime().availableProcessors();
         totalMemory = Runtime.getRuntime().maxMemory();
-        architecture = Build.CPU_ABI;
+        architecture = Build.SUPPORTED_ABIS[0];
         
         Log.d(TAG, "System Info - Model: " + deviceModel + 
               ", Android: " + androidVersion + 

@@ -10,9 +10,12 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.os.Build;
 import android.util.Log;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -152,7 +155,7 @@ public class PerformanceDatabaseHelper extends SQLiteOpenHelper {
     }
     
     // Insert benchmark results
-    public long insertBenchmarkResult(PerformanceMetrics metrics, AdvancedMetrics advancedMetrics) {
+    public void insertBenchmarkResult(PerformanceMetrics metrics, AdvancedMetrics advancedMetrics) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         
@@ -163,7 +166,7 @@ public class PerformanceDatabaseHelper extends SQLiteOpenHelper {
         values.put(COLUMN_ANDROID_VERSION, android.os.Build.VERSION.RELEASE);
         values.put(COLUMN_CPU_CORES, metrics.getCpuCores());
         values.put(COLUMN_TOTAL_MEMORY, metrics.getTotalMemory());
-        values.put(COLUMN_ARCHITECTURE, android.os.Build.CPU_ABI);
+        values.put(COLUMN_ARCHITECTURE, Build.SUPPORTED_ABIS[0]);
         
         values.put(COLUMN_OVERALL_SCORE, metrics.getOverallScore());
         values.put(COLUMN_CRYPTO_SCORE, metrics.getCryptoScore());
@@ -191,8 +194,6 @@ public class PerformanceDatabaseHelper extends SQLiteOpenHelper {
             updateDeviceInfo(metrics.getDeviceModel(), timestamp, metrics.getOverallScore());
             updatePerformanceTrends(metrics.getDeviceModel(), timestamp, metrics.getOverallScore());
         }
-        
-        return result;
     }
     
     // Get all benchmark results for a device
@@ -332,8 +333,9 @@ public class PerformanceDatabaseHelper extends SQLiteOpenHelper {
         // This is a simplified implementation
         // In a real app, you'd want more sophisticated trend analysis
         SQLiteDatabase db = this.getWritableDatabase();
-        
-        String date = new java.text.SimpleDateFormat("yyyy-MM-dd").format(new Date(timestamp));
+
+        SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.US);
+        String date = sdf.format(new Date(timestamp));
         
         // Check if trend exists for this date
         String query = "SELECT * FROM " + TABLE_PERFORMANCE_TRENDS + 
