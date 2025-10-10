@@ -76,6 +76,10 @@ android {
         buildConfig = true
         viewBinding = true
     }
+
+    lint {
+        baseline = file("lint-baseline.xml")
+    }
 }
 
 kotlin {
