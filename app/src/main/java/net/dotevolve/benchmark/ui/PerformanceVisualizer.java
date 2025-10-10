@@ -1,4 +1,5 @@
-package net.dotevolve.benchmark;
+package net.dotevolve.benchmark.ui;
+import net.dotevolve.benchmark.core.PerformanceMetrics;
 
 import android.content.Context;
 import android.graphics.Canvas;

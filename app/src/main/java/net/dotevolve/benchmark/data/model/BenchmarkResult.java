@@ -1,9 +1,11 @@
-package net.dotevolve.benchmark;
+package net.dotevolve.benchmark.data.model;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import net.dotevolve.benchmark.core.PerformanceMetrics;
+import net.dotevolve.benchmark.core.AdvancedMetrics;
 
 /**
  * Data model for storing benchmark results

@@ -1,4 +1,4 @@
-package net.dotevolve.benchmark;
+package net.dotevolve.benchmark.core;
 
 import android.content.Context;
 import android.os.BatteryManager;

@@ -1,4 +1,4 @@
-package net.dotevolve.benchmark;
+package net.dotevolve.benchmark.data.model;
 
 /**
  * Data model for performance trends over time

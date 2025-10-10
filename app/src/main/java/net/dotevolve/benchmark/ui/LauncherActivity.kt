@@ -1,4 +1,4 @@
-package net.dotevolve.benchmark
+package net.dotevolve.benchmark.ui
 
 import android.Manifest
 import android.app.NotificationChannel
@@ -26,6 +26,8 @@ import com.google.firebase.FirebaseApp
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.appcheck.FirebaseAppCheck
 import com.google.firebase.appcheck.playintegrity.PlayIntegrityAppCheckProviderFactory
+import net.dotevolve.benchmark.R
+import net.dotevolve.benchmark.ui.MainActivity
 
 class LauncherActivity : AppCompatActivity() {
 

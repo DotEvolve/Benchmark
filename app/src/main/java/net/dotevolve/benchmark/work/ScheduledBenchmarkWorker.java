@@ -1,4 +1,6 @@
-package net.dotevolve.benchmark;
+package net.dotevolve.benchmark.work;
+import net.dotevolve.benchmark.core.BenchmarkEngine;
+import net.dotevolve.benchmark.core.PerformanceMetrics;
 
 import android.content.Context;
 import android.util.Log;

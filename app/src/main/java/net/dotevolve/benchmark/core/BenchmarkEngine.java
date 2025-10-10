@@ -1,4 +1,5 @@
-package net.dotevolve.benchmark;
+package net.dotevolve.benchmark.core;
+import net.dotevolve.benchmark.R;
 
 import android.content.Context;
 import android.util.Log;

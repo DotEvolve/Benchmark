@@ -1,4 +1,9 @@
-package net.dotevolve.benchmark;
+package net.dotevolve.benchmark.ui;
+import net.dotevolve.benchmark.R;
+import net.dotevolve.benchmark.core.PerformanceMetrics;
+import net.dotevolve.benchmark.data.model.BenchmarkResult;
+import net.dotevolve.benchmark.data.model.PerformanceTrend;
+import net.dotevolve.benchmark.data.model.DeviceStatistics;
 
 import android.content.Intent;
 import android.os.Bundle;

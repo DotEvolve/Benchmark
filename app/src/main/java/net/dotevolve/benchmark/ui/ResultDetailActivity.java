@@ -1,4 +1,6 @@
-package net.dotevolve.benchmark;
+package net.dotevolve.benchmark.ui;
+import net.dotevolve.benchmark.R;
+import net.dotevolve.benchmark.data.model.BenchmarkResult;
 
 import android.os.Bundle;
 import android.widget.TextView;

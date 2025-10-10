@@ -1,4 +1,4 @@
-package net.dotevolve.benchmark;
+package net.dotevolve.benchmark.data.model;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

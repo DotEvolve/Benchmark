@@ -1,4 +1,10 @@
-package net.dotevolve.benchmark;
+package net.dotevolve.benchmark.ui;
+import net.dotevolve.benchmark.R;
+import net.dotevolve.benchmark.core.BenchmarkEngine;
+import net.dotevolve.benchmark.core.PerformanceMetrics;
+import net.dotevolve.benchmark.work.ScheduledBenchmarkWorker;
+import net.dotevolve.benchmark.ads.GoogleMobileAdsConsentManager;
+import net.dotevolve.benchmark.BuildConfig;
 
 import android.os.Bundle;
 import android.util.Base64;
