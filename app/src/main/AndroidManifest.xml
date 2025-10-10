@@ -36,7 +36,7 @@
             android:value="true" />
 
         <service
-            android:name=".FirebaseMessagingService"
+            android:name=".services.FirebaseMessagingService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
@@ -44,7 +44,7 @@
         </service>
 
         <activity
-            android:name=".LauncherActivity"
+            android:name=".ui.LauncherActivity"
             android:exported="true"
             android:theme="@style/Theme.Benchmark">
             <intent-filter>
@@ -55,9 +55,19 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.MainActivity"
             android:exported="true"
             android:theme="@style/Theme.Benchmark" />
+        <activity
+            android:name=".ui.HistoryActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Benchmark"
+            android:parentActivityName=".ui.MainActivity" />
+        <activity
+            android:name=".ui.ResultDetailActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Benchmark"
+            android:parentActivityName=".ui.HistoryActivity" />
     </application>
 
 </manifest>

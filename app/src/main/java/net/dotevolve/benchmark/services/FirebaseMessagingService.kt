@@ -1,4 +1,4 @@
-package net.dotevolve.benchmark
+package net.dotevolve.benchmark.services
 
 import android.util.Log
 import com.google.firebase.messaging.FirebaseMessagingService

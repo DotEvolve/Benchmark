@@ -21,20 +21,33 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <TextView
-        style="@style/ResultTheme"
-        android:id="@+id/textResult"
-        android:text="@string/output"
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="16dp"
         app:layout_constraintTop_toBottomOf="@id/button"
+        app:layout_constraintBottom_toTopOf="@id/textScore"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <TextView
+            style="@style/ResultTheme"
+            android:id="@+id/textResult"
+            android:text="@string/output"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scrollbars="vertical"
+            android:textIsSelectable="true" />
+
+    </ScrollView>
 
     <TextView
         style="@style/ScoreTheme"
         android:id="@+id/textScore"
         app:layout_constraintTop_toBottomOf="@id/textResult"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/adContainerView" />
 
     <FrameLayout
         android:id="@+id/adContainerView"
