@@ -10,6 +10,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.os.Build;
 import android.util.Log;
 
 import java.text.SimpleDateFormat;
@@ -165,7 +166,7 @@ public class PerformanceDatabaseHelper extends SQLiteOpenHelper {
         values.put(COLUMN_ANDROID_VERSION, android.os.Build.VERSION.RELEASE);
         values.put(COLUMN_CPU_CORES, metrics.getCpuCores());
         values.put(COLUMN_TOTAL_MEMORY, metrics.getTotalMemory());
-        values.put(COLUMN_ARCHITECTURE, Arrays.toString(android.os.Build.SUPPORTED_ABIS));
+        values.put(COLUMN_ARCHITECTURE, Build.SUPPORTED_ABIS[0]);
         
         values.put(COLUMN_OVERALL_SCORE, metrics.getOverallScore());
         values.put(COLUMN_CRYPTO_SCORE, metrics.getCryptoScore());
