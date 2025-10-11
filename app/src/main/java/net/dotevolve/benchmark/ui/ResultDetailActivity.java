@@ -58,6 +58,7 @@ public class ResultDetailActivity extends AppCompatActivity {
         details.append("Model: ").append(result.getDeviceModel()).append("\n");
         details.append("Android: ").append(result.getAndroidVersion()).append("\n");
         details.append("CPU Cores: ").append(result.getCpuCores()).append("\n");
+        details.append("Architecture: ").append(result.getArchitecture()).append("\n");
         details.append("Memory: ").append(result.getFormattedMemory()).append("\n\n");
         
         details.append("🎯 PERFORMANCE SCORES\n");

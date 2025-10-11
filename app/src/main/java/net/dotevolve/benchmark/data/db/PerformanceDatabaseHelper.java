@@ -163,10 +163,10 @@ public class PerformanceDatabaseHelper extends SQLiteOpenHelper {
         
         values.put(COLUMN_TIMESTAMP, timestamp);
         values.put(COLUMN_DEVICE_MODEL, metrics.getDeviceModel());
-        values.put(COLUMN_ANDROID_VERSION, android.os.Build.VERSION.RELEASE);
+        values.put(COLUMN_ANDROID_VERSION, metrics.getAndroidVersion());
         values.put(COLUMN_CPU_CORES, metrics.getCpuCores());
         values.put(COLUMN_TOTAL_MEMORY, metrics.getTotalMemory());
-        values.put(COLUMN_ARCHITECTURE, Build.SUPPORTED_ABIS[0]);
+        values.put(COLUMN_ARCHITECTURE, metrics.getArchitecture());
         
         values.put(COLUMN_OVERALL_SCORE, metrics.getOverallScore());
         values.put(COLUMN_CRYPTO_SCORE, metrics.getCryptoScore());
@@ -386,6 +386,10 @@ public class PerformanceDatabaseHelper extends SQLiteOpenHelper {
         result.setId(cursor.getLong(cursor.getColumnIndex(COLUMN_ID)));
         result.setTimestamp(cursor.getLong(cursor.getColumnIndex(COLUMN_TIMESTAMP)));
         result.setDeviceModel(cursor.getString(cursor.getColumnIndex(COLUMN_DEVICE_MODEL)));
+        result.setAndroidVersion(cursor.getString(cursor.getColumnIndex(COLUMN_ANDROID_VERSION)));
+        result.setCpuCores(cursor.getInt(cursor.getColumnIndex(COLUMN_CPU_CORES)));
+        result.setTotalMemory(cursor.getLong(cursor.getColumnIndex(COLUMN_TOTAL_MEMORY)));
+        result.setArchitecture(cursor.getString(cursor.getColumnIndex(COLUMN_ARCHITECTURE)));
         result.setOverallScore(cursor.getInt(cursor.getColumnIndex(COLUMN_OVERALL_SCORE)));
         result.setCryptoScore(cursor.getInt(cursor.getColumnIndex(COLUMN_CRYPTO_SCORE)));
         result.setEfficiencyScore(cursor.getInt(cursor.getColumnIndex(COLUMN_EFFICIENCY_SCORE)));

@@ -1,4 +1,6 @@
 package net.dotevolve.benchmark.core;
+import com.google.firebase.Timestamp;
+import com.google.firebase.firestore.FirebaseFirestore;
 import net.dotevolve.benchmark.data.db.PerformanceDatabaseHelper;
 import net.dotevolve.benchmark.data.model.BenchmarkResult;
 import net.dotevolve.benchmark.data.model.DeviceStatistics;
@@ -9,8 +11,10 @@ import android.os.Build;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 /**
  * Comprehensive performance metrics collection and analysis
@@ -318,7 +322,7 @@ public class PerformanceMetrics {
     }
     
     private String calculatePerformancePerCore() {
-        double totalOps = SHA1_ITERATIONS + MD5_ITERATIONS;
+        double totalOps = SHA1_ITERATIONS + (double) MD5_ITERATIONS;
         long totalTime = sha1TotalTime + md5TotalTime;
         double opsPerSec = (totalOps * 1_000_000_000.0) / totalTime;
         return String.format(Locale.US, "%.0f", opsPerSec / cpuCores);
@@ -361,13 +365,42 @@ public class PerformanceMetrics {
     
     // Historical tracking methods
     public void saveToHistory(Context context) {
+        // Save to local database
         try {
             PerformanceDatabaseHelper dbHelper = new PerformanceDatabaseHelper(context);
             AdvancedMetrics advancedMetrics = new AdvancedMetrics(context);
             dbHelper.insertBenchmarkResult(this, advancedMetrics);
-            Log.d(TAG, "Benchmark results saved to history");
+            Log.d(TAG, "Benchmark results saved to local history");
         } catch (Exception e) {
-            Log.e(TAG, "Failed to save benchmark results to history", e);
+            Log.e(TAG, "Failed to save benchmark results to local history", e);
+        }
+
+        // Save to Firebase Firestore
+        try {
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            Map<String, Object> benchmarkData = new HashMap<>();
+            benchmarkData.put("deviceModel", deviceModel);
+            benchmarkData.put("androidVersion", androidVersion);
+            benchmarkData.put("cpuCores", cpuCores);
+            benchmarkData.put("totalMemory", totalMemory);
+            benchmarkData.put("architecture", architecture);
+            benchmarkData.put("overallScore", overallScore);
+            benchmarkData.put("cryptoScore", cryptoScore);
+            benchmarkData.put("efficiencyScore", efficiencyScore);
+            benchmarkData.put("stabilityScore", stabilityScore);
+            benchmarkData.put("sha1TotalTime", sha1TotalTime);
+            benchmarkData.put("md5TotalTime", md5TotalTime);
+            benchmarkData.put("aesTotalTime", aesTotalTime);
+            benchmarkData.put("rsaTotalTime", rsaTotalTime);
+            benchmarkData.put("loopOverheadTime", loopOverheadTime);
+            benchmarkData.put("timestamp", Timestamp.now());
+
+            db.collection("benchmarks")
+                .add(benchmarkData)
+                .addOnSuccessListener(documentReference -> Log.d(TAG, "Benchmark results saved to Firestore with ID: " + documentReference.getId()))
+                .addOnFailureListener(e -> Log.e(TAG, "Error saving benchmark results to Firestore", e));
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to save benchmark results to Firestore", e);
         }
     }
     
@@ -417,8 +450,10 @@ public class PerformanceMetrics {
     public int getEfficiencyScore() { return efficiencyScore; }
     public int getStabilityScore() { return stabilityScore; }
     public String getDeviceModel() { return deviceModel; }
+    public String getAndroidVersion() { return androidVersion; }
     public int getCpuCores() { return cpuCores; }
     public long getTotalMemory() { return totalMemory; }
+    public String getArchitecture() { return architecture; }
     public long getSha1TotalTime() { return sha1TotalTime; }
     public long getMd5TotalTime() { return md5TotalTime; }
     public long getAesTotalTime() { return aesTotalTime; }

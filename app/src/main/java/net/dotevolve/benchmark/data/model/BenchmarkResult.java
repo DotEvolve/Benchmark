@@ -45,8 +45,10 @@ public class BenchmarkResult implements Serializable {
     public BenchmarkResult(PerformanceMetrics metrics, AdvancedMetrics advancedMetrics) {
         this.timestamp = System.currentTimeMillis();
         this.deviceModel = metrics.getDeviceModel();
+        this.androidVersion = metrics.getAndroidVersion();
         this.cpuCores = metrics.getCpuCores();
         this.totalMemory = metrics.getTotalMemory();
+        this.architecture = metrics.getArchitecture();
         this.overallScore = metrics.getOverallScore();
         this.cryptoScore = metrics.getCryptoScore();
         this.efficiencyScore = metrics.getEfficiencyScore();

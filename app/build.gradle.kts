@@ -9,6 +9,7 @@ plugins {
 
     id("jacoco")
     id("org.sonarqube") version "6.3.1.5724"
+    alias(libs.plugins.kotlin.compose)
 }
 
 android {
@@ -75,6 +76,7 @@ android {
     buildFeatures {
         buildConfig = true
         viewBinding = true
+        compose = true
     }
 
     lint {
@@ -102,6 +104,7 @@ dependencies {
     implementation(libs.play.app.update)
     implementation(libs.profileinstaller)
     implementation(libs.activity.ktx)
+    implementation(libs.firebase.firestore)
 
     implementation(libs.appcompat)
     implementation(libs.material)
@@ -112,6 +115,16 @@ dependencies {
     implementation(libs.firebase.messaging)
     implementation(libs.core.ktx)
     implementation(libs.work.runtime)
+
+    // Jetpack Compose
+    implementation(platform(libs.compose.bom))
+    implementation(libs.compose.ui)
+    implementation(libs.compose.ui.graphics)
+    implementation(libs.compose.material3)
+    implementation(libs.activity.compose)
+    implementation(libs.compose.ui.tooling)
+    implementation(libs.compose.ui.tooling.preview)
+    implementation(libs.ui.tooling)
 
     testImplementation(libs.junit)
 
