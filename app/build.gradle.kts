@@ -69,8 +69,8 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_21
-        targetCompatibility = JavaVersion.VERSION_21
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
     buildFeatures {
@@ -90,7 +90,7 @@ android {
 
 kotlin {
     compilerOptions {
-        jvmTarget.set(JvmTarget.JVM_21)
+        jvmTarget.set(JvmTarget.JVM_17)
     }
 }
 
@@ -126,8 +126,9 @@ dependencies {
     implementation(libs.compose.ui.graphics)
     implementation(libs.compose.material3)
     implementation(libs.activity.compose)
-    debugImplementation(libs.compose.ui.tooling)
-    debugImplementation(libs.compose.ui.tooling.preview)
+    implementation(libs.compose.ui.tooling)
+    implementation(libs.compose.ui.tooling.preview)
+    implementation(libs.ui.tooling)
 
     testImplementation(libs.junit)
 
