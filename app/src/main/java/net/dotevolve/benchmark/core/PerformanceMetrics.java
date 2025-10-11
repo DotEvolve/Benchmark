@@ -318,7 +318,7 @@ public class PerformanceMetrics {
     }
     
     private String calculatePerformancePerCore() {
-        double totalOps = SHA1_ITERATIONS + MD5_ITERATIONS;
+        double totalOps = SHA1_ITERATIONS + (double) MD5_ITERATIONS;
         long totalTime = sha1TotalTime + md5TotalTime;
         double opsPerSec = (totalOps * 1_000_000_000.0) / totalTime;
         return String.format(Locale.US, "%.0f", opsPerSec / cpuCores);
