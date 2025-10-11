@@ -450,8 +450,10 @@ public class PerformanceMetrics {
     public int getEfficiencyScore() { return efficiencyScore; }
     public int getStabilityScore() { return stabilityScore; }
     public String getDeviceModel() { return deviceModel; }
+    public String getAndroidVersion() { return androidVersion; }
     public int getCpuCores() { return cpuCores; }
     public long getTotalMemory() { return totalMemory; }
+    public String getArchitecture() { return architecture; }
     public long getSha1TotalTime() { return sha1TotalTime; }
     public long getMd5TotalTime() { return md5TotalTime; }
     public long getAesTotalTime() { return aesTotalTime; }
