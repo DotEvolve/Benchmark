@@ -26,6 +26,7 @@ profileinstaller = "1.4.1"
 activityKtx = "1.11.0"
 work = "2.10.5"
 composeBom = "2025.10.00"
+sonarqube = "6.3.1.5724"
 
 [libraries]
 appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
@@ -70,3 +71,5 @@ google-firebase-perf = { id = "com.google.firebase.firebase-perf", version.ref =
 google-gms-google-services = { id = "com.google.gms.google-services", version.ref = "gmsGoogleServices" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+sonarqube = { id = "org.sonarqube", version.ref = "sonarqube" }
+jacoco = { id = "jacoco" }

@@ -6,10 +6,10 @@ plugins {
     alias(libs.plugins.google.firebase.crashlytics)
     alias(libs.plugins.google.firebase.perf)
     alias(libs.plugins.kotlin.android)
-
-    id("jacoco")
-    id("org.sonarqube") version "6.3.1.5724"
     alias(libs.plugins.kotlin.compose)
+
+    alias(libs.plugins.jacoco)
+    alias(libs.plugins.sonarqube)
 }
 
 android {
