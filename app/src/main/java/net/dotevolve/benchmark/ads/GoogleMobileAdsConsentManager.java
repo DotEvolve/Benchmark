@@ -1,4 +1,5 @@
-package net.dotevolve.benchmark;/*
+package net.dotevolve.benchmark.ads;
+/*
  * Copyright 2023 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,6 +17,7 @@ package net.dotevolve.benchmark;/*
 
 import android.app.Activity;
 import android.content.Context;
+import net.dotevolve.benchmark.ui.MainActivity;
 import com.google.android.ump.ConsentDebugSettings;
 import com.google.android.ump.ConsentForm.OnConsentFormDismissedListener;
 import com.google.android.ump.ConsentInformation;
@@ -76,7 +78,6 @@ public class GoogleMobileAdsConsentManager {
         ConsentDebugSettings debugSettings =
                 new ConsentDebugSettings.Builder(activity)
                         // .setDebugGeography(ConsentDebugSettings.DebugGeography.DEBUG_GEOGRAPHY_EEA)
-                        .addTestDeviceHashedId(MainActivity.TEST_DEVICE_HASHED_ID)
                         .build();
 
         ConsentRequestParameters params =

@@ -20,4 +20,31 @@
     <string name="test_device_hashed_id">TEST_DEVICE_HASHED_ID</string>
 
     <string name="todo">TODO</string>
+    
+    <!-- Enhanced metrics strings -->
+    <string name="enhanced_benchmark_title">Enhanced Performance Benchmark</string>
+    <string name="detailed_metrics_title">Detailed Performance Metrics</string>
+    <string name="performance_scores">Performance Scores</string>
+    <string name="system_information">System Information</string>
+    <string name="timing_results">Timing Results</string>
+    <string name="performance_analysis">Performance Analysis</string>
+    <string name="overall_score">Overall Score</string>
+    <string name="crypto_performance">Crypto Performance</string>
+    <string name="efficiency">Efficiency</string>
+    <string name="stability">Stability</string>
+    <string name="run_benchmark_first">Run benchmark first to view detailed metrics</string>
+    <string name="benchmark_in_progress">Benchmark in progress…</string>
+    <string name="benchmark_complete">Benchmark complete!</string>
+    
+    <!-- History and trends strings -->
+    <string name="performance_history">Performance History</string>
+    <string name="device_statistics">Device Statistics</string>
+    <string name="performance_trends">Performance Trends</string>
+    <string name="recent_results">Recent Results</string>
+    <string name="no_data_available">No data available</string>
+    <string name="loading">Loading...</string>
+
+    <string name="default_notification_channel_id" translatable="false">fcm_default_channel</string>
+    <string name="schedule_daily_benchmark">Schedule Daily Benchmark</string>
+    <string name="toggle_dark_mode">Toggle Dark Mode</string>
 </resources>

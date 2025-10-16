@@ -1,9 +1,15 @@
-plugins {
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
+plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.google.gms.google.services)
     alias(libs.plugins.google.firebase.crashlytics)
     alias(libs.plugins.google.firebase.perf)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.compose)
+
+    alias(libs.plugins.jacoco)
+    alias(libs.plugins.sonarqube)
 }
 
 android {
@@ -14,15 +20,22 @@ android {
         applicationId = "net.dotevolve.benchmark"
         minSdk = 34
         targetSdk = 36
-        versionCode = 4
-        versionName = "4.0"
+        versionCode = 12
+        versionName = "12.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
         release {
+            versionNameSuffix = "-RELEASE"
+
+            // Enables code-related app optimization.
             isMinifyEnabled = true
+
+            // Enables resource shrinking.
+            isShrinkResources = true
+
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -32,17 +45,27 @@ android {
         debug {
             applicationIdSuffix = ".debug"
             versionNameSuffix = "-debug"
+
             isMinifyEnabled = false
+
+            enableUnitTestCoverage = true
+            enableAndroidTestCoverage = true
+
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
             signingConfig = signingConfigs.getByName("debug")
+            resValue("string", "app_name", "Benchmark.DEBUG")
             resValue("string", "admob_app_id", "ca-app-pub-3940256099942544~3347511713")
             resValue("string", "admob_banner_ad_unit_id", "ca-app-pub-3940256099942544/9214589741")
             resValue("string", "admob_interstitial_ad_unit_id", "ca-app-pub-3940256099942544/1033173712")
 
         }
+    }
+
+    firebaseCrashlytics {
+        nativeSymbolUploadEnabled = true
     }
 
     compileOptions {
@@ -53,6 +76,17 @@ android {
     buildFeatures {
         buildConfig = true
         viewBinding = true
+        compose = true
+    }
+
+    lint {
+        baseline = file("lint-baseline.xml")
+    }
+}
+
+kotlin {
+    compilerOptions {
+        jvmTarget.set(JvmTarget.JVM_17)
     }
 }
 
@@ -67,15 +101,76 @@ dependencies {
     implementation(libs.firebase.perf)
     implementation(libs.play.services.ads)
     implementation(libs.user.messaging.platform)
+    implementation(libs.play.app.update)
+    implementation(libs.profileinstaller)
+    implementation(libs.activity.ktx)
+    implementation(libs.firebase.firestore)
 
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.constraintlayout)
     implementation(libs.navigation.fragment)
     implementation(libs.navigation.ui)
+    implementation(libs.leanback)
+    implementation(libs.firebase.messaging)
+    implementation(libs.core.ktx)
+    implementation(libs.work.runtime)
+
+    // Jetpack Compose
+    implementation(platform(libs.compose.bom))
+    implementation(libs.compose.ui)
+    implementation(libs.compose.ui.graphics)
+    implementation(libs.compose.material3)
+    implementation(libs.activity.compose)
+    implementation(libs.compose.ui.tooling)
+    implementation(libs.compose.ui.tooling.preview)
+    implementation(libs.ui.tooling)
 
     testImplementation(libs.junit)
 
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+}
+
+tasks.withType<Test>().configureEach {
+    configure<JacocoTaskExtension> {
+        isIncludeNoLocationClasses = true
+        excludes = listOf("jdk.internal.*")
+    }
+}
+
+tasks.register<JacocoReport>("jacocoTestReportDebug") {
+    description = "Generates Jacoco code coverage reports for the debug build."
+    group = "verification"
+
+    dependsOn("testDebugUnitTest", "createDebugCoverageReport")
+
+    sourceDirectories.setFrom(files("$projectDir/src/main/java"))
+    classDirectories.setFrom(
+        fileTree("$layout.buildDir/tmp/kotlin-classes/debug") {
+            exclude(
+                "**/R.class",
+                "**/R\$*.class",
+                "**/BuildConfig.*",
+                "**/Manifest*.*",
+                "**/*\$ViewBinder*.*", // For ViewBinding
+                "**/*\$ViewBinding*.*", // For ViewBinding
+                "**/*Module*.*", // Exclude Hilt/Dagger modules if any
+                "**/*Factory*.*", // Exclude Hilt/Dagger factories if any
+                "**/*_MembersInjector*.*" // Exclude Hilt/Dagger injectors if any
+            )
+        }
+    )
+    executionData.setFrom(
+        files(
+            layout.buildDirectory.file("outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec").get().asFile,
+            layout.buildDirectory.file("outputs/code_coverage/debugAndroidTest/connected/*coverage.ec").get().asFile
+        )
+    )
+
+    reports {
+        xml.required.set(true)
+        html.required.set(true)
+        csv.required.set(false)
+    }
 }

@@ -1,0 +1,1740 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<issues format="6" by="lint 8.13.0" type="baseline" client="gradle" dependencies="false" name="AGP (8.13.0)" variant="all" version="8.13.0">
+
+    <issue
+        id="DefaultLocale"
+        message="Implicitly using the default locale is a common source of bugs: Use `String.format(Locale, ...)` instead"
+        errorLine1="        return String.format(&quot;%.1f %sB&quot;, bytes / Math.pow(1024, exp), pre);"
+        errorLine2="               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/net/dotevolve/benchmark/core/AdvancedMetrics.java"
+            line="203"
+            column="16"/>
+    </issue>
+
+    <issue
+        id="DefaultLocale"
+        message="Implicitly using the default locale is a common source of bugs: Use `String.format(Locale, ...)` instead"
+        errorLine1="        return String.format(&quot;%.1f°C&quot;, cpuTemperature);"
+        errorLine2="               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/net/dotevolve/benchmark/core/AdvancedMetrics.java"
+            line="227"
+            column="16"/>
+    </issue>
+
+    <issue
+        id="DefaultLocale"
+        message="Implicitly using the default locale is a common source of bugs: Use `String.format(Locale, ...)` instead"
+        errorLine1="        analysis.append(&quot;Memory Usage: &quot;).append(String.format(&quot;%.1f%%&quot;, getMemoryUsagePercent())).append(&quot;\n&quot;);"
+        errorLine2="                                                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/net/dotevolve/benchmark/core/AdvancedMetrics.java"
+            line="290"
+            column="50"/>
+    </issue>
+
+    <issue
+        id="DefaultLocale"
+        message="Implicitly using the default locale is a common source of bugs: Use `String.format(Locale, ...)` instead"
+        errorLine1="        analysis.append(&quot;Storage Usage: &quot;).append(String.format(&quot;%.1f%%&quot;, getStorageUsagePercent())).append(&quot;\n&quot;);"
+        errorLine2="                                                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/net/dotevolve/benchmark/core/AdvancedMetrics.java"
+            line="299"
+            column="51"/>
+    </issue>
+
+    <issue
+        id="DefaultLocale"
+        message="Implicitly using the default locale is a common source of bugs: Use `String.format(Locale, ...)` instead"
+        errorLine1="        analysis.append(&quot;Performance Score: &quot;).append(String.format(&quot;%.1f/100&quot;, performanceScore)).append(&quot;\n&quot;);"
+        errorLine2="                                                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/net/dotevolve/benchmark/core/AdvancedMetrics.java"
+            line="308"
+            column="55"/>
+    </issue>
+
+    <issue
+        id="DefaultLocale"
+        message="Implicitly using the default locale is a common source of bugs: Use `String.format(Locale, ...)` instead"
+        errorLine1="        analysis.append(&quot;Average Score: &quot;).append(String.format(&quot;%.1f&quot;, averageScore)).append(&quot;/100\n&quot;);"
+        errorLine2="                                                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/net/dotevolve/benchmark/ui/HistoryActivity.java"
+            line="217"
+            column="51"/>
+    </issue>
+
+    <issue
+        id="DefaultLocale"
+        message="Implicitly using the default locale is a common source of bugs: Use `String.format(Locale, ...)` instead"
+        errorLine1="        analysis.append(&quot;Excellent (90+): &quot;).append(excellentCount).append(&quot; (&quot;).append(String.format(&quot;%.1f&quot;, (double) excellentCount / totalResults * 100)).append(&quot;%)\n&quot;);"
+        errorLine2="                                                                                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/net/dotevolve/benchmark/ui/HistoryActivity.java"
+            line="223"
+            column="89"/>
+    </issue>
+
+    <issue
+        id="DefaultLocale"
+        message="Implicitly using the default locale is a common source of bugs: Use `String.format(Locale, ...)` instead"
+        errorLine1="        analysis.append(&quot;Good (70-89): &quot;).append(goodCount).append(&quot; (&quot;).append(String.format(&quot;%.1f&quot;, (double) goodCount / totalResults * 100)).append(&quot;%)\n&quot;);"
+        errorLine2="                                                                                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/net/dotevolve/benchmark/ui/HistoryActivity.java"
+            line="224"
+            column="81"/>
+    </issue>
+
+    <issue
+        id="DefaultLocale"
+        message="Implicitly using the default locale is a common source of bugs: Use `String.format(Locale, ...)` instead"
+        errorLine1="        analysis.append(&quot;Average (50-69): &quot;).append(averageCount).append(&quot; (&quot;).append(String.format(&quot;%.1f&quot;, (double) averageCount / totalResults * 100)).append(&quot;%)\n&quot;);"
+        errorLine2="                                                                                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/net/dotevolve/benchmark/ui/HistoryActivity.java"
+            line="225"
+            column="87"/>
+    </issue>
+
+    <issue
+        id="DefaultLocale"
+        message="Implicitly using the default locale is a common source of bugs: Use `String.format(Locale, ...)` instead"
+        errorLine1="        analysis.append(&quot;Below Average (30-49): &quot;).append(belowAverageCount).append(&quot; (&quot;).append(String.format(&quot;%.1f&quot;, (double) belowAverageCount / totalResults * 100)).append(&quot;%)\n&quot;);"
+        errorLine2="                                                                                                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/net/dotevolve/benchmark/ui/HistoryActivity.java"
+            line="226"
+            column="98"/>
+    </issue>
+
+    <issue
+        id="DefaultLocale"
+        message="Implicitly using the default locale is a common source of bugs: Use `String.format(Locale, ...)` instead"
+        errorLine1="        analysis.append(&quot;Poor (0-29): &quot;).append(poorCount).append(&quot; (&quot;).append(String.format(&quot;%.1f&quot;, (double) poorCount / totalResults * 100)).append(&quot;%)\n\n&quot;);"
+        errorLine2="                                                                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/net/dotevolve/benchmark/ui/HistoryActivity.java"
+            line="227"
+            column="80"/>
+    </issue>
+
+    <issue
+        id="DefaultLocale"
+        message="Implicitly using the default locale is a common source of bugs: Use `String.format(Locale, ...)` instead"
+        errorLine1="            return String.format(&quot;%.2f μs&quot;, nanoTime / 1_000.0);"
+        errorLine2="                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/net/dotevolve/benchmark/ui/MainActivity.java"
+            line="209"
+            column="20"/>
+    </issue>
+
+    <issue
+        id="DefaultLocale"
+        message="Implicitly using the default locale is a common source of bugs: Use `String.format(Locale, ...)` instead"
+        errorLine1="            return String.format(&quot;%.2f ms&quot;, nanoTime / 1_000_000.0);"
+        errorLine2="                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/net/dotevolve/benchmark/ui/MainActivity.java"
+            line="211"
+            column="20"/>
+    </issue>
+
+    <issue
+        id="DefaultLocale"
+        message="Implicitly using the default locale is a common source of bugs: Use `String.format(Locale, ...)` instead"
+        errorLine1="            return String.format(&quot;%.2f s&quot;, nanoTime / 1_000_000_000.0);"
+        errorLine2="                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/net/dotevolve/benchmark/ui/MainActivity.java"
+            line="213"
+            column="20"/>
+    </issue>
+
+    <issue
+        id="DefaultLocale"
+        message="Implicitly using the default locale is a common source of bugs: Use `String.format(Locale, ...)` instead"
+        errorLine1="        return String.format(&quot;%.1f %sB&quot;, bytes / Math.pow(1024, exp), pre);"
+        errorLine2="               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/net/dotevolve/benchmark/ui/MainActivity.java"
+            line="506"
+            column="16"/>
+    </issue>
+
+    <issue
+        id="DefaultLocale"
+        message="Implicitly using the default locale is a common source of bugs: Use `String.format(Locale, ...)` instead"
+        errorLine1="        return String.format(&quot;%.1f&quot;, averageScore);"
+        errorLine2="               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/net/dotevolve/benchmark/data/model/PerformanceTrend.java"
+            line="52"
+            column="16"/>
+    </issue>
+
+    <issue
+        id="DefaultLocale"
+        message="Implicitly using the default locale is a common source of bugs: Use `String.format(Locale, ...)` instead"
+        errorLine1="        return String.format(&quot;%.2f&quot;, scoreVariance);"
+        errorLine2="               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/net/dotevolve/benchmark/data/model/PerformanceTrend.java"
+            line="56"
+            column="16"/>
+    </issue>
+
+    <issue
+        id="DefaultLocale"
+        message="Implicitly using the default locale is a common source of bugs: Use `String.format(Locale, ...)` instead"
+        errorLine1="            return String.format(&quot;%.2f μs&quot;, nanoTime / 1_000.0);"
+        errorLine2="                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/net/dotevolve/benchmark/ui/ResultDetailActivity.java"
+            line="94"
+            column="20"/>
+    </issue>
+
+    <issue
+        id="DefaultLocale"
+        message="Implicitly using the default locale is a common source of bugs: Use `String.format(Locale, ...)` instead"
+        errorLine1="            return String.format(&quot;%.2f ms&quot;, nanoTime / 1_000_000.0);"
+        errorLine2="                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/net/dotevolve/benchmark/ui/ResultDetailActivity.java"
+            line="96"
+            column="20"/>
+    </issue>
+
+    <issue
+        id="DefaultLocale"
+        message="Implicitly using the default locale is a common source of bugs: Use `String.format(Locale, ...)` instead"
+        errorLine1="            return String.format(&quot;%.2f s&quot;, nanoTime / 1_000_000_000.0);"
+        errorLine2="                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/net/dotevolve/benchmark/ui/ResultDetailActivity.java"
+            line="98"
+            column="20"/>
+    </issue>
+
+    <issue
+        id="Range"
+        message="Value must be ≥ 0 but `getColumnIndex` can be -1"
+        errorLine1="            values.put(COLUMN_TOTAL_BENCHMARKS, cursor.getInt(cursor.getColumnIndex(COLUMN_TOTAL_BENCHMARKS)) + 1);"
+        errorLine2="                                                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/net/dotevolve/benchmark/data/db/PerformanceDatabaseHelper.java"
+            line="304"
+            column="63"/>
+    </issue>
+
+    <issue
+        id="Range"
+        message="Value must be ≥ 0 but `getColumnIndex` can be -1"
+        errorLine1="            int bestScore = cursor.getInt(cursor.getColumnIndex(COLUMN_BEST_SCORE));"
+        errorLine2="                                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/net/dotevolve/benchmark/data/db/PerformanceDatabaseHelper.java"
+            line="306"
+            column="43"/>
+    </issue>
+
+    <issue
+        id="Range"
+        message="Value must be ≥ 0 but `getColumnIndex` can be -1"
+        errorLine1="            int worstScore = cursor.getInt(cursor.getColumnIndex(COLUMN_WORST_SCORE));"
+        errorLine2="                                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/net/dotevolve/benchmark/data/db/PerformanceDatabaseHelper.java"
+            line="307"
+            column="44"/>
+    </issue>
+
+    <issue
+        id="Range"
+        message="Value must be ≥ 0 but `getColumnIndex` can be -1"
+        errorLine1="            int testCount = cursor.getInt(cursor.getColumnIndex(COLUMN_TEST_COUNT)) + 1;"
+        errorLine2="                                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/net/dotevolve/benchmark/data/db/PerformanceDatabaseHelper.java"
+            line="347"
+            column="43"/>
+    </issue>
+
+    <issue
+        id="Range"
+        message="Value must be ≥ 0 but `getColumnIndex` can be -1"
+        errorLine1="            double currentAvg = cursor.getDouble(cursor.getColumnIndex(COLUMN_AVERAGE_SCORE));"
+        errorLine2="                                                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/net/dotevolve/benchmark/data/db/PerformanceDatabaseHelper.java"
+            line="348"
+            column="50"/>
+    </issue>
+
+    <issue
+        id="Range"
+        message="Value must be ≥ 0 but `getColumnIndex` can be -1"
+        errorLine1="        result.setId(cursor.getLong(cursor.getColumnIndex(COLUMN_ID)));"
+        errorLine2="                                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/net/dotevolve/benchmark/data/db/PerformanceDatabaseHelper.java"
+            line="386"
+            column="37"/>
+    </issue>
+
+    <issue
+        id="Range"
+        message="Value must be ≥ 0 but `getColumnIndex` can be -1"
+        errorLine1="        result.setTimestamp(cursor.getLong(cursor.getColumnIndex(COLUMN_TIMESTAMP)));"
+        errorLine2="                                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/net/dotevolve/benchmark/data/db/PerformanceDatabaseHelper.java"
+            line="387"
+            column="44"/>
+    </issue>
+
+    <issue
+        id="Range"
+        message="Value must be ≥ 0 but `getColumnIndex` can be -1"
+        errorLine1="        result.setDeviceModel(cursor.getString(cursor.getColumnIndex(COLUMN_DEVICE_MODEL)));"
+        errorLine2="                                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/net/dotevolve/benchmark/data/db/PerformanceDatabaseHelper.java"
+            line="388"
+            column="48"/>
+    </issue>
+
+    <issue
+        id="Range"
+        message="Value must be ≥ 0 but `getColumnIndex` can be -1"
+        errorLine1="        result.setAndroidVersion(cursor.getString(cursor.getColumnIndex(COLUMN_ANDROID_VERSION)));"
+        errorLine2="                                                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/net/dotevolve/benchmark/data/db/PerformanceDatabaseHelper.java"
+            line="389"
+            column="51"/>
+    </issue>
+
+    <issue
+        id="Range"
+        message="Value must be ≥ 0 but `getColumnIndex` can be -1"
+        errorLine1="        result.setCpuCores(cursor.getInt(cursor.getColumnIndex(COLUMN_CPU_CORES)));"
+        errorLine2="                                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/net/dotevolve/benchmark/data/db/PerformanceDatabaseHelper.java"
+            line="390"
+            column="42"/>
+    </issue>
+
+    <issue
+        id="Range"
+        message="Value must be ≥ 0 but `getColumnIndex` can be -1"
+        errorLine1="        result.setTotalMemory(cursor.getLong(cursor.getColumnIndex(COLUMN_TOTAL_MEMORY)));"
+        errorLine2="                                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/net/dotevolve/benchmark/data/db/PerformanceDatabaseHelper.java"
+            line="391"
+            column="46"/>
+    </issue>
+
+    <issue
+        id="Range"
+        message="Value must be ≥ 0 but `getColumnIndex` can be -1"
+        errorLine1="        result.setArchitecture(cursor.getString(cursor.getColumnIndex(COLUMN_ARCHITECTURE)));"
+        errorLine2="                                                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/net/dotevolve/benchmark/data/db/PerformanceDatabaseHelper.java"
+            line="392"
+            column="49"/>
+    </issue>
+
+    <issue
+        id="Range"
+        message="Value must be ≥ 0 but `getColumnIndex` can be -1"
+        errorLine1="        result.setOverallScore(cursor.getInt(cursor.getColumnIndex(COLUMN_OVERALL_SCORE)));"
+        errorLine2="                                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/net/dotevolve/benchmark/data/db/PerformanceDatabaseHelper.java"
+            line="393"
+            column="46"/>
+    </issue>
+
+    <issue
+        id="Range"
+        message="Value must be ≥ 0 but `getColumnIndex` can be -1"
+        errorLine1="        result.setCryptoScore(cursor.getInt(cursor.getColumnIndex(COLUMN_CRYPTO_SCORE)));"
+        errorLine2="                                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/net/dotevolve/benchmark/data/db/PerformanceDatabaseHelper.java"
+            line="394"
+            column="45"/>
+    </issue>
+
+    <issue
+        id="Range"
+        message="Value must be ≥ 0 but `getColumnIndex` can be -1"
+        errorLine1="        result.setEfficiencyScore(cursor.getInt(cursor.getColumnIndex(COLUMN_EFFICIENCY_SCORE)));"
+        errorLine2="                                                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/net/dotevolve/benchmark/data/db/PerformanceDatabaseHelper.java"
+            line="395"
+            column="49"/>
+    </issue>
+
+    <issue
+        id="Range"
+        message="Value must be ≥ 0 but `getColumnIndex` can be -1"
+        errorLine1="        result.setStabilityScore(cursor.getInt(cursor.getColumnIndex(COLUMN_STABILITY_SCORE)));"
+        errorLine2="                                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/net/dotevolve/benchmark/data/db/PerformanceDatabaseHelper.java"
+            line="396"
+            column="48"/>
+    </issue>
+
+    <issue
+        id="Range"
+        message="Value must be ≥ 0 but `getColumnIndex` can be -1"
+        errorLine1="        result.setSha1Time(cursor.getLong(cursor.getColumnIndex(COLUMN_SHA1_TIME)));"
+        errorLine2="                                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/net/dotevolve/benchmark/data/db/PerformanceDatabaseHelper.java"
+            line="397"
+            column="43"/>
+    </issue>
+
+    <issue
+        id="Range"
+        message="Value must be ≥ 0 but `getColumnIndex` can be -1"
+        errorLine1="        result.setMd5Time(cursor.getLong(cursor.getColumnIndex(COLUMN_MD5_TIME)));"
+        errorLine2="                                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/net/dotevolve/benchmark/data/db/PerformanceDatabaseHelper.java"
+            line="398"
+            column="42"/>
+    </issue>
+
+    <issue
+        id="Range"
+        message="Value must be ≥ 0 but `getColumnIndex` can be -1"
+        errorLine1="        result.setAesTime(cursor.getLong(cursor.getColumnIndex(COLUMN_AES_TIME)));"
+        errorLine2="                                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/net/dotevolve/benchmark/data/db/PerformanceDatabaseHelper.java"
+            line="399"
+            column="42"/>
+    </issue>
+
+    <issue
+        id="Range"
+        message="Value must be ≥ 0 but `getColumnIndex` can be -1"
+        errorLine1="        result.setRsaTime(cursor.getLong(cursor.getColumnIndex(COLUMN_RSA_TIME)));"
+        errorLine2="                                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/net/dotevolve/benchmark/data/db/PerformanceDatabaseHelper.java"
+            line="400"
+            column="42"/>
+    </issue>
+
+    <issue
+        id="Range"
+        message="Value must be ≥ 0 but `getColumnIndex` can be -1"
+        errorLine1="        result.setLoopTime(cursor.getLong(cursor.getColumnIndex(COLUMN_LOOP_TIME)));"
+        errorLine2="                                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/net/dotevolve/benchmark/data/db/PerformanceDatabaseHelper.java"
+            line="401"
+            column="43"/>
+    </issue>
+
+    <issue
+        id="Range"
+        message="Value must be ≥ 0 but `getColumnIndex` can be -1"
+        errorLine1="        if (!cursor.isNull(cursor.getColumnIndex(COLUMN_CPU_TEMPERATURE))) {"
+        errorLine2="                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/net/dotevolve/benchmark/data/db/PerformanceDatabaseHelper.java"
+            line="404"
+            column="28"/>
+    </issue>
+
+    <issue
+        id="Range"
+        message="Value must be ≥ 0 but `getColumnIndex` can be -1"
+        errorLine1="            result.setCpuTemperature(cursor.getDouble(cursor.getColumnIndex(COLUMN_CPU_TEMPERATURE)));"
+        errorLine2="                                                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/net/dotevolve/benchmark/data/db/PerformanceDatabaseHelper.java"
+            line="405"
+            column="55"/>
+    </issue>
+
+    <issue
+        id="Range"
+        message="Value must be ≥ 0 but `getColumnIndex` can be -1"
+        errorLine1="        if (!cursor.isNull(cursor.getColumnIndex(COLUMN_BATTERY_LEVEL))) {"
+        errorLine2="                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/net/dotevolve/benchmark/data/db/PerformanceDatabaseHelper.java"
+            line="407"
+            column="28"/>
+    </issue>
+
+    <issue
+        id="Range"
+        message="Value must be ≥ 0 but `getColumnIndex` can be -1"
+        errorLine1="            result.setBatteryLevel(cursor.getInt(cursor.getColumnIndex(COLUMN_BATTERY_LEVEL)));"
+        errorLine2="                                                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/net/dotevolve/benchmark/data/db/PerformanceDatabaseHelper.java"
+            line="408"
+            column="50"/>
+    </issue>
+
+    <issue
+        id="Range"
+        message="Value must be ≥ 0 but `getColumnIndex` can be -1"
+        errorLine1="        if (!cursor.isNull(cursor.getColumnIndex(COLUMN_MEMORY_USAGE))) {"
+        errorLine2="                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/net/dotevolve/benchmark/data/db/PerformanceDatabaseHelper.java"
+            line="410"
+            column="28"/>
+    </issue>
+
+    <issue
+        id="Range"
+        message="Value must be ≥ 0 but `getColumnIndex` can be -1"
+        errorLine1="            result.setMemoryUsage(cursor.getLong(cursor.getColumnIndex(COLUMN_MEMORY_USAGE)));"
+        errorLine2="                                                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/net/dotevolve/benchmark/data/db/PerformanceDatabaseHelper.java"
+            line="411"
+            column="50"/>
+    </issue>
+
+    <issue
+        id="Range"
+        message="Value must be ≥ 0 but `getColumnIndex` can be -1"
+        errorLine1="        result.setThermalThrottling(cursor.getInt(cursor.getColumnIndex(COLUMN_THERMAL_THROTTLING)) == 1);"
+        errorLine2="                                                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/net/dotevolve/benchmark/data/db/PerformanceDatabaseHelper.java"
+            line="413"
+            column="51"/>
+    </issue>
+
+    <issue
+        id="Range"
+        message="Value must be ≥ 0 but `getColumnIndex` can be -1"
+        errorLine1="        result.setBackgroundAppsCount(cursor.getInt(cursor.getColumnIndex(COLUMN_BACKGROUND_APPS)));"
+        errorLine2="                                                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/net/dotevolve/benchmark/data/db/PerformanceDatabaseHelper.java"
+            line="414"
+            column="53"/>
+    </issue>
+
+    <issue
+        id="Range"
+        message="Value must be ≥ 0 but `getColumnIndex` can be -1"
+        errorLine1="        trend.setId(cursor.getLong(cursor.getColumnIndex(COLUMN_ID)));"
+        errorLine2="                                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/net/dotevolve/benchmark/data/db/PerformanceDatabaseHelper.java"
+            line="421"
+            column="36"/>
+    </issue>
+
+    <issue
+        id="Range"
+        message="Value must be ≥ 0 but `getColumnIndex` can be -1"
+        errorLine1="        trend.setDeviceModel(cursor.getString(cursor.getColumnIndex(COLUMN_DEVICE_MODEL)));"
+        errorLine2="                                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/net/dotevolve/benchmark/data/db/PerformanceDatabaseHelper.java"
+            line="422"
+            column="47"/>
+    </issue>
+
+    <issue
+        id="Range"
+        message="Value must be ≥ 0 but `getColumnIndex` can be -1"
+        errorLine1="        trend.setTrendDate(cursor.getString(cursor.getColumnIndex(COLUMN_TREND_DATE)));"
+        errorLine2="                                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/net/dotevolve/benchmark/data/db/PerformanceDatabaseHelper.java"
+            line="423"
+            column="45"/>
+    </issue>
+
+    <issue
+        id="Range"
+        message="Value must be ≥ 0 but `getColumnIndex` can be -1"
+        errorLine1="        trend.setAverageScore(cursor.getDouble(cursor.getColumnIndex(COLUMN_AVERAGE_SCORE)));"
+        errorLine2="                                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/net/dotevolve/benchmark/data/db/PerformanceDatabaseHelper.java"
+            line="424"
+            column="48"/>
+    </issue>
+
+    <issue
+        id="Range"
+        message="Value must be ≥ 0 but `getColumnIndex` can be -1"
+        errorLine1="        trend.setScoreVariance(cursor.getDouble(cursor.getColumnIndex(COLUMN_SCORE_VARIANCE)));"
+        errorLine2="                                                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/net/dotevolve/benchmark/data/db/PerformanceDatabaseHelper.java"
+            line="425"
+            column="49"/>
+    </issue>
+
+    <issue
+        id="Range"
+        message="Value must be ≥ 0 but `getColumnIndex` can be -1"
+        errorLine1="        trend.setTestCount(cursor.getInt(cursor.getColumnIndex(COLUMN_TEST_COUNT)));"
+        errorLine2="                                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/net/dotevolve/benchmark/data/db/PerformanceDatabaseHelper.java"
+            line="426"
+            column="42"/>
+    </issue>
+
+    <issue
+        id="Range"
+        message="Value must be ≥ 0 but `getColumnIndex` can be -1"
+        errorLine1="        trend.setPerformanceTrend(cursor.getString(cursor.getColumnIndex(COLUMN_PERFORMANCE_TREND)));"
+        errorLine2="                                                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/net/dotevolve/benchmark/data/db/PerformanceDatabaseHelper.java"
+            line="427"
+            column="52"/>
+    </issue>
+
+    <issue
+        id="Range"
+        message="Value must be ≥ 0 but `getColumnIndex` can be -1"
+        errorLine1="        stats.setDeviceId(cursor.getString(cursor.getColumnIndex(COLUMN_DEVICE_ID)));"
+        errorLine2="                                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/net/dotevolve/benchmark/data/db/PerformanceDatabaseHelper.java"
+            line="433"
+            column="44"/>
+    </issue>
+
+    <issue
+        id="Range"
+        message="Value must be ≥ 0 but `getColumnIndex` can be -1"
+        errorLine1="        stats.setDeviceModel(cursor.getString(cursor.getColumnIndex(COLUMN_DEVICE_MODEL)));"
+        errorLine2="                                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/net/dotevolve/benchmark/data/db/PerformanceDatabaseHelper.java"
+            line="434"
+            column="47"/>
+    </issue>
+
+    <issue
+        id="Range"
+        message="Value must be ≥ 0 but `getColumnIndex` can be -1"
+        errorLine1="        stats.setFirstBenchmark(cursor.getLong(cursor.getColumnIndex(COLUMN_FIRST_BENCHMARK)));"
+        errorLine2="                                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/net/dotevolve/benchmark/data/db/PerformanceDatabaseHelper.java"
+            line="435"
+            column="48"/>
+    </issue>
+
+    <issue
+        id="Range"
+        message="Value must be ≥ 0 but `getColumnIndex` can be -1"
+        errorLine1="        stats.setLastBenchmark(cursor.getLong(cursor.getColumnIndex(COLUMN_LAST_BENCHMARK)));"
+        errorLine2="                                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/net/dotevolve/benchmark/data/db/PerformanceDatabaseHelper.java"
+            line="436"
+            column="47"/>
+    </issue>
+
+    <issue
+        id="Range"
+        message="Value must be ≥ 0 but `getColumnIndex` can be -1"
+        errorLine1="        stats.setTotalBenchmarks(cursor.getInt(cursor.getColumnIndex(COLUMN_TOTAL_BENCHMARKS)));"
+        errorLine2="                                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/net/dotevolve/benchmark/data/db/PerformanceDatabaseHelper.java"
+            line="437"
+            column="48"/>
+    </issue>
+
+    <issue
+        id="Range"
+        message="Value must be ≥ 0 but `getColumnIndex` can be -1"
+        errorLine1="        stats.setBestScore(cursor.getInt(cursor.getColumnIndex(COLUMN_BEST_SCORE)));"
+        errorLine2="                                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/net/dotevolve/benchmark/data/db/PerformanceDatabaseHelper.java"
+            line="438"
+            column="42"/>
+    </issue>
+
+    <issue
+        id="Range"
+        message="Value must be ≥ 0 but `getColumnIndex` can be -1"
+        errorLine1="        stats.setWorstScore(cursor.getInt(cursor.getColumnIndex(COLUMN_WORST_SCORE)));"
+        errorLine2="                                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/net/dotevolve/benchmark/data/db/PerformanceDatabaseHelper.java"
+            line="439"
+            column="43"/>
+    </issue>
+
+    <issue
+        id="AndroidGradlePluginVersion"
+        message="A newer version of Gradle than 8.13 is available: 8.14.3"
+        errorLine1="distributionUrl=https\://services.gradle.org/distributions/gradle-8.13-bin.zip"
+        errorLine2="                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="$HOME/GitHub/Benchmark/gradle/wrapper/gradle-wrapper.properties"
+            line="4"
+            column="17"/>
+    </issue>
+
+    <issue
+        id="GetInstance"
+        message="ECB encryption mode should not be used"
+        errorLine1="            Cipher cipher = Cipher.getInstance(&quot;AES/ECB/PKCS5Padding&quot;);"
+        errorLine2="                                               ~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/net/dotevolve/benchmark/core/BenchmarkEngine.java"
+            line="154"
+            column="48"/>
+    </issue>
+
+    <issue
+        id="NotifyDataSetChanged"
+        message="It will always be more efficient to use more specific change events if you can. Rely on `notifyDataSetChanged` as a last resort."
+        errorLine1="        notifyDataSetChanged();"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/net/dotevolve/benchmark/ui/BenchmarkResultAdapter.java"
+            line="37"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="ObsoleteSdkInt"
+        message="This folder configuration (`v26`) is unnecessary; `minSdkVersion` is 34. Merge all the resources in this folder into `mipmap-anydpi`.">
+        <location
+            file="src/main/res/mipmap-anydpi-v26"/>
+    </issue>
+
+    <issue
+        id="ObsoleteSdkInt"
+        message="This folder configuration (`v23`) is unnecessary; `minSdkVersion` is 34. Merge all the resources in this folder into `values`.">
+        <location
+            file="src/main/res/values-v23"/>
+    </issue>
+
+    <issue
+        id="DisableBaselineAlignment"
+        message="Set `android:baselineAligned=&quot;false&quot;` on this element for better performance"
+        errorLine1="        &lt;LinearLayout"
+        errorLine2="         ~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/item_benchmark_result.xml"
+            line="20"
+            column="10"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.layout.activity_launcher` appears to be unused"
+        errorLine1="&lt;androidx.constraintlayout.widget.ConstraintLayout xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
+        errorLine2="^">
+        <location
+            file="src/main/res/layout/activity_launcher.xml"
+            line="2"
+            column="1"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.color.black` appears to be unused"
+        errorLine1="    &lt;color name=&quot;black&quot;>#FF000000&lt;/color>"
+        errorLine2="           ~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/colors.xml"
+            line="3"
+            column="12"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.color.white` appears to be unused"
+        errorLine1="    &lt;color name=&quot;white&quot;>#FFFFFFFF&lt;/color>"
+        errorLine2="           ~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/colors.xml"
+            line="4"
+            column="12"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.color.colorPrimaryDark` appears to be unused"
+        errorLine1="    &lt;color name=&quot;colorPrimaryDark&quot;>#01579b&lt;/color>"
+        errorLine2="           ~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/colors.xml"
+            line="6"
+            column="12"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.color.colorBackground` appears to be unused"
+        errorLine1="    &lt;color name=&quot;colorBackground&quot;>#ffffff&lt;/color>"
+        errorLine2="           ~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/colors.xml"
+            line="8"
+            column="12"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.dimen.activity_vertical_margin` appears to be unused"
+        errorLine1="    &lt;dimen name=&quot;activity_vertical_margin&quot;>16dp&lt;/dimen>"
+        errorLine2="           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/dimens.xml"
+            line="6"
+            column="12"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.dimen.activity_bottom_margin` appears to be unused"
+        errorLine1="    &lt;dimen name=&quot;activity_bottom_margin&quot;>0dp&lt;/dimen>"
+        errorLine2="           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/dimens.xml"
+            line="7"
+            column="12"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.drawable.ic_launcher_foreground` appears to be unused"
+        errorLine1="&lt;vector xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
+        errorLine2="^">
+        <location
+            file="src/main/res/drawable/ic_launcher_foreground.xml"
+            line="1"
+            column="1"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.drawable.ic_launcher_playstore` appears to be unused">
+        <location
+            file="src/main/res/drawable/ic_launcher_playstore.png"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.navigation.nav_graph` appears to be unused"
+        errorLine1="&lt;navigation xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
+        errorLine2="^">
+        <location
+            file="src/main/res/navigation/nav_graph.xml"
+            line="2"
+            column="1"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.layout.score` appears to be unused"
+        errorLine1="&lt;LinearLayout xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
+        errorLine2="^">
+        <location
+            file="src/main/res/layout/score.xml"
+            line="2"
+            column="1"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.action_settings` appears to be unused"
+        errorLine1="    &lt;string name=&quot;action_settings&quot;>Settings&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="3"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.first_fragment_label` appears to be unused"
+        errorLine1="    &lt;string name=&quot;first_fragment_label&quot;>First Fragment&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="6"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.second_fragment_label` appears to be unused"
+        errorLine1="    &lt;string name=&quot;second_fragment_label&quot;>Second Fragment&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="7"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.next` appears to be unused"
+        errorLine1="    &lt;string name=&quot;next&quot;>Next&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="8"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.previous` appears to be unused"
+        errorLine1="    &lt;string name=&quot;previous&quot;>Previous&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="9"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.enhanced_benchmark_title` appears to be unused"
+        errorLine1="    &lt;string name=&quot;enhanced_benchmark_title&quot;>Enhanced Performance Benchmark&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="25"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.detailed_metrics_title` appears to be unused"
+        errorLine1="    &lt;string name=&quot;detailed_metrics_title&quot;>Detailed Performance Metrics&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="26"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.performance_scores` appears to be unused"
+        errorLine1="    &lt;string name=&quot;performance_scores&quot;>Performance Scores&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="27"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.system_information` appears to be unused"
+        errorLine1="    &lt;string name=&quot;system_information&quot;>System Information&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="28"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.timing_results` appears to be unused"
+        errorLine1="    &lt;string name=&quot;timing_results&quot;>Timing Results&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="29"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.performance_analysis` appears to be unused"
+        errorLine1="    &lt;string name=&quot;performance_analysis&quot;>Performance Analysis&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="30"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.overall_score` appears to be unused"
+        errorLine1="    &lt;string name=&quot;overall_score&quot;>Overall Score&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="31"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.crypto_performance` appears to be unused"
+        errorLine1="    &lt;string name=&quot;crypto_performance&quot;>Crypto Performance&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="32"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.efficiency` appears to be unused"
+        errorLine1="    &lt;string name=&quot;efficiency&quot;>Efficiency&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="33"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.stability` appears to be unused"
+        errorLine1="    &lt;string name=&quot;stability&quot;>Stability&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="34"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.run_benchmark_first` appears to be unused"
+        errorLine1="    &lt;string name=&quot;run_benchmark_first&quot;>Run benchmark first to view detailed metrics&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="35"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.benchmark_in_progress` appears to be unused"
+        errorLine1="    &lt;string name=&quot;benchmark_in_progress&quot;>Benchmark in progress…&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="36"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.benchmark_complete` appears to be unused"
+        errorLine1="    &lt;string name=&quot;benchmark_complete&quot;>Benchmark complete!&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="37"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.device_statistics` appears to be unused"
+        errorLine1="    &lt;string name=&quot;device_statistics&quot;>Device Statistics&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="41"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.performance_trends` appears to be unused"
+        errorLine1="    &lt;string name=&quot;performance_trends&quot;>Performance Trends&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="42"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.recent_results` appears to be unused"
+        errorLine1="    &lt;string name=&quot;recent_results&quot;>Recent Results&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="43"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.no_data_available` appears to be unused"
+        errorLine1="    &lt;string name=&quot;no_data_available&quot;>No data available&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="44"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.loading` appears to be unused"
+        errorLine1="    &lt;string name=&quot;loading&quot;>Loading...&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="45"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.style.AppTheme` appears to be unused"
+        errorLine1="    &lt;style name=&quot;AppTheme&quot; parent=&quot;Theme.AppCompat.Light.DarkActionBar&quot;>"
+        errorLine2="           ~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/themes.xml"
+            line="11"
+            column="12"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.style.AdsTheme` appears to be unused"
+        errorLine1="    &lt;style name=&quot;AdsTheme&quot;>"
+        errorLine2="           ~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/themes.xml"
+            line="53"
+            column="12"/>
+    </issue>
+
+    <issue
+        id="TypographyEllipsis"
+        message="Replace &quot;...&quot; with ellipsis character (…, &amp;#8230;) ?"
+        errorLine1="    &lt;string name=&quot;loading&quot;>Loading...&lt;/string>"
+        errorLine2="                           ~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="45"
+            column="28"/>
+    </issue>
+
+    <issue
+        id="IconLauncherShape"
+        message="Launcher icons should not fill every pixel of their square region; see the design guide for details">
+        <location
+            file="src/main/res/drawable/ic_launcher_playstore.png"/>
+    </issue>
+
+    <issue
+        id="MonochromeLauncherIcon"
+        message="The application adaptive icon is missing a monochrome tag"
+        errorLine1="&lt;adaptive-icon xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;>"
+        errorLine2="^">
+        <location
+            file="src/main/res/mipmap-anydpi-v26/ic_launcher.xml"
+            line="2"
+            column="1"/>
+    </issue>
+
+    <issue
+        id="MonochromeLauncherIcon"
+        message="The application adaptive roundIcon is missing a monochrome tag"
+        errorLine1="&lt;adaptive-icon xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;>"
+        errorLine2="^">
+        <location
+            file="src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml"
+            line="2"
+            column="1"/>
+    </issue>
+
+    <issue
+        id="IconLocation"
+        message="Found bitmap drawable `res/drawable/cropped_circle_image.png` in densityless folder">
+        <location
+            file="src/main/res/drawable/cropped_circle_image.png"/>
+    </issue>
+
+    <issue
+        id="IconLocation"
+        message="Found bitmap drawable `res/drawable/ic_launcher_playstore.png` in densityless folder">
+        <location
+            file="src/main/res/drawable/ic_launcher_playstore.png"/>
+    </issue>
+
+    <issue
+        id="ButtonStyle"
+        message="Buttons in button bars should be borderless; use `style=&quot;?android:attr/buttonBarButtonStyle&quot;` (and `?android:attr/buttonBarStyle` on the parent)"
+        errorLine1="            &lt;Button"
+        errorLine2="             ~~~~~~">
+        <location
+            file="src/main/res/layout/metrics_detail_dialog.xml"
+            line="272"
+            column="14"/>
+    </issue>
+
+    <issue
+        id="ButtonStyle"
+        message="Buttons in button bars should be borderless; use `style=&quot;?android:attr/buttonBarButtonStyle&quot;` (and `?android:attr/buttonBarStyle` on the parent)"
+        errorLine1="            &lt;Button"
+        errorLine2="             ~~~~~~">
+        <location
+            file="src/main/res/layout/metrics_detail_dialog.xml"
+            line="281"
+            column="14"/>
+    </issue>
+
+    <issue
+        id="SetTextI18n"
+        message="String literal in `setText` can not be translated. Use Android resources instead."
+        errorLine1="                        deviceStatsText.setText(&quot;No statistics available. Run a benchmark first!&quot;);"
+        errorLine2="                                                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/net/dotevolve/benchmark/ui/HistoryActivity.java"
+            line="115"
+            column="49"/>
+    </issue>
+
+    <issue
+        id="SetTextI18n"
+        message="String literal in `setText` can not be translated. Use Android resources instead."
+        errorLine1="                runOnUiThread(() -> deviceStatsText.setText(&quot;Error loading statistics&quot;));"
+        errorLine2="                                                            ~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/net/dotevolve/benchmark/ui/HistoryActivity.java"
+            line="120"
+            column="61"/>
+    </issue>
+
+    <issue
+        id="SetTextI18n"
+        message="String literal in `setText` can not be translated. Use Android resources instead."
+        errorLine1="                        this.trendsText.setText(&quot;No trend data available. Run more benchmarks!&quot;);"
+        errorLine2="                                                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/net/dotevolve/benchmark/ui/HistoryActivity.java"
+            line="140"
+            column="49"/>
+    </issue>
+
+    <issue
+        id="SetTextI18n"
+        message="String literal in `setText` can not be translated. Use Android resources instead."
+        errorLine1="                runOnUiThread(() -> trendsText.setText(&quot;Error loading trends&quot;));"
+        errorLine2="                                                       ~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/net/dotevolve/benchmark/ui/HistoryActivity.java"
+            line="145"
+            column="56"/>
+    </issue>
+
+    <issue
+        id="SetTextI18n"
+        message="String literal in `setText` can not be translated. Use Android resources instead."
+        errorLine1="            analysisText.setText(&quot;No data available for analysis&quot;);"
+        errorLine2="                                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/net/dotevolve/benchmark/ui/HistoryActivity.java"
+            line="180"
+            column="34"/>
+    </issue>
+
+    <issue
+        id="SetTextI18n"
+        message="Do not concatenate text displayed with `setText`. Use resource string with placeholders."
+        errorLine1="                        result.setText(&quot;Running &quot; + currentTest + &quot;...\nProgress: &quot; + progress + &quot;%&quot;);"
+        errorLine2="                                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/net/dotevolve/benchmark/ui/MainActivity.java"
+            line="137"
+            column="40"/>
+    </issue>
+
+    <issue
+        id="SetTextI18n"
+        message="String literal in `setText` can not be translated. Use Android resources instead."
+        errorLine1="                        result.setText(&quot;Running &quot; + currentTest + &quot;...\nProgress: &quot; + progress + &quot;%&quot;);"
+        errorLine2="                                       ~~~~~~~~~~">
+        <location
+            file="src/main/java/net/dotevolve/benchmark/ui/MainActivity.java"
+            line="137"
+            column="40"/>
+    </issue>
+
+    <issue
+        id="SetTextI18n"
+        message="Do not concatenate text displayed with `setText`. Use resource string with placeholders."
+        errorLine1="            deviceInfo.setText(&quot;Device: &quot; + currentMetrics.getDeviceModel() + &quot;\n&quot; +"
+        errorLine2="                               ^">
+        <location
+            file="src/main/java/net/dotevolve/benchmark/ui/MainActivity.java"
+            line="378"
+            column="32"/>
+    </issue>
+
+    <issue
+        id="SetTextI18n"
+        message="String literal in `setText` can not be translated. Use Android resources instead."
+        errorLine1="            deviceInfo.setText(&quot;Device: &quot; + currentMetrics.getDeviceModel() + &quot;\n&quot; +"
+        errorLine2="                               ~~~~~~~~~~">
+        <location
+            file="src/main/java/net/dotevolve/benchmark/ui/MainActivity.java"
+            line="378"
+            column="32"/>
+    </issue>
+
+    <issue
+        id="SetTextI18n"
+        message="String literal in `setText` can not be translated. Use Android resources instead."
+        errorLine1="                              &quot;CPU Cores: &quot; + currentMetrics.getCpuCores() + &quot;\n&quot; +"
+        errorLine2="                              ~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/net/dotevolve/benchmark/ui/MainActivity.java"
+            line="379"
+            column="31"/>
+    </issue>
+
+    <issue
+        id="SetTextI18n"
+        message="String literal in `setText` can not be translated. Use Android resources instead."
+        errorLine1="                              &quot;Max Memory: &quot; + formatBytes(currentMetrics.getTotalMemory()));"
+        errorLine2="                              ~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/net/dotevolve/benchmark/ui/MainActivity.java"
+            line="380"
+            column="31"/>
+    </issue>
+
+    <issue
+        id="SetTextI18n"
+        message="Do not concatenate text displayed with `setText`. Use resource string with placeholders."
+        errorLine1="            analysisInfo.setText(&quot;Performance Category: &quot; + getPerformanceCategory(currentMetrics.getOverallScore()) + &quot;\n&quot; +"
+        errorLine2="                                 ^">
+        <location
+            file="src/main/java/net/dotevolve/benchmark/ui/MainActivity.java"
+            line="388"
+            column="34"/>
+    </issue>
+
+    <issue
+        id="SetTextI18n"
+        message="String literal in `setText` can not be translated. Use Android resources instead."
+        errorLine1="            analysisInfo.setText(&quot;Performance Category: &quot; + getPerformanceCategory(currentMetrics.getOverallScore()) + &quot;\n&quot; +"
+        errorLine2="                                 ~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/net/dotevolve/benchmark/ui/MainActivity.java"
+            line="388"
+            column="34"/>
+    </issue>
+
+    <issue
+        id="SetTextI18n"
+        message="String literal in `setText` can not be translated. Use Android resources instead."
+        errorLine1="                                &quot;System Utilization: CPU and memory efficiency metrics&quot;);"
+        errorLine2="                                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/net/dotevolve/benchmark/ui/MainActivity.java"
+            line="390"
+            column="33"/>
+    </issue>
+
+    <issue
+        id="SetTextI18n"
+        message="String literal in `setText` can not be translated. Use Android resources instead."
+        errorLine1="            detailText.setText(&quot;No result data available&quot;);"
+        errorLine2="                               ~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/net/dotevolve/benchmark/ui/ResultDetailActivity.java"
+            line="46"
+            column="32"/>
+    </issue>
+
+    <issue
+        id="HardcodedText"
+        message="Hardcoded string &quot;📊 Device Statistics&quot;, should use `@string` resource"
+        errorLine1="                        android:text=&quot;📊 Device Statistics&quot;"
+        errorLine2="                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/activity_history.xml"
+            line="51"
+            column="25"/>
+    </issue>
+
+    <issue
+        id="HardcodedText"
+        message="Hardcoded string &quot;Loading...&quot;, should use `@string` resource"
+        errorLine1="                        android:text=&quot;Loading...&quot;"
+        errorLine2="                        ~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/activity_history.xml"
+            line="60"
+            column="25"/>
+    </issue>
+
+    <issue
+        id="HardcodedText"
+        message="Hardcoded string &quot;📈 Performance Trends&quot;, should use `@string` resource"
+        errorLine1="                        android:text=&quot;📈 Performance Trends&quot;"
+        errorLine2="                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/activity_history.xml"
+            line="84"
+            column="25"/>
+    </issue>
+
+    <issue
+        id="HardcodedText"
+        message="Hardcoded string &quot;Loading...&quot;, should use `@string` resource"
+        errorLine1="                        android:text=&quot;Loading...&quot;"
+        errorLine2="                        ~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/activity_history.xml"
+            line="93"
+            column="25"/>
+    </issue>
+
+    <issue
+        id="HardcodedText"
+        message="Hardcoded string &quot;📋 Recent Results&quot;, should use `@string` resource"
+        errorLine1="                            android:text=&quot;📋 Recent Results&quot;"
+        errorLine2="                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/activity_history.xml"
+            line="124"
+            column="29"/>
+    </issue>
+
+    <issue
+        id="HardcodedText"
+        message="Hardcoded string &quot;🔍 Performance Analysis&quot;, should use `@string` resource"
+        errorLine1="                        android:text=&quot;🔍 Performance Analysis&quot;"
+        errorLine2="                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/activity_history.xml"
+            line="162"
+            column="25"/>
+    </issue>
+
+    <issue
+        id="HardcodedText"
+        message="Hardcoded string &quot;Loading...&quot;, should use `@string` resource"
+        errorLine1="                        android:text=&quot;Loading...&quot;"
+        errorLine2="                        ~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/activity_history.xml"
+            line="171"
+            column="25"/>
+    </issue>
+
+    <issue
+        id="HardcodedText"
+        message="Hardcoded string &quot;Dec 15, 2023&quot;, should use `@string` resource"
+        errorLine1="                    android:text=&quot;Dec 15, 2023&quot;"
+        errorLine2="                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/item_benchmark_result.xml"
+            line="36"
+            column="21"/>
+    </issue>
+
+    <issue
+        id="HardcodedText"
+        message="Hardcoded string &quot;14:30:25&quot;, should use `@string` resource"
+        errorLine1="                    android:text=&quot;14:30:25&quot;"
+        errorLine2="                    ~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/item_benchmark_result.xml"
+            line="45"
+            column="21"/>
+    </issue>
+
+    <issue
+        id="HardcodedText"
+        message="Hardcoded string &quot;85&quot;, should use `@string` resource"
+        errorLine1="                    android:text=&quot;85&quot;"
+        errorLine2="                    ~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/item_benchmark_result.xml"
+            line="61"
+            column="21"/>
+    </issue>
+
+    <issue
+        id="HardcodedText"
+        message="Hardcoded string &quot;/100&quot;, should use `@string` resource"
+        errorLine1="                    android:text=&quot;/100&quot;"
+        errorLine2="                    ~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/item_benchmark_result.xml"
+            line="69"
+            column="21"/>
+    </issue>
+
+    <issue
+        id="HardcodedText"
+        message="Hardcoded string &quot;GOOD&quot;, should use `@string` resource"
+        errorLine1="            android:text=&quot;GOOD&quot;"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/item_benchmark_result.xml"
+            line="82"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="HardcodedText"
+        message="Hardcoded string &quot;Crypto: 80 | Efficiency: 85 | Stability: 90&quot;, should use `@string` resource"
+        errorLine1="            android:text=&quot;Crypto: 80 | Efficiency: 85 | Stability: 90&quot;"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/item_benchmark_result.xml"
+            line="93"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="HardcodedText"
+        message="Hardcoded string &quot;📊 Detailed Performance Metrics&quot;, should use `@string` resource"
+        errorLine1="            android:text=&quot;📊 Detailed Performance Metrics&quot;"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/metrics_detail_dialog.xml"
+            line="17"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="HardcodedText"
+        message="Hardcoded string &quot;📈 Performance Visualization&quot;, should use `@string` resource"
+        errorLine1="                    android:text=&quot;📈 Performance Visualization&quot;"
+        errorLine2="                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/metrics_detail_dialog.xml"
+            line="40"
+            column="21"/>
+    </issue>
+
+    <issue
+        id="HardcodedText"
+        message="Hardcoded string &quot;🎯 Performance Scores&quot;, should use `@string` resource"
+        errorLine1="                    android:text=&quot;🎯 Performance Scores&quot;"
+        errorLine2="                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/metrics_detail_dialog.xml"
+            line="71"
+            column="21"/>
+    </issue>
+
+    <issue
+        id="HardcodedText"
+        message="Hardcoded string &quot;Overall Score:&quot;, should use `@string` resource"
+        errorLine1="                        android:text=&quot;Overall Score:&quot; />"
+        errorLine2="                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/metrics_detail_dialog.xml"
+            line="86"
+            column="25"/>
+    </issue>
+
+    <issue
+        id="HardcodedText"
+        message="Hardcoded string &quot;0&quot;, should use `@string` resource"
+        errorLine1="                        android:text=&quot;0&quot;"
+        errorLine2="                        ~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/metrics_detail_dialog.xml"
+            line="92"
+            column="25"/>
+    </issue>
+
+    <issue
+        id="HardcodedText"
+        message="Hardcoded string &quot;Crypto Performance:&quot;, should use `@string` resource"
+        errorLine1="                        android:text=&quot;Crypto Performance:&quot; />"
+        errorLine2="                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/metrics_detail_dialog.xml"
+            line="108"
+            column="25"/>
+    </issue>
+
+    <issue
+        id="HardcodedText"
+        message="Hardcoded string &quot;0&quot;, should use `@string` resource"
+        errorLine1="                        android:text=&quot;0&quot;"
+        errorLine2="                        ~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/metrics_detail_dialog.xml"
+            line="114"
+            column="25"/>
+    </issue>
+
+    <issue
+        id="HardcodedText"
+        message="Hardcoded string &quot;Efficiency:&quot;, should use `@string` resource"
+        errorLine1="                        android:text=&quot;Efficiency:&quot; />"
+        errorLine2="                        ~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/metrics_detail_dialog.xml"
+            line="129"
+            column="25"/>
+    </issue>
+
+    <issue
+        id="HardcodedText"
+        message="Hardcoded string &quot;0&quot;, should use `@string` resource"
+        errorLine1="                        android:text=&quot;0&quot;"
+        errorLine2="                        ~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/metrics_detail_dialog.xml"
+            line="135"
+            column="25"/>
+    </issue>
+
+    <issue
+        id="HardcodedText"
+        message="Hardcoded string &quot;Stability:&quot;, should use `@string` resource"
+        errorLine1="                        android:text=&quot;Stability:&quot; />"
+        errorLine2="                        ~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/metrics_detail_dialog.xml"
+            line="149"
+            column="25"/>
+    </issue>
+
+    <issue
+        id="HardcodedText"
+        message="Hardcoded string &quot;0&quot;, should use `@string` resource"
+        errorLine1="                        android:text=&quot;0&quot;"
+        errorLine2="                        ~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/metrics_detail_dialog.xml"
+            line="155"
+            column="25"/>
+    </issue>
+
+    <issue
+        id="HardcodedText"
+        message="Hardcoded string &quot;📱 System Information&quot;, should use `@string` resource"
+        errorLine1="                    android:text=&quot;📱 System Information&quot;"
+        errorLine2="                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/metrics_detail_dialog.xml"
+            line="181"
+            column="21"/>
+    </issue>
+
+    <issue
+        id="HardcodedText"
+        message="Hardcoded string &quot;Loading...&quot;, should use `@string` resource"
+        errorLine1="                    android:text=&quot;Loading...&quot;"
+        errorLine2="                    ~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/metrics_detail_dialog.xml"
+            line="190"
+            column="21"/>
+    </issue>
+
+    <issue
+        id="HardcodedText"
+        message="Hardcoded string &quot;⏱️ Timing Results&quot;, should use `@string` resource"
+        errorLine1="                    android:text=&quot;⏱️ Timing Results&quot;"
+        errorLine2="                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/metrics_detail_dialog.xml"
+            line="214"
+            column="21"/>
+    </issue>
+
+    <issue
+        id="HardcodedText"
+        message="Hardcoded string &quot;Loading...&quot;, should use `@string` resource"
+        errorLine1="                    android:text=&quot;Loading...&quot;"
+        errorLine2="                    ~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/metrics_detail_dialog.xml"
+            line="223"
+            column="21"/>
+    </issue>
+
+    <issue
+        id="HardcodedText"
+        message="Hardcoded string &quot;🔍 Performance Analysis&quot;, should use `@string` resource"
+        errorLine1="                    android:text=&quot;🔍 Performance Analysis&quot;"
+        errorLine2="                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/metrics_detail_dialog.xml"
+            line="248"
+            column="21"/>
+    </issue>
+
+    <issue
+        id="HardcodedText"
+        message="Hardcoded string &quot;Loading...&quot;, should use `@string` resource"
+        errorLine1="                    android:text=&quot;Loading...&quot;"
+        errorLine2="                    ~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/metrics_detail_dialog.xml"
+            line="257"
+            column="21"/>
+    </issue>
+
+    <issue
+        id="HardcodedText"
+        message="Hardcoded string &quot;📤 Export Results&quot;, should use `@string` resource"
+        errorLine1="                android:text=&quot;📤 Export Results&quot;"
+        errorLine2="                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/metrics_detail_dialog.xml"
+            line="278"
+            column="17"/>
+    </issue>
+
+    <issue
+        id="HardcodedText"
+        message="Hardcoded string &quot;📤 Share&quot;, should use `@string` resource"
+        errorLine1="                android:text=&quot;📤 Share&quot;"
+        errorLine2="                ~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/metrics_detail_dialog.xml"
+            line="287"
+            column="17"/>
+    </issue>
+
+</issues>
