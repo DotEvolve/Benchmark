@@ -6,10 +6,10 @@ plugins {
     alias(libs.plugins.google.firebase.crashlytics)
     alias(libs.plugins.google.firebase.perf)
     alias(libs.plugins.kotlin.android)
-
-    id("jacoco")
-    id("org.sonarqube") version "7.0.0.6105"
     alias(libs.plugins.kotlin.compose)
+
+    alias(libs.plugins.jacoco)
+    alias(libs.plugins.sonarqube)
 }
 
 android {
@@ -20,8 +20,8 @@ android {
         applicationId = "net.dotevolve.benchmark"
         minSdk = 34
         targetSdk = 36
-        versionCode = 11
-        versionName = "10.0.2"
+        versionCode = 12
+        versionName = "12.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
