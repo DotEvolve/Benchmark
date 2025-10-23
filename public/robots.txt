@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://benchmark-app.web.app/sitemap.xml
+
+# Disallow test pages
+Disallow: /test-accessibility.html
+Disallow: /test-performance.html

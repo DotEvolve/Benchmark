@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Accessibility Test Results - Benchmark Website</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .test-result {
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 5px;
+            border-left: 4px solid;
+        }
+        .test-pass {
+            background-color: #d4edda;
+            border-color: #28a745;
+            color: #155724;
+        }
+        .test-fail {
+            background-color: #f8d7da;
+            border-color: #dc3545;
+            color: #721c24;
+        }
+        .test-issues {
+            margin-top: 10px;
+        }
+        .test-issues ul {
+            margin: 5px 0;
+            padding-left: 20px;
+        }
+        .manual-tests {
+            background-color: #e2e3e5;
+            padding: 20px;
+            border-radius: 5px;
+            margin-top: 30px;
+        }
+        .manual-tests h3 {
+            margin-top: 0;
+        }
+        .manual-tests ol {
+            padding-left: 20px;
+        }
+        .manual-tests li {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Accessibility Test Results</h1>
+    <p>This page shows the results of automated accessibility tests for the Benchmark website.</p>
+    
+    <div id="test-results">
+        <p>Loading test results...</p>
+    </div>
+    
+    <div class="manual-tests">
+        <h3>Manual Testing Checklist</h3>
+        <p>Please also perform these manual tests to ensure full accessibility compliance:</p>
+        <ol>
+            <li><strong>Keyboard Navigation:</strong>
+                <ul>
+                    <li>Use Tab key to navigate through all interactive elements</li>
+                    <li>Use Enter/Space to activate buttons and links</li>
+                    <li>Use Escape to close modal dialogs</li>
+                    <li>Verify focus indicators are visible</li>
+                </ul>
+            </li>
+            <li><strong>Screen Reader Testing:</strong>
+                <ul>
+                    <li>Test with NVDA, JAWS, or VoiceOver</li>
+                    <li>Verify all content is announced properly</li>
+                    <li>Check that ARIA labels are read correctly</li>
+                </ul>
+            </li>
+            <li><strong>Color Contrast:</strong>
+                <ul>
+                    <li>Use tools like WebAIM Contrast Checker</li>
+                    <li>Verify 4.5:1 ratio for normal text</li>
+                    <li>Verify 3:1 ratio for large text</li>
+                </ul>
+            </li>
+            <li><strong>Responsive Design:</strong>
+                <ul>
+                    <li>Test at 320px width (mobile)</li>
+                    <li>Test at 768px width (tablet)</li>
+                    <li>Test at 1200px+ width (desktop)</li>
+                    <li>Verify all content remains accessible</li>
+                </ul>
+            </li>
+        </ol>
+    </div>
+
+    <script>
+        // Load and run accessibility tests
+        document.addEventListener('DOMContentLoaded', function() {
+            // Create iframe to load main page and run tests
+            const iframe = document.createElement('iframe');
+            iframe.style.display = 'none';
+            iframe.src = 'index.html';
+            document.body.appendChild(iframe);
+            
+            iframe.onload = function() {
+                // Wait for tests to complete
+                setTimeout(() => {
+                    try {
+                        const iframeWindow = iframe.contentWindow;
+                        const testResults = iframeWindow.testResults || [];
+                        displayResults(testResults);
+                    } catch (e) {
+                        document.getElementById('test-results').innerHTML = 
+                            '<p style="color: red;">Error running tests: ' + e.message + '</p>';
+                    }
+                }, 2000);
+            };
+        });
+        
+        function displayResults(results) {
+            const container = document.getElementById('test-results');
+            
+            if (results.length === 0) {
+                container.innerHTML = '<p>No test results available.</p>';
+                return;
+            }
+            
+            let html = '';
+            let passedCount = 0;
+            
+            results.forEach(test => {
+                const cssClass = test.passed ? 'test-pass' : 'test-fail';
+                const status = test.passed ? '✅ PASS' : '❌ FAIL';
+                
+                if (test.passed) passedCount++;
+                
+                html += `<div class="test-result ${cssClass}">`;
+                html += `<h3>${status}: ${test.name}</h3>`;
+                
+                if (!test.passed && test.issues.length > 0) {
+                    html += '<div class="test-issues">';
+                    html += '<strong>Issues found:</strong>';
+                    html += '<ul>';
+                    test.issues.forEach(issue => {
+                        html += `<li>${issue}</li>`;
+                    });
+                    html += '</ul>';
+                    html += '</div>';
+                }
+                
+                html += '</div>';
+            });
+            
+            // Add summary
+            html = `<div class="test-result ${passedCount === results.length ? 'test-pass' : 'test-fail'}">
+                        <h3>Summary: ${passedCount}/${results.length} tests passed</h3>
+                    </div>` + html;
+            
+            container.innerHTML = html;
+        }
+    </script>
+</body>
+</html>
