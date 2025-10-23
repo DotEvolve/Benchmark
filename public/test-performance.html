@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Performance Test Results - Benchmark Website</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+            background-color: #f5f5f5;
+        }
+        .header {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .test-result {
+            margin: 20px 0;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid;
+            background-color: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .test-pass {
+            border-color: #28a745;
+        }
+        .test-fail {
+            border-color: #dc3545;
+        }
+        .test-metrics {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 10px 0;
+            font-family: monospace;
+        }
+        .test-issues {
+            margin-top: 15px;
+        }
+        .test-issues ul {
+            margin: 5px 0;
+            padding-left: 20px;
+        }
+        .test-issues li {
+            margin-bottom: 5px;
+            color: #721c24;
+        }
+        .controls {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .btn {
+            background-color: #039be5;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+            font-size: 14px;
+        }
+        .btn:hover {
+            background-color: #0288d1;
+        }
+        .btn-secondary {
+            background-color: #6c757d;
+        }
+        .btn-secondary:hover {
+            background-color: #5a6268;
+        }
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+        .summary {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .summary.pass {
+            border-left: 4px solid #28a745;
+        }
+        .summary.fail {
+            border-left: 4px solid #dc3545;
+        }
+        .recommendations {
+            background-color: #e7f3ff;
+            border: 1px solid #b3d9ff;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .recommendations h3 {
+            margin-top: 0;
+            color: #0066cc;
+        }
+        .recommendations ul {
+            padding-left: 20px;
+        }
+        .recommendations li {
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Performance Optimization Test Results</h1>
+        <p>This page tests image loading performance, resource optimization, and Core Web Vitals metrics for the Benchmark website.</p>
+    </div>
+    
+    <div class="controls">
+        <button class="btn" onclick="runTests()">Run Performance Tests</button>
+        <button class="btn btn-secondary" onclick="window.open('index.html', '_blank')">Open Main Site</button>
+        <button class="btn btn-secondary" onclick="clearResults()">Clear Results</button>
+    </div>
+    
+    <div id="test-results">
+        <div class="loading">
+            Click "Run Performance Tests" to start testing...
+        </div>
+    </div>
+    
+    <div class="recommendations">
+        <h3>Performance Optimization Recommendations</h3>
+        <ul>
+            <li><strong>Image Optimization:</strong> Use WebP format when possible, compress images, and implement lazy loading for non-critical images</li>
+            <li><strong>Resource Bundling:</strong> Minimize HTTP requests by combining CSS and JavaScript files</li>
+            <li><strong>Caching:</strong> Implement proper cache headers for static assets (configured in firebase.json)</li>
+            <li><strong>Font Loading:</strong> Use font-display: swap for Google Fonts to prevent layout shifts</li>
+            <li><strong>Critical CSS:</strong> Inline critical CSS and defer non-critical stylesheets</li>
+            <li><strong>JavaScript Optimization:</strong> Minimize and defer non-critical JavaScript</li>
+            <li><strong>Core Web Vitals:</strong> Monitor LCP (< 2.5s), FID (< 100ms), and CLS (< 0.1)</li>
+        </ul>
+    </div>
+
+    <script>
+        let testIframe = null;
+        
+        function runTests() {
+            const resultsContainer = document.getElementById('test-results');
+            resultsContainer.innerHTML = '<div class="loading">Running performance tests...</div>';
+            
+            // Create iframe to load main page and run tests
+            if (testIframe) {
+                document.body.removeChild(testIframe);
+            }
+            
+            testIframe = document.createElement('iframe');
+            testIframe.style.display = 'none';
+            testIframe.src = 'index.html?perf-test=true';
+            document.body.appendChild(testIframe);
+            
+            testIframe.onload = function() {
+                // Load performance test script into iframe
+                const script = testIframe.contentDocument.createElement('script');
+                script.src = 'js/performance-tests.js';
+                testIframe.contentDocument.head.appendChild(script);
+                
+                // Wait for tests to complete
+                setTimeout(() => {
+                    try {
+                        const iframeWindow = testIframe.contentWindow;
+                        const testResults = iframeWindow.performanceTestResults || [];
+                        displayResults(testResults);
+                    } catch (e) {
+                        resultsContainer.innerHTML = 
+                            '<div class="test-result test-fail"><h3>❌ Error running tests</h3><p>' + e.message + '</p></div>';
+                    }
+                }, 3000);
+            };
+        }
+        
+        function displayResults(results) {
+            const container = document.getElementById('test-results');
+            
+            if (results.length === 0) {
+                container.innerHTML = '<div class="test-result test-fail"><h3>No test results available</h3><p>Tests may not have completed successfully.</p></div>';
+                return;
+            }
+            
+            let html = '';
+            let passedCount = 0;
+            
+            // Add summary
+            results.forEach(test => {
+                if (test.passed) passedCount++;
+            });
+            
+            const summaryClass = passedCount === results.length ? 'pass' : 'fail';
+            const summaryIcon = passedCount === results.length ? '✅' : '⚠️';
+            
+            html += `<div class="summary ${summaryClass}">`;
+            html += `<h3>${summaryIcon} Performance Test Summary</h3>`;
+            html += `<p><strong>Tests passed:</strong> ${passedCount}/${results.length}</p>`;
+            html += `<p><strong>Overall status:</strong> ${passedCount === results.length ? 'All tests passed!' : 'Some optimizations needed'}</p>`;
+            html += '</div>';
+            
+            // Add individual test results
+            results.forEach(test => {
+                const cssClass = test.passed ? 'test-pass' : 'test-fail';
+                const status = test.passed ? '✅ PASS' : '❌ FAIL';
+                
+                html += `<div class="test-result ${cssClass}">`;
+                html += `<h3>${status}: ${test.name}</h3>`;
+                
+                // Add metrics if available
+                if (test.metrics && Object.keys(test.metrics).length > 0) {
+                    html += '<div class="test-metrics">';
+                    html += '<strong>Metrics:</strong><br>';
+                    Object.entries(test.metrics).forEach(([key, value]) => {
+                        const displayKey = key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
+                        html += `${displayKey}: ${value}<br>`;
+                    });
+                    html += '</div>';
+                }
+                
+                // Add issues if any
+                if (!test.passed && test.issues.length > 0) {
+                    html += '<div class="test-issues">';
+                    html += '<strong>Issues found:</strong>';
+                    html += '<ul>';
+                    test.issues.forEach(issue => {
+                        html += `<li>${issue}</li>`;
+                    });
+                    html += '</ul>';
+                    html += '</div>';
+                }
+                
+                html += '</div>';
+            });
+            
+            container.innerHTML = html;
+        }
+        
+        function clearResults() {
+            const container = document.getElementById('test-results');
+            container.innerHTML = '<div class="loading">Click "Run Performance Tests" to start testing...</div>';
+            
+            if (testIframe) {
+                document.body.removeChild(testIframe);
+                testIframe = null;
+            }
+        }
+        
+        // Auto-run tests if requested via URL parameter
+        if (window.location.search.includes('auto-run=true')) {
+            window.addEventListener('load', function() {
+                setTimeout(runTests, 1000);
+            });
+        }
+    </script>
+</body>
+</html>

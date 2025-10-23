@@ -2,12 +2,15 @@
 
 // DOM Content Loaded handler
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('Benchmark website loaded');
-    
     // Initialize all interactive functionality
     initSmoothScrolling();
     initMobileNavigation();
     initImageGallery();
+    
+    // Log successful load only in development
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        console.log('Benchmark website loaded');
+    }
 });
 
 // Smooth scrolling navigation
