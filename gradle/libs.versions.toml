@@ -26,7 +26,7 @@ profileinstaller = "1.4.1"
 activityKtx = "1.11.0"
 work = "2.11.0"
 composeBom = "2025.10.01"
-sonarqube = "7.0.0.6105"
+sonarqube = "7.0.1.6134"
 
 [libraries]
 appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
