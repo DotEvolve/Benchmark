@@ -18,10 +18,10 @@ android {
 
     defaultConfig {
         applicationId = "net.dotevolve.benchmark"
-        minSdk = 34
+        minSdk = 23
         targetSdk = 36
-        versionCode = 12
-        versionName = "12.0"
+        versionCode = 13
+        versionName = "12.2"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }

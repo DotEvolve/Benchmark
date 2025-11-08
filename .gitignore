@@ -36,5 +36,8 @@ google-services.json
 #Ignore vscode AI rules
 .github/instructions/codacy.instructions.md
 
+#Kiro
+.kiro/
+
 # MacOS files
 .DS_Store
