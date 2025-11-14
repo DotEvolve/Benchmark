@@ -46,7 +46,7 @@ Benchmark is a comprehensive Android performance testing application that provid
 
 ### Android Development
 - **Language:** Java & Kotlin
-- **Min SDK:** 34 (Android 14)
+- **Min SDK:** 23 (Android 6.0 Marshmallow)
 - **Target SDK:** 36
 - **Build System:** Gradle with Kotlin DSL
 
