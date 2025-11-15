@@ -1,4 +1,6 @@
 [versions]
+admobBanners = "2.7.4.473"
+admobAds = "2.7.4.473"
 agp = "8.13.1"
 appcompat = "1.7.1"
 constraintlayout = "2.2.1"
@@ -29,6 +31,8 @@ composeBom = "2025.11.00"
 sonarqube = "7.0.1.6134"
 
 [libraries]
+admob-ads = { module = "com.appnext.sdk.adapters:admob-ads", version.ref = "admobAds" }
+admob-banners = { module = "com.appnext.sdk.adapters:admob-banners", version.ref = "admobBanners" }
 appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
