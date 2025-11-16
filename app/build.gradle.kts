@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import java.util.Properties
 
 plugins {
     alias(libs.plugins.android.application)
@@ -20,8 +21,8 @@ android {
         applicationId = "net.dotevolve.benchmark"
         minSdk = 23
         targetSdk = 36
-        versionCode = 13
-        versionName = "12.2"
+        versionCode = 16
+        versionName = "16"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -91,6 +92,9 @@ kotlin {
 }
 
 dependencies {
+
+    implementation(libs.admob.ads)
+    implementation(libs.admob.banners)
 
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.crashlytics)
@@ -172,5 +176,42 @@ tasks.register<JacocoReport>("jacocoTestReportDebug") {
         xml.required.set(true)
         html.required.set(true)
         csv.required.set(false)
+    }
+}
+
+tasks.register<Exec>("publishToAptoide") {
+    dependsOn("assembleRelease")
+    group = "publishing"
+    description = "Uploads the release APK to Aptoide."
+
+    doFirst {
+        val properties = Properties()
+        val localPropertiesFile = rootProject.file("local.properties")
+        if (localPropertiesFile.exists()) {
+            properties.load(localPropertiesFile.inputStream())
+        }
+        val apiKey = properties.getProperty("aptoide.apiKey")
+        if (apiKey.isNullOrEmpty()) {
+            throw GradleException("Aptoide API key not found. Please add 'aptoide.apiKey=YOUR_KEY' to your local.properties file.")
+        }
+
+        val apkPath = "${project.layout.buildDirectory.get()}/outputs/apk/release/app-release.apk"
+        val apkFile = project.file(apkPath)
+        if (!apkFile.exists()) {
+            throw GradleException("Release APK not found at $apkPath. Please run the assembleRelease task first.")
+        }
+        println("Uploading $apkPath to Aptoide...")
+
+        commandLine(
+            "curl",
+            "-X", "POST",
+            "https://uploader.catappult.io/api",
+            "-H", "Api-Key: $apiKey",
+            "-F", "apk=@$apkPath"
+        )
+    }
+
+    doLast {
+        println("Upload command finished.")
     }
 }

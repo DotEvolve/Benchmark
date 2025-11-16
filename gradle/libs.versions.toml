@@ -1,11 +1,13 @@
 [versions]
-agp = "8.13.0"
+admobBanners = "2.7.4.473"
+admobAds = "2.7.4.473"
+agp = "8.13.1"
 appcompat = "1.7.1"
 constraintlayout = "2.2.1"
 espressoCore = "3.7.0"
 firebaseAppcheck = "19.0.1"
 firebaseAppcheckPlayintegrity = "19.0.1" # Added
-firebaseBom = "34.5.0"
+firebaseBom = "34.6.0"
 firebaseCrashlytics = "20.0.3"
 firebaseCrashlyticsPlugin = "3.0.6"
 gmsGoogleServices = "4.4.4"
@@ -29,6 +31,8 @@ composeBom = "2025.11.00"
 sonarqube = "7.0.1.6134"
 
 [libraries]
+admob-ads = { module = "com.appnext.sdk.adapters:admob-ads", version.ref = "admobAds" }
+admob-banners = { module = "com.appnext.sdk.adapters:admob-banners", version.ref = "admobBanners" }
 appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
