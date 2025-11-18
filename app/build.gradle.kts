@@ -184,32 +184,31 @@ tasks.register<Exec>("publishToAptoide") {
     group = "publishing"
     description = "Uploads the release APK to Aptoide."
 
-    doFirst {
-        val properties = Properties()
-        val localPropertiesFile = rootProject.file("local.properties")
-        if (localPropertiesFile.exists()) {
-            properties.load(localPropertiesFile.inputStream())
-        }
-        val apiKey = properties.getProperty("aptoide.apiKey")
-        if (apiKey.isNullOrEmpty()) {
-            throw GradleException("Aptoide API key not found. Please add 'aptoide.apiKey=YOUR_KEY' to your local.properties file.")
-        }
-
-        val apkPath = "${project.layout.buildDirectory.get()}/outputs/apk/release/app-release.apk"
-        val apkFile = project.file(apkPath)
-        if (!apkFile.exists()) {
-            throw GradleException("Release APK not found at $apkPath. Please run the assembleRelease task first.")
-        }
-        println("Uploading $apkPath to Aptoide...")
-
-        commandLine(
-            "curl",
-            "-X", "POST",
-            "https://uploader.catappult.io/api",
-            "-H", "Api-Key: $apiKey",
-            "-F", "apk=@$apkPath"
-        )
+    val properties = Properties()
+    val localPropertiesFile = rootProject.file("local.properties")
+    if (localPropertiesFile.exists()) {
+        properties.load(localPropertiesFile.inputStream())
     }
+
+    val apiKey = properties.getProperty("aptoide.apiKey")
+    if (apiKey.isNullOrEmpty()) {
+        throw GradleException("Aptoide API key not found. Please add 'aptoide.apiKey=YOUR_KEY' to your local.properties file.")
+    }
+
+    val apkPath = "${project.layout.buildDirectory.get()}/outputs/apk/release/app-release.apk"
+    val apkFile = project.file(apkPath)
+    if (!apkFile.exists()) {
+        throw GradleException("Release APK not found at $apkPath. Please run the assembleRelease task first.")
+    }
+    println("Uploading $apkPath to Aptoide...")
+
+    commandLine(
+        "curl",
+        "-X", "POST",
+        "https://uploader.catappult.io/api",
+        "-H", "Api-Key: $apiKey",
+        "-F", "apk=@$apkPath"
+    )
 
     doLast {
         println("Upload command finished.")
