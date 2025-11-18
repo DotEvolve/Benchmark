@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<issues format="6" by="lint 8.13.0" type="baseline" client="gradle" dependencies="false" name="AGP (8.13.0)" variant="all" version="8.13.0">
+<issues format="6" by="lint 8.13.1" type="baseline" client="gradle" dependencies="false" name="AGP (8.13.1)" variant="all" version="8.13.1">
 
     <issue
         id="DefaultLocale"
@@ -219,6 +219,160 @@
             file="src/main/java/net/dotevolve/benchmark/ui/ResultDetailActivity.java"
             line="98"
             column="20"/>
+    </issue>
+
+    <issue
+        id="InlinedApi"
+        message="Field requires API level 26 (current min is 23): `android.os.BatteryManager#BATTERY_PROPERTY_STATUS`"
+        errorLine1="                batteryHealth = batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_STATUS);"
+        errorLine2="                                                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/net/dotevolve/benchmark/core/AdvancedMetrics.java"
+            line="106"
+            column="63"/>
+    </issue>
+
+    <issue
+        id="InlinedApi"
+        message="Field requires API level 24 (current min is 23): `android.app.NotificationManager#IMPORTANCE_DEFAULT`"
+        errorLine1="                channelName, NotificationManager.IMPORTANCE_DEFAULT)"
+        errorLine2="                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/net/dotevolve/benchmark/ui/LauncherActivity.kt"
+            line="97"
+            column="30"/>
+    </issue>
+
+    <issue
+        id="InlinedApi"
+        message="Field requires API level 33 (current min is 23): `android.Manifest.permission#POST_NOTIFICATIONS`"
+        errorLine1="                        requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)"
+        errorLine2="                                                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/net/dotevolve/benchmark/ui/LauncherActivity.kt"
+            line="184"
+            column="58"/>
+    </issue>
+
+    <issue
+        id="InlinedApi"
+        message="Field requires API level 33 (current min is 23): `android.Manifest.permission#POST_NOTIFICATIONS`"
+        errorLine1="                requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)"
+        errorLine2="                                                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/net/dotevolve/benchmark/ui/LauncherActivity.kt"
+            line="196"
+            column="50"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 26 (current min is 23): `android.app.NotificationManager#createNotificationChannel`"
+        errorLine1="        notificationManager?.createNotificationChannel("
+        errorLine2="                             ~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/net/dotevolve/benchmark/ui/LauncherActivity.kt"
+            line="95"
+            column="30"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 26 (current min is 23): `android.app.NotificationChannel()`"
+        errorLine1="            NotificationChannel(channelId,"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/net/dotevolve/benchmark/ui/LauncherActivity.kt"
+            line="96"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 24, or core library desugaring (current min is 23): `java.util.Collection#stream`"
+        errorLine1="        double mean = samples.stream().mapToLong(Long::longValue).average().orElse(0);"
+        errorLine2="                              ~~~~~~">
+        <location
+            file="src/main/java/net/dotevolve/benchmark/core/PerformanceMetrics.java"
+            line="218"
+            column="31"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 24, or core library desugaring (current min is 23): `java.util.OptionalDouble#orElse`"
+        errorLine1="        double mean = samples.stream().mapToLong(Long::longValue).average().orElse(0);"
+        errorLine2="                                                                            ~~~~~~">
+        <location
+            file="src/main/java/net/dotevolve/benchmark/core/PerformanceMetrics.java"
+            line="218"
+            column="77"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 24, or core library desugaring (current min is 23): `java.util.stream.LongStream#average`"
+        errorLine1="        double mean = samples.stream().mapToLong(Long::longValue).average().orElse(0);"
+        errorLine2="                                                                  ~~~~~~~">
+        <location
+            file="src/main/java/net/dotevolve/benchmark/core/PerformanceMetrics.java"
+            line="218"
+            column="67"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 24, or core library desugaring (current min is 23): `java.util.stream.Stream#mapToLong`"
+        errorLine1="        double mean = samples.stream().mapToLong(Long::longValue).average().orElse(0);"
+        errorLine2="                                       ~~~~~~~~~">
+        <location
+            file="src/main/java/net/dotevolve/benchmark/core/PerformanceMetrics.java"
+            line="218"
+            column="40"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 24, or core library desugaring (current min is 23): `java.util.Collection#stream`"
+        errorLine1="        double variance = samples.stream()"
+        errorLine2="                                  ~~~~~~">
+        <location
+            file="src/main/java/net/dotevolve/benchmark/core/PerformanceMetrics.java"
+            line="219"
+            column="35"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 24, or core library desugaring (current min is 23): `java.util.stream.Stream#mapToDouble`"
+        errorLine1="                .mapToDouble(sample -> Math.pow(sample - mean, 2))"
+        errorLine2="                 ~~~~~~~~~~~">
+        <location
+            file="src/main/java/net/dotevolve/benchmark/core/PerformanceMetrics.java"
+            line="220"
+            column="18"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 24, or core library desugaring (current min is 23): `java.util.OptionalDouble#orElse`"
+        errorLine1="                .average().orElse(0);"
+        errorLine2="                           ~~~~~~">
+        <location
+            file="src/main/java/net/dotevolve/benchmark/core/PerformanceMetrics.java"
+            line="221"
+            column="28"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 24, or core library desugaring (current min is 23): `java.util.stream.DoubleStream#average`"
+        errorLine1="                .average().orElse(0);"
+        errorLine2="                 ~~~~~~~">
+        <location
+            file="src/main/java/net/dotevolve/benchmark/core/PerformanceMetrics.java"
+            line="221"
+            column="18"/>
     </issue>
 
     <issue
@@ -729,14 +883,7 @@
 
     <issue
         id="ObsoleteSdkInt"
-        message="This folder configuration (`v26`) is unnecessary; `minSdkVersion` is 34. Merge all the resources in this folder into `mipmap-anydpi`.">
-        <location
-            file="src/main/res/mipmap-anydpi-v26"/>
-    </issue>
-
-    <issue
-        id="ObsoleteSdkInt"
-        message="This folder configuration (`v23`) is unnecessary; `minSdkVersion` is 34. Merge all the resources in this folder into `values`.">
+        message="This folder configuration (`v23`) is unnecessary; `minSdkVersion` is 23. Merge all the resources in this folder into `values`.">
         <location
             file="src/main/res/values-v23"/>
     </issue>
@@ -761,6 +908,38 @@
             file="src/main/res/layout/activity_launcher.xml"
             line="2"
             column="1"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.mipmap.app_banner` appears to be unused">
+        <location
+            file="src/main/res/mipmap-xhdpi/app_banner.png"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.color.app_banner_background` appears to be unused"
+        errorLine1="    &lt;color name=&quot;app_banner_background&quot;>#FFFFFF&lt;/color>"
+        errorLine2="           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/app_banner_background.xml"
+            line="3"
+            column="12"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.mipmap.app_banner_foreground` appears to be unused">
+        <location
+            file="src/main/res/mipmap-xhdpi/app_banner_foreground.png"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.mipmap.app_icon` appears to be unused">
+        <location
+            file="src/main/res/mipmap-xhdpi/app_icon.png"/>
     </issue>
 
     <issue
@@ -1185,6 +1364,22 @@
     </issue>
 
     <issue
+        id="IconDuplicatesConfig"
+        message="The `app_banner.png` icon has identical contents in the following configuration folders: drawable, mipmap-xhdpi">
+        <location
+            file="src/main/res/mipmap-xhdpi/app_banner.png"/>
+        <location
+            file="src/main/res/drawable/app_banner.png"/>
+    </issue>
+
+    <issue
+        id="IconLocation"
+        message="Found bitmap drawable `res/drawable/app_banner.png` in densityless folder">
+        <location
+            file="src/main/res/drawable/app_banner.png"/>
+    </issue>
+
+    <issue
         id="IconLocation"
         message="Found bitmap drawable `res/drawable/cropped_circle_image.png` in densityless folder">
         <location
@@ -1194,6 +1389,15 @@
     <issue
         id="IconLocation"
         message="Found bitmap drawable `res/drawable/ic_launcher_playstore.png` in densityless folder">
+        <location
+            file="src/main/res/drawable/ic_launcher_playstore.png"/>
+    </issue>
+
+    <issue
+        id="IconDuplicates"
+        message="The following unrelated icon files have identical contents: ic_launcher_playstore.png, app_icon.png">
+        <location
+            file="src/main/res/mipmap-xhdpi/app_icon.png"/>
         <location
             file="src/main/res/drawable/ic_launcher_playstore.png"/>
     </issue>
