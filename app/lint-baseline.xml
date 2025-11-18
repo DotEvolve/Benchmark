@@ -1930,15 +1930,4 @@
             column="17"/>
     </issue>
 
-    <issue
-        id="HardcodedText"
-        message="Hardcoded string &quot;📤 Share&quot;, should use `@string` resource"
-        errorLine1="                android:text=&quot;📤 Share&quot;"
-        errorLine2="                ~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/metrics_detail_dialog.xml"
-            line="287"
-            column="17"/>
-    </issue>
-
 </issues>
