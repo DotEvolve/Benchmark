@@ -151,7 +151,7 @@ public class BenchmarkEngine {
             keyGen.init(256);
             SecretKey secretKey = keyGen.generateKey();
             
-            Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+            Cipher cipher = Cipher.getInstance("AES/GCM/OAEPWITHSHA-256ANDMGF1PADDING");
             cipher.init(Cipher.ENCRYPT_MODE, secretKey);
             
             byte[] inputBytes = testString.getBytes(StandardCharsets.UTF_8);
