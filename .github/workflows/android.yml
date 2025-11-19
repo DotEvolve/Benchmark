@@ -36,35 +36,16 @@ jobs:
     - name: Build with Gradle
       run: ./gradlew build
 
-  auto_merge_dependabot:
-    name: 'Dependabot Auto Merge'
-    needs: [build]
-    runs-on: ubuntu-latest
-    if: ${{ github.actor == 'dependabot[bot]' && github.event_name == 'pull_request'}} # Detect that the PR author is dependabot
-    permissions:
-      pull-requests: write
-    steps:
-      - name: Enable auto-merge for Dependabot PRs
-        uses: actions/github-script@v6
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const prNumber = context.payload.pull_request && context.payload.pull_request.number;
-            if (!prNumber) throw new Error('No pull_request number in event payload');
-            const owner = context.repo.owner;
-            const repo = context.repo.repo;
-            console.log(`Attempting to merge PR #${prNumber} in ${owner}/${repo}`);
-            try {
-              await github.rest.pulls.merge({ owner, repo, pull_number: prNumber, merge_method: 'merge' });
-              console.log(`PR #${prNumber} merged successfully.`);
-            } catch (err) {
-              console.log(`Immediate merge failed: ${err.message}. Attempting to enable auto-merge.`);
-              // Fallback: enable GitHub auto-merge for the PR so it will merge when checks pass
-              await github.request('PUT /repos/{owner}/{repo}/pulls/{pull_number}/auto-merge', {
-                owner,
-                repo,
-                pull_number: prNumber,
-                merge_method: 'merge'
-              });
-              console.log(`Auto-merge enabled for PR #${prNumber}.`);
-            }
+#  auto_merge_dependabot:
+#    name: 'Dependabot Auto Merge'
+#    needs: [build]
+#    runs-on: ubuntu-latest
+#    if: ${{ github.actor == 'dependabot[bot]' && github.event_name == 'pull_request'}} # Detect that the PR author is dependabot
+#    permissions:
+#      pull-requests: write
+#    steps:
+#      - name: Enable auto-merge for Dependabot PRs
+#        run: gh pr merge --auto --merge "$PR_URL" # Use Github CLI to merge automatically the PR
+#        env:
+#          PR_URL: ${{github.event.pull_request.html_url}}
+#          GH_TOKEN: ${{ github.token }}
