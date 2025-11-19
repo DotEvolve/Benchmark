@@ -5,7 +5,7 @@
   
   [![Android](https://img.shields.io/badge/Platform-Android-green.svg)](https://android.com)
   [![API](https://img.shields.io/badge/API-34%2B-brightgreen.svg)](https://android-arsenal.com/api?level=34)
-  [![Version](https://img.shields.io/badge/Version-12.0-blue.svg)](https://github.com/dotevolve/benchmark)
+  [![Version](https://img.shields.io/badge/Version-16.0-blue.svg)](https://github.com/dotevolve/benchmark)
   [![License](https://img.shields.io/badge/License-MIT-orange.svg)](LICENSE)
 </div>
 
