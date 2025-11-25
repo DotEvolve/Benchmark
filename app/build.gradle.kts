@@ -21,8 +21,8 @@ android {
         applicationId = "net.dotevolve.benchmark"
         minSdk = 23
         targetSdk = 36
-        versionCode = 16
-        versionName = "16"
+        versionCode = 17
+        versionName = "17"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -154,7 +154,7 @@ tasks.register<JacocoReport>("jacocoTestReportDebug") {
         fileTree("$layout.buildDir/tmp/kotlin-classes/debug") {
             exclude(
                 "**/R.class",
-                "**/R\$*.class",
+                "**/R$*.class",
                 "**/BuildConfig.*",
                 "**/Manifest*.*",
                 "**/*\$ViewBinder*.*", // For ViewBinding
