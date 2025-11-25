@@ -20,6 +20,7 @@ public class BenchmarkResult implements Serializable {
     private int cpuCores;
     private long totalMemory;
     private String architecture;
+    private String benchmarkVersion;
     
     // Performance scores
     private int overallScore;
@@ -59,6 +60,7 @@ public class BenchmarkResult implements Serializable {
         this.cpuCores = metrics.getCpuCores();
         this.totalMemory = metrics.getTotalMemory();
         this.architecture = metrics.getArchitecture();
+        this.benchmarkVersion = metrics.getBenchmarkVersion();
         this.overallScore = metrics.getOverallScore();
         this.cryptoScore = metrics.getCryptoScore();
         this.efficiencyScore = metrics.getEfficiencyScore();
@@ -106,6 +108,8 @@ public class BenchmarkResult implements Serializable {
     public void setTotalMemory(long totalMemory) { this.totalMemory = totalMemory; }
     
     public String getArchitecture() { return architecture; }
+    public String getBenchmarkVersion() { return benchmarkVersion != null ? benchmarkVersion : "unknown"; }
+    public void setBenchmarkVersion(String benchmarkVersion) { this.benchmarkVersion = benchmarkVersion; }
     public void setArchitecture(String architecture) { this.architecture = architecture; }
     
     public int getOverallScore() { return overallScore; }

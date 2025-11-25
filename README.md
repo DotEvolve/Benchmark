@@ -160,6 +160,16 @@ The benchmark engine performs several types of performance tests:
 3. **Memory Operations** - Memory allocation and access patterns
 4. **I/O Operations** - File system and database operations
 
+## Benchmark Engine Versioning
+
+Starting with engine **v2.0.0**, every benchmark run is tagged with a semantic version so historical scores can be compared safely:
+
+- **MAJOR** — Breaking changes to the suite (new core tests, scoring overhauls). Only compare scores that share the same major number.
+- **MINOR** — Additive tweaks (e.g., extra workloads) that still allow comparison within the major line.
+- **PATCH** — Bug fixes or optimizations that do not alter scoring math.
+
+The active engine version is surfaced in every result card, detail view, local database row, and Firestore record, ensuring apples-to-apples comparisons across devices.
+
 ## Contributing
 
 We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.md) for details.

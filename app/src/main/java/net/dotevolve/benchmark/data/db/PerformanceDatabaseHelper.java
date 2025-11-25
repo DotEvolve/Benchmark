@@ -24,7 +24,7 @@ public class PerformanceDatabaseHelper extends SQLiteOpenHelper {
     
     private static final String TAG = "PerformanceDB";
     private static final String DATABASE_NAME = "benchmark_performance.db";
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3;
     
     // Table names
     private static final String TABLE_BENCHMARKS = "benchmarks";
@@ -39,6 +39,7 @@ public class PerformanceDatabaseHelper extends SQLiteOpenHelper {
     private static final String COLUMN_CPU_CORES = "cpu_cores";
     private static final String COLUMN_TOTAL_MEMORY = "total_memory";
     private static final String COLUMN_ARCHITECTURE = "architecture";
+    private static final String COLUMN_ENGINE_VERSION = "engine_version";
     
     // Performance scores
     private static final String COLUMN_OVERALL_SCORE = "overall_score";
@@ -113,6 +114,7 @@ public class PerformanceDatabaseHelper extends SQLiteOpenHelper {
                 COLUMN_CPU_CORES + " INTEGER, " +
                 COLUMN_TOTAL_MEMORY + " INTEGER, " +
                 COLUMN_ARCHITECTURE + " TEXT, " +
+                COLUMN_ENGINE_VERSION + " TEXT, " +
                 COLUMN_OVERALL_SCORE + " INTEGER NOT NULL, " +
                 COLUMN_CRYPTO_SCORE + " INTEGER, " +
                 COLUMN_EFFICIENCY_SCORE + " INTEGER, " +
@@ -181,6 +183,7 @@ public class PerformanceDatabaseHelper extends SQLiteOpenHelper {
         values.put(COLUMN_CPU_CORES, metrics.getCpuCores());
         values.put(COLUMN_TOTAL_MEMORY, metrics.getTotalMemory());
         values.put(COLUMN_ARCHITECTURE, metrics.getArchitecture());
+        values.put(COLUMN_ENGINE_VERSION, metrics.getBenchmarkVersion());
         
         values.put(COLUMN_OVERALL_SCORE, metrics.getOverallScore());
         values.put(COLUMN_CRYPTO_SCORE, metrics.getCryptoScore());
@@ -412,6 +415,7 @@ public class PerformanceDatabaseHelper extends SQLiteOpenHelper {
         result.setCpuCores(cursor.getInt(cursor.getColumnIndex(COLUMN_CPU_CORES)));
         result.setTotalMemory(cursor.getLong(cursor.getColumnIndex(COLUMN_TOTAL_MEMORY)));
         result.setArchitecture(cursor.getString(cursor.getColumnIndex(COLUMN_ARCHITECTURE)));
+        result.setBenchmarkVersion(cursor.getString(cursor.getColumnIndex(COLUMN_ENGINE_VERSION)));
         result.setOverallScore(cursor.getInt(cursor.getColumnIndex(COLUMN_OVERALL_SCORE)));
         result.setCryptoScore(cursor.getInt(cursor.getColumnIndex(COLUMN_CRYPTO_SCORE)));
         result.setEfficiencyScore(cursor.getInt(cursor.getColumnIndex(COLUMN_EFFICIENCY_SCORE)));

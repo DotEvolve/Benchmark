@@ -60,6 +60,7 @@ public class PerformanceMetrics {
     private int cpuCores;
     private long totalMemory;
     private String architecture;
+    private String benchmarkVersion = "unknown";
     
     // Performance scores
     private int overallScore;
@@ -410,6 +411,7 @@ public class PerformanceMetrics {
         StringBuilder result = new StringBuilder();
         
         result.append("=== PERFORMANCE BENCHMARK RESULTS ===\n\n");
+        result.append("Engine Version: ").append(benchmarkVersion).append("\n\n");
         
         // System Information
         result.append("📱 DEVICE INFORMATION\n");
@@ -619,6 +621,7 @@ public class PerformanceMetrics {
             benchmarkData.put("cpuCores", cpuCores);
             benchmarkData.put("totalMemory", totalMemory);
             benchmarkData.put("architecture", architecture);
+            benchmarkData.put("benchmarkVersion", benchmarkVersion);
             benchmarkData.put("overallScore", overallScore);
             benchmarkData.put("cryptoScore", cryptoScore);
             benchmarkData.put("computationalScore", computationalScore);
@@ -710,5 +713,7 @@ public class PerformanceMetrics {
     public int getComputationalScore() { return computationalScore; }
     public int getMemoryScore() { return memoryScore; }
     public int getMultiThreadingScore() { return multiThreadingScore; }
+    public String getBenchmarkVersion() { return benchmarkVersion; }
+    public void setBenchmarkVersion(String benchmarkVersion) { this.benchmarkVersion = benchmarkVersion; }
 }
 

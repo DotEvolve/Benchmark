@@ -25,6 +25,13 @@ import javax.crypto.SecretKey;
  */
 public class BenchmarkEngine {
     private static final String TAG = "BenchmarkEngine";
+    /**
+     * Benchmark engine versioning follows MAJOR.MINOR.PATCH (semver):
+     * - MAJOR: breaking test-suite/scoring changes that invalidate comparisons.
+     * - MINOR: new tests or scoring tweaks that remain comparable within the major line.
+     * - PATCH: bug fixes or perf tweaks that do not affect final scoring logic.
+     */
+    public static final String ENGINE_VERSION = "2.0.0";
     
     private final PerformanceMetrics metrics;
     private final Context context;
@@ -46,6 +53,7 @@ public class BenchmarkEngine {
     public BenchmarkEngine(Context context) {
         this.context = context;
         this.metrics = new PerformanceMetrics(context);
+        this.metrics.setBenchmarkVersion(ENGINE_VERSION);
         this.testString = context.getResources().getString(R.string.testString);
     }
     

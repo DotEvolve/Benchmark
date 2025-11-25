@@ -59,7 +59,8 @@ public class ResultDetailActivity extends AppCompatActivity {
         details.append("Android: ").append(result.getAndroidVersion()).append("\n");
         details.append("CPU Cores: ").append(result.getCpuCores()).append("\n");
         details.append("Architecture: ").append(result.getArchitecture()).append("\n");
-        details.append("Memory: ").append(result.getFormattedMemory()).append("\n\n");
+        details.append("Memory: ").append(result.getFormattedMemory()).append("\n");
+        details.append("Benchmark Engine: v").append(result.getBenchmarkVersion()).append("\n\n");
         
         details.append("🎯 PERFORMANCE SCORES\n");
         details.append("Overall Score: ").append(result.getOverallScore()).append("/100 (")
