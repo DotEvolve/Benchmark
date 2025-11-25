@@ -65,6 +65,9 @@ public class ResultDetailActivity extends AppCompatActivity {
         details.append("Overall Score: ").append(result.getOverallScore()).append("/100 (")
                 .append(result.getPerformanceCategory()).append(")\n");
         details.append("Crypto Performance: ").append(result.getCryptoScore()).append("/100\n");
+        details.append("Computational: ").append(result.getComputationalScore()).append("/100\n");
+        details.append("Memory: ").append(result.getMemoryScore()).append("/100\n");
+        details.append("Multi-threading: ").append(result.getMultiThreadingScore()).append("/100\n");
         details.append("Efficiency: ").append(result.getEfficiencyScore()).append("/100\n");
         details.append("Stability: ").append(result.getStabilityScore()).append("/100\n\n");
         
@@ -73,7 +76,12 @@ public class ResultDetailActivity extends AppCompatActivity {
         details.append("MD5 Time: ").append(formatNanoTime(result.getMd5Time())).append("\n");
         details.append("AES Time: ").append(formatNanoTime(result.getAesTime())).append("\n");
         details.append("RSA Time: ").append(formatNanoTime(result.getRsaTime())).append("\n");
-        details.append("Loop Time: ").append(formatNanoTime(result.getLoopTime())).append("\n\n");
+        details.append("Loop Time: ").append(formatNanoTime(result.getLoopTime())).append("\n");
+        details.append("Matrix Multiplication: ").append(formatNanoTime(result.getMatrixTime())).append("\n");
+        details.append("Sorting Time: ").append(formatNanoTime(result.getSortTime())).append("\n");
+        details.append("Compression Time: ").append(formatNanoTime(result.getCompressionTime())).append("\n");
+        details.append("Memory Bandwidth Time: ").append(formatNanoTime(result.getMemoryBandwidthTime())).append("\n");
+        details.append("Multi-threaded Time: ").append(formatNanoTime(result.getMultiThreadedTime())).append("\n\n");
         
         if (result.hasAdvancedMetrics()) {
             details.append("🔍 ADVANCED METRICS\n");

@@ -90,7 +90,7 @@
             android:id="@+id/detailsText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Crypto: 80 | Efficiency: 85 | Stability: 90"
+            android:text="Crypto: 80 | Comp: 78 | Memory: 82&#10;Multi-thread: 76 | Eff: 85 | Stability: 90"
             android:textSize="12sp"
             android:textColor="@android:color/darker_gray"
             android:lineSpacingExtra="2dp" />

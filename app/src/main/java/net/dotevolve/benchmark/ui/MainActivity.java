@@ -175,6 +175,11 @@ public class MainActivity extends AppCompatActivity {
                     • SHA-1 Hash Performance
                     • MD5 Hash Performance
                     • AES Encryption Performance
+                    • Matrix Multiplication
+                    • Sorting Algorithms
+                    • Data Compression
+                    • Memory Bandwidth
+                    • Multi-threaded Performance
                     • System Overhead Analysis
                     
                     Please wait...""");
