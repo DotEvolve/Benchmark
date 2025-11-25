@@ -1,5 +1,7 @@
 package net.dotevolve.benchmark.data.model;
 
+import androidx.annotation.NonNull;
+
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -225,6 +227,7 @@ public class BenchmarkResult implements Serializable {
         return cpuTemperature != -1 || batteryLevel != -1 || memoryUsage != -1;
     }
     
+    @NonNull
     @Override
     public String toString() {
         return "BenchmarkResult{" +

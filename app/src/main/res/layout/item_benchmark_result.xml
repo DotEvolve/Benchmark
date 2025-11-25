@@ -20,6 +20,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:baselineAligned="false"
             android:orientation="horizontal"
             android:layout_marginBottom="4dp">
 
@@ -33,7 +34,7 @@
                     android:id="@+id/dateText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Dec 15, 2023"
+                    android:text="@string/dec_25_2025"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     android:textColor="@color/colorPrimary" />

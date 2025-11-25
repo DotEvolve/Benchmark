@@ -48,4 +48,5 @@
     <string name="schedule_daily_benchmark">Schedule Daily Benchmark</string>
     <string name="toggle_dark_mode">Toggle Dark Mode</string>
     <string name="share">📤 Share</string>
+    <string name="dec_25_2025">Dec 25, 2025</string>
 </resources>
