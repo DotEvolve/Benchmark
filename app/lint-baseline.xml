@@ -129,7 +129,7 @@
         errorLine2="                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/java/net/dotevolve/benchmark/ui/MainActivity.java"
-            line="209"
+            line="214"
             column="20"/>
     </issue>
 
@@ -140,7 +140,7 @@
         errorLine2="                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/java/net/dotevolve/benchmark/ui/MainActivity.java"
-            line="211"
+            line="216"
             column="20"/>
     </issue>
 
@@ -151,7 +151,7 @@
         errorLine2="                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/java/net/dotevolve/benchmark/ui/MainActivity.java"
-            line="213"
+            line="218"
             column="20"/>
     </issue>
 
@@ -162,7 +162,7 @@
         errorLine2="               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/java/net/dotevolve/benchmark/ui/MainActivity.java"
-            line="506"
+            line="511"
             column="16"/>
     </issue>
 
@@ -195,7 +195,7 @@
         errorLine2="                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/java/net/dotevolve/benchmark/ui/ResultDetailActivity.java"
-            line="94"
+            line="103"
             column="20"/>
     </issue>
 
@@ -206,7 +206,7 @@
         errorLine2="                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/java/net/dotevolve/benchmark/ui/ResultDetailActivity.java"
-            line="96"
+            line="105"
             column="20"/>
     </issue>
 
@@ -217,7 +217,7 @@
         errorLine2="                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/java/net/dotevolve/benchmark/ui/ResultDetailActivity.java"
-            line="98"
+            line="107"
             column="20"/>
     </issue>
 
@@ -294,7 +294,7 @@
         errorLine2="                              ~~~~~~">
         <location
             file="src/main/java/net/dotevolve/benchmark/core/PerformanceMetrics.java"
-            line="218"
+            line="391"
             column="31"/>
     </issue>
 
@@ -305,7 +305,7 @@
         errorLine2="                                                                            ~~~~~~">
         <location
             file="src/main/java/net/dotevolve/benchmark/core/PerformanceMetrics.java"
-            line="218"
+            line="391"
             column="77"/>
     </issue>
 
@@ -316,7 +316,7 @@
         errorLine2="                                                                  ~~~~~~~">
         <location
             file="src/main/java/net/dotevolve/benchmark/core/PerformanceMetrics.java"
-            line="218"
+            line="391"
             column="67"/>
     </issue>
 
@@ -327,7 +327,51 @@
         errorLine2="                                       ~~~~~~~~~">
         <location
             file="src/main/java/net/dotevolve/benchmark/core/PerformanceMetrics.java"
-            line="218"
+            line="391"
+            column="40"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 24, or core library desugaring (current min is 23): `java.util.Collection#stream`"
+        errorLine1="        double mean = samples.stream().mapToLong(Long::longValue).average().orElse(0);"
+        errorLine2="                              ~~~~~~">
+        <location
+            file="src/main/java/net/dotevolve/benchmark/core/PerformanceMetrics.java"
+            line="401"
+            column="31"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 24, or core library desugaring (current min is 23): `java.util.OptionalDouble#orElse`"
+        errorLine1="        double mean = samples.stream().mapToLong(Long::longValue).average().orElse(0);"
+        errorLine2="                                                                            ~~~~~~">
+        <location
+            file="src/main/java/net/dotevolve/benchmark/core/PerformanceMetrics.java"
+            line="401"
+            column="77"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 24, or core library desugaring (current min is 23): `java.util.stream.LongStream#average`"
+        errorLine1="        double mean = samples.stream().mapToLong(Long::longValue).average().orElse(0);"
+        errorLine2="                                                                  ~~~~~~~">
+        <location
+            file="src/main/java/net/dotevolve/benchmark/core/PerformanceMetrics.java"
+            line="401"
+            column="67"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 24, or core library desugaring (current min is 23): `java.util.stream.Stream#mapToLong`"
+        errorLine1="        double mean = samples.stream().mapToLong(Long::longValue).average().orElse(0);"
+        errorLine2="                                       ~~~~~~~~~">
+        <location
+            file="src/main/java/net/dotevolve/benchmark/core/PerformanceMetrics.java"
+            line="401"
             column="40"/>
     </issue>
 
@@ -338,7 +382,7 @@
         errorLine2="                                  ~~~~~~">
         <location
             file="src/main/java/net/dotevolve/benchmark/core/PerformanceMetrics.java"
-            line="219"
+            line="402"
             column="35"/>
     </issue>
 
@@ -349,7 +393,7 @@
         errorLine2="                 ~~~~~~~~~~~">
         <location
             file="src/main/java/net/dotevolve/benchmark/core/PerformanceMetrics.java"
-            line="220"
+            line="403"
             column="18"/>
     </issue>
 
@@ -360,7 +404,7 @@
         errorLine2="                           ~~~~~~">
         <location
             file="src/main/java/net/dotevolve/benchmark/core/PerformanceMetrics.java"
-            line="221"
+            line="404"
             column="28"/>
     </issue>
 
@@ -371,7 +415,7 @@
         errorLine2="                 ~~~~~~~">
         <location
             file="src/main/java/net/dotevolve/benchmark/core/PerformanceMetrics.java"
-            line="221"
+            line="404"
             column="18"/>
     </issue>
 
@@ -382,7 +426,7 @@
         errorLine2="                                                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/java/net/dotevolve/benchmark/data/db/PerformanceDatabaseHelper.java"
-            line="304"
+            line="329"
             column="63"/>
     </issue>
 
@@ -393,7 +437,7 @@
         errorLine2="                                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/java/net/dotevolve/benchmark/data/db/PerformanceDatabaseHelper.java"
-            line="306"
+            line="331"
             column="43"/>
     </issue>
 
@@ -404,7 +448,7 @@
         errorLine2="                                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/java/net/dotevolve/benchmark/data/db/PerformanceDatabaseHelper.java"
-            line="307"
+            line="332"
             column="44"/>
     </issue>
 
@@ -415,7 +459,7 @@
         errorLine2="                                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/java/net/dotevolve/benchmark/data/db/PerformanceDatabaseHelper.java"
-            line="347"
+            line="372"
             column="43"/>
     </issue>
 
@@ -426,7 +470,7 @@
         errorLine2="                                                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/java/net/dotevolve/benchmark/data/db/PerformanceDatabaseHelper.java"
-            line="348"
+            line="373"
             column="50"/>
     </issue>
 
@@ -437,7 +481,7 @@
         errorLine2="                                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/java/net/dotevolve/benchmark/data/db/PerformanceDatabaseHelper.java"
-            line="386"
+            line="411"
             column="37"/>
     </issue>
 
@@ -448,7 +492,7 @@
         errorLine2="                                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/java/net/dotevolve/benchmark/data/db/PerformanceDatabaseHelper.java"
-            line="387"
+            line="412"
             column="44"/>
     </issue>
 
@@ -459,7 +503,7 @@
         errorLine2="                                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/java/net/dotevolve/benchmark/data/db/PerformanceDatabaseHelper.java"
-            line="388"
+            line="413"
             column="48"/>
     </issue>
 
@@ -470,7 +514,7 @@
         errorLine2="                                                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/java/net/dotevolve/benchmark/data/db/PerformanceDatabaseHelper.java"
-            line="389"
+            line="414"
             column="51"/>
     </issue>
 
@@ -481,7 +525,7 @@
         errorLine2="                                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/java/net/dotevolve/benchmark/data/db/PerformanceDatabaseHelper.java"
-            line="390"
+            line="415"
             column="42"/>
     </issue>
 
@@ -492,7 +536,7 @@
         errorLine2="                                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/java/net/dotevolve/benchmark/data/db/PerformanceDatabaseHelper.java"
-            line="391"
+            line="416"
             column="46"/>
     </issue>
 
@@ -503,8 +547,19 @@
         errorLine2="                                                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/java/net/dotevolve/benchmark/data/db/PerformanceDatabaseHelper.java"
-            line="392"
+            line="417"
             column="49"/>
+    </issue>
+
+    <issue
+        id="Range"
+        message="Value must be ≥ 0 but `getColumnIndex` can be -1"
+        errorLine1="        result.setBenchmarkVersion(cursor.getString(cursor.getColumnIndex(COLUMN_ENGINE_VERSION)));"
+        errorLine2="                                                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/net/dotevolve/benchmark/data/db/PerformanceDatabaseHelper.java"
+            line="418"
+            column="53"/>
     </issue>
 
     <issue
@@ -514,7 +569,7 @@
         errorLine2="                                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/java/net/dotevolve/benchmark/data/db/PerformanceDatabaseHelper.java"
-            line="393"
+            line="419"
             column="46"/>
     </issue>
 
@@ -525,7 +580,7 @@
         errorLine2="                                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/java/net/dotevolve/benchmark/data/db/PerformanceDatabaseHelper.java"
-            line="394"
+            line="420"
             column="45"/>
     </issue>
 
@@ -536,7 +591,7 @@
         errorLine2="                                                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/java/net/dotevolve/benchmark/data/db/PerformanceDatabaseHelper.java"
-            line="395"
+            line="421"
             column="49"/>
     </issue>
 
@@ -547,8 +602,41 @@
         errorLine2="                                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/java/net/dotevolve/benchmark/data/db/PerformanceDatabaseHelper.java"
-            line="396"
+            line="422"
             column="48"/>
+    </issue>
+
+    <issue
+        id="Range"
+        message="Value must be ≥ 0 but `getColumnIndex` can be -1"
+        errorLine1="        result.setComputationalScore(cursor.getInt(cursor.getColumnIndex(COLUMN_COMPUTATIONAL_SCORE)));"
+        errorLine2="                                                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/net/dotevolve/benchmark/data/db/PerformanceDatabaseHelper.java"
+            line="423"
+            column="52"/>
+    </issue>
+
+    <issue
+        id="Range"
+        message="Value must be ≥ 0 but `getColumnIndex` can be -1"
+        errorLine1="        result.setMemoryScore(cursor.getInt(cursor.getColumnIndex(COLUMN_MEMORY_SCORE)));"
+        errorLine2="                                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/net/dotevolve/benchmark/data/db/PerformanceDatabaseHelper.java"
+            line="424"
+            column="45"/>
+    </issue>
+
+    <issue
+        id="Range"
+        message="Value must be ≥ 0 but `getColumnIndex` can be -1"
+        errorLine1="        result.setMultiThreadingScore(cursor.getInt(cursor.getColumnIndex(COLUMN_MULTI_THREAD_SCORE)));"
+        errorLine2="                                                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/net/dotevolve/benchmark/data/db/PerformanceDatabaseHelper.java"
+            line="425"
+            column="53"/>
     </issue>
 
     <issue
@@ -558,7 +646,7 @@
         errorLine2="                                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/java/net/dotevolve/benchmark/data/db/PerformanceDatabaseHelper.java"
-            line="397"
+            line="426"
             column="43"/>
     </issue>
 
@@ -569,7 +657,7 @@
         errorLine2="                                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/java/net/dotevolve/benchmark/data/db/PerformanceDatabaseHelper.java"
-            line="398"
+            line="427"
             column="42"/>
     </issue>
 
@@ -580,7 +668,7 @@
         errorLine2="                                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/java/net/dotevolve/benchmark/data/db/PerformanceDatabaseHelper.java"
-            line="399"
+            line="428"
             column="42"/>
     </issue>
 
@@ -591,7 +679,7 @@
         errorLine2="                                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/java/net/dotevolve/benchmark/data/db/PerformanceDatabaseHelper.java"
-            line="400"
+            line="429"
             column="42"/>
     </issue>
 
@@ -602,8 +690,63 @@
         errorLine2="                                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/java/net/dotevolve/benchmark/data/db/PerformanceDatabaseHelper.java"
-            line="401"
+            line="430"
             column="43"/>
+    </issue>
+
+    <issue
+        id="Range"
+        message="Value must be ≥ 0 but `getColumnIndex` can be -1"
+        errorLine1="        result.setMatrixTime(cursor.getLong(cursor.getColumnIndex(COLUMN_MATRIX_TIME)));"
+        errorLine2="                                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/net/dotevolve/benchmark/data/db/PerformanceDatabaseHelper.java"
+            line="431"
+            column="45"/>
+    </issue>
+
+    <issue
+        id="Range"
+        message="Value must be ≥ 0 but `getColumnIndex` can be -1"
+        errorLine1="        result.setSortTime(cursor.getLong(cursor.getColumnIndex(COLUMN_SORT_TIME)));"
+        errorLine2="                                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/net/dotevolve/benchmark/data/db/PerformanceDatabaseHelper.java"
+            line="432"
+            column="43"/>
+    </issue>
+
+    <issue
+        id="Range"
+        message="Value must be ≥ 0 but `getColumnIndex` can be -1"
+        errorLine1="        result.setCompressionTime(cursor.getLong(cursor.getColumnIndex(COLUMN_COMPRESSION_TIME)));"
+        errorLine2="                                                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/net/dotevolve/benchmark/data/db/PerformanceDatabaseHelper.java"
+            line="433"
+            column="50"/>
+    </issue>
+
+    <issue
+        id="Range"
+        message="Value must be ≥ 0 but `getColumnIndex` can be -1"
+        errorLine1="        result.setMemoryBandwidthTime(cursor.getLong(cursor.getColumnIndex(COLUMN_MEMORY_BANDWIDTH_TIME)));"
+        errorLine2="                                                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/net/dotevolve/benchmark/data/db/PerformanceDatabaseHelper.java"
+            line="434"
+            column="54"/>
+    </issue>
+
+    <issue
+        id="Range"
+        message="Value must be ≥ 0 but `getColumnIndex` can be -1"
+        errorLine1="        result.setMultiThreadedTime(cursor.getLong(cursor.getColumnIndex(COLUMN_MULTI_THREAD_TIME)));"
+        errorLine2="                                                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/net/dotevolve/benchmark/data/db/PerformanceDatabaseHelper.java"
+            line="435"
+            column="52"/>
     </issue>
 
     <issue
@@ -613,7 +756,7 @@
         errorLine2="                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/java/net/dotevolve/benchmark/data/db/PerformanceDatabaseHelper.java"
-            line="404"
+            line="438"
             column="28"/>
     </issue>
 
@@ -624,7 +767,7 @@
         errorLine2="                                                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/java/net/dotevolve/benchmark/data/db/PerformanceDatabaseHelper.java"
-            line="405"
+            line="439"
             column="55"/>
     </issue>
 
@@ -635,7 +778,7 @@
         errorLine2="                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/java/net/dotevolve/benchmark/data/db/PerformanceDatabaseHelper.java"
-            line="407"
+            line="441"
             column="28"/>
     </issue>
 
@@ -646,7 +789,7 @@
         errorLine2="                                                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/java/net/dotevolve/benchmark/data/db/PerformanceDatabaseHelper.java"
-            line="408"
+            line="442"
             column="50"/>
     </issue>
 
@@ -657,7 +800,7 @@
         errorLine2="                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/java/net/dotevolve/benchmark/data/db/PerformanceDatabaseHelper.java"
-            line="410"
+            line="444"
             column="28"/>
     </issue>
 
@@ -668,7 +811,7 @@
         errorLine2="                                                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/java/net/dotevolve/benchmark/data/db/PerformanceDatabaseHelper.java"
-            line="411"
+            line="445"
             column="50"/>
     </issue>
 
@@ -679,7 +822,7 @@
         errorLine2="                                                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/java/net/dotevolve/benchmark/data/db/PerformanceDatabaseHelper.java"
-            line="413"
+            line="447"
             column="51"/>
     </issue>
 
@@ -690,7 +833,7 @@
         errorLine2="                                                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/java/net/dotevolve/benchmark/data/db/PerformanceDatabaseHelper.java"
-            line="414"
+            line="448"
             column="53"/>
     </issue>
 
@@ -701,7 +844,7 @@
         errorLine2="                                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/java/net/dotevolve/benchmark/data/db/PerformanceDatabaseHelper.java"
-            line="421"
+            line="455"
             column="36"/>
     </issue>
 
@@ -712,7 +855,7 @@
         errorLine2="                                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/java/net/dotevolve/benchmark/data/db/PerformanceDatabaseHelper.java"
-            line="422"
+            line="456"
             column="47"/>
     </issue>
 
@@ -723,7 +866,7 @@
         errorLine2="                                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/java/net/dotevolve/benchmark/data/db/PerformanceDatabaseHelper.java"
-            line="423"
+            line="457"
             column="45"/>
     </issue>
 
@@ -734,7 +877,7 @@
         errorLine2="                                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/java/net/dotevolve/benchmark/data/db/PerformanceDatabaseHelper.java"
-            line="424"
+            line="458"
             column="48"/>
     </issue>
 
@@ -745,7 +888,7 @@
         errorLine2="                                                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/java/net/dotevolve/benchmark/data/db/PerformanceDatabaseHelper.java"
-            line="425"
+            line="459"
             column="49"/>
     </issue>
 
@@ -756,7 +899,7 @@
         errorLine2="                                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/java/net/dotevolve/benchmark/data/db/PerformanceDatabaseHelper.java"
-            line="426"
+            line="460"
             column="42"/>
     </issue>
 
@@ -767,7 +910,7 @@
         errorLine2="                                                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/java/net/dotevolve/benchmark/data/db/PerformanceDatabaseHelper.java"
-            line="427"
+            line="461"
             column="52"/>
     </issue>
 
@@ -778,7 +921,7 @@
         errorLine2="                                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/java/net/dotevolve/benchmark/data/db/PerformanceDatabaseHelper.java"
-            line="433"
+            line="467"
             column="44"/>
     </issue>
 
@@ -789,7 +932,7 @@
         errorLine2="                                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/java/net/dotevolve/benchmark/data/db/PerformanceDatabaseHelper.java"
-            line="434"
+            line="468"
             column="47"/>
     </issue>
 
@@ -800,7 +943,7 @@
         errorLine2="                                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/java/net/dotevolve/benchmark/data/db/PerformanceDatabaseHelper.java"
-            line="435"
+            line="469"
             column="48"/>
     </issue>
 
@@ -811,7 +954,7 @@
         errorLine2="                                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/java/net/dotevolve/benchmark/data/db/PerformanceDatabaseHelper.java"
-            line="436"
+            line="470"
             column="47"/>
     </issue>
 
@@ -822,7 +965,7 @@
         errorLine2="                                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/java/net/dotevolve/benchmark/data/db/PerformanceDatabaseHelper.java"
-            line="437"
+            line="471"
             column="48"/>
     </issue>
 
@@ -833,7 +976,7 @@
         errorLine2="                                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/java/net/dotevolve/benchmark/data/db/PerformanceDatabaseHelper.java"
-            line="438"
+            line="472"
             column="42"/>
     </issue>
 
@@ -844,7 +987,7 @@
         errorLine2="                                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/java/net/dotevolve/benchmark/data/db/PerformanceDatabaseHelper.java"
-            line="439"
+            line="473"
             column="43"/>
     </issue>
 
@@ -857,17 +1000,6 @@
             file="$HOME/GitHub/Benchmark/gradle/wrapper/gradle-wrapper.properties"
             line="4"
             column="17"/>
-    </issue>
-
-    <issue
-        id="GetInstance"
-        message="ECB encryption mode should not be used"
-        errorLine1="            Cipher cipher = Cipher.getInstance(&quot;AES/ECB/PKCS5Padding&quot;);"
-        errorLine2="                                               ~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/net/dotevolve/benchmark/core/BenchmarkEngine.java"
-            line="154"
-            column="48"/>
     </issue>
 
     <issue
@@ -886,17 +1018,6 @@
         message="This folder configuration (`v23`) is unnecessary; `minSdkVersion` is 23. Merge all the resources in this folder into `values`.">
         <location
             file="src/main/res/values-v23"/>
-    </issue>
-
-    <issue
-        id="DisableBaselineAlignment"
-        message="Set `android:baselineAligned=&quot;false&quot;` on this element for better performance"
-        errorLine1="        &lt;LinearLayout"
-        errorLine2="         ~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/item_benchmark_result.xml"
-            line="20"
-            column="10"/>
     </issue>
 
     <issue
@@ -1293,7 +1414,7 @@
     <issue
         id="UnusedResources"
         message="The resource `R.string.loading` appears to be unused"
-        errorLine1="    &lt;string name=&quot;loading&quot;>Loading...&lt;/string>"
+        errorLine1="    &lt;string name=&quot;loading&quot;>Loading…&lt;/string>"
         errorLine2="            ~~~~~~~~~~~~~~">
         <location
             file="src/main/res/values/strings.xml"
@@ -1321,17 +1442,6 @@
             file="src/main/res/values/themes.xml"
             line="53"
             column="12"/>
-    </issue>
-
-    <issue
-        id="TypographyEllipsis"
-        message="Replace &quot;...&quot; with ellipsis character (…, &amp;#8230;) ?"
-        errorLine1="    &lt;string name=&quot;loading&quot;>Loading...&lt;/string>"
-        errorLine2="                           ~~~~~~~~~~">
-        <location
-            file="src/main/res/values/strings.xml"
-            line="45"
-            column="28"/>
     </issue>
 
     <issue
@@ -1508,7 +1618,7 @@
         errorLine2="                               ^">
         <location
             file="src/main/java/net/dotevolve/benchmark/ui/MainActivity.java"
-            line="378"
+            line="383"
             column="32"/>
     </issue>
 
@@ -1519,7 +1629,7 @@
         errorLine2="                               ~~~~~~~~~~">
         <location
             file="src/main/java/net/dotevolve/benchmark/ui/MainActivity.java"
-            line="378"
+            line="383"
             column="32"/>
     </issue>
 
@@ -1530,7 +1640,7 @@
         errorLine2="                              ~~~~~~~~~~~~~">
         <location
             file="src/main/java/net/dotevolve/benchmark/ui/MainActivity.java"
-            line="379"
+            line="384"
             column="31"/>
     </issue>
 
@@ -1541,7 +1651,7 @@
         errorLine2="                              ~~~~~~~~~~~~~~">
         <location
             file="src/main/java/net/dotevolve/benchmark/ui/MainActivity.java"
-            line="380"
+            line="385"
             column="31"/>
     </issue>
 
@@ -1552,7 +1662,7 @@
         errorLine2="                                 ^">
         <location
             file="src/main/java/net/dotevolve/benchmark/ui/MainActivity.java"
-            line="388"
+            line="393"
             column="34"/>
     </issue>
 
@@ -1563,7 +1673,7 @@
         errorLine2="                                 ~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/java/net/dotevolve/benchmark/ui/MainActivity.java"
-            line="388"
+            line="393"
             column="34"/>
     </issue>
 
@@ -1574,7 +1684,7 @@
         errorLine2="                                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/java/net/dotevolve/benchmark/ui/MainActivity.java"
-            line="390"
+            line="395"
             column="33"/>
     </issue>
 
@@ -1668,23 +1778,12 @@
 
     <issue
         id="HardcodedText"
-        message="Hardcoded string &quot;Dec 15, 2023&quot;, should use `@string` resource"
-        errorLine1="                    android:text=&quot;Dec 15, 2023&quot;"
-        errorLine2="                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/item_benchmark_result.xml"
-            line="36"
-            column="21"/>
-    </issue>
-
-    <issue
-        id="HardcodedText"
         message="Hardcoded string &quot;14:30:25&quot;, should use `@string` resource"
         errorLine1="                    android:text=&quot;14:30:25&quot;"
         errorLine2="                    ~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/layout/item_benchmark_result.xml"
-            line="45"
+            line="46"
             column="21"/>
     </issue>
 
@@ -1695,7 +1794,7 @@
         errorLine2="                    ~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/layout/item_benchmark_result.xml"
-            line="61"
+            line="62"
             column="21"/>
     </issue>
 
@@ -1706,7 +1805,7 @@
         errorLine2="                    ~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/layout/item_benchmark_result.xml"
-            line="69"
+            line="70"
             column="21"/>
     </issue>
 
@@ -1717,18 +1816,18 @@
         errorLine2="            ~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/layout/item_benchmark_result.xml"
-            line="82"
+            line="83"
             column="13"/>
     </issue>
 
     <issue
         id="HardcodedText"
-        message="Hardcoded string &quot;Crypto: 80 | Efficiency: 85 | Stability: 90&quot;, should use `@string` resource"
-        errorLine1="            android:text=&quot;Crypto: 80 | Efficiency: 85 | Stability: 90&quot;"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        message="Hardcoded string &quot;Engine v2.0.0&#xA;Crypto: 80 | Comp: 78 | Memory: 82&#xA;Multi-thread: 76 | Eff: 85 | Stability: 90&quot;, should use `@string` resource"
+        errorLine1="            android:text=&quot;Engine v2.0.0&amp;#10;Crypto: 80 | Comp: 78 | Memory: 82&amp;#10;Multi-thread: 76 | Eff: 85 | Stability: 90&quot;"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/layout/item_benchmark_result.xml"
-            line="93"
+            line="94"
             column="13"/>
     </issue>
 
