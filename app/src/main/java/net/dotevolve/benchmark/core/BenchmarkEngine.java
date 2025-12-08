@@ -39,7 +39,7 @@ public class BenchmarkEngine {
     
     // Progress tracking
     private final AtomicInteger currentProgress = new AtomicInteger(0);
-    private final int totalTests = 9; // SHA-1, MD5, AES, Loop, Matrix, Sort, Compression, Memory, MultiThread
+    private final int totalTests = 9; // SHA-512, MD5, AES, Loop, Matrix, Sort, Compression, Memory, MultiThread
     private final Random random = new Random();
     
     public interface BenchmarkProgressCallback {
@@ -65,9 +65,9 @@ public class BenchmarkEngine {
         Log.d(TAG, "Starting comprehensive benchmark...");
         
         try {
-            // Test 1: SHA-1 Hash Performance
+            // Test 1: SHA-512 Hash Performance
             runSha1Benchmark();
-            updateProgress(1, "SHA-1 Complete");
+            updateProgress(1, "SHA-512 Complete");
             
             // Test 2: MD5 Hash Performance  
             runMd5Benchmark();
@@ -116,11 +116,11 @@ public class BenchmarkEngine {
     }
     
     private void runSha1Benchmark() {
-        Log.d(TAG, "Running SHA-1 benchmark...");
+        Log.d(TAG, "Running SHA-512 benchmark...");
         metrics.startSha1Timing();
         
         try {
-            MessageDigest sha1 = MessageDigest.getInstance("SHA-1");
+            MessageDigest sha1 = MessageDigest.getInstance("SHA-512");
             byte[] inputBytes = testString.getBytes(StandardCharsets.UTF_8);
             
             for (int i = 0; i < PerformanceMetrics.SHA1_ITERATIONS; i++) {
@@ -136,13 +136,13 @@ public class BenchmarkEngine {
                 sha1.reset();
             }
         } catch (NoSuchAlgorithmException e) {
-            Log.e(TAG, "SHA-1 algorithm not available", e);
+            Log.e(TAG, "SHA-512 algorithm not available", e);
         }
         
         metrics.endSha1Timing();
         
         if (progressCallback != null) {
-            progressCallback.onTestComplete("SHA-1", metrics.getSha1TotalTime());
+            progressCallback.onTestComplete("SHA-512", metrics.getSha1TotalTime());
         }
     }
     
@@ -405,14 +405,14 @@ public class BenchmarkEngine {
         ExecutorService executor = Executors.newFixedThreadPool(numThreads);
         CountDownLatch latch = new CountDownLatch(numThreads);
         
-        // Each thread performs SHA-1 hashing
+        // Each thread performs SHA-512 hashing
         int iterationsPerThread = PerformanceMetrics.SHA1_ITERATIONS / numThreads;
         
         for (int t = 0; t < numThreads; t++) {
             final int threadId = t;
             executor.submit(() -> {
                 try {
-                    MessageDigest sha1 = MessageDigest.getInstance("SHA-1");
+                    MessageDigest sha1 = MessageDigest.getInstance("SHA-512");
                     byte[] inputBytes = (testString + threadId).getBytes(StandardCharsets.UTF_8);
                     
                     for (int i = 0; i < iterationsPerThread; i++) {
@@ -421,7 +421,7 @@ public class BenchmarkEngine {
                         sha1.reset();
                     }
                 } catch (NoSuchAlgorithmException e) {
-                    Log.e(TAG, "SHA-1 algorithm not available in thread", e);
+                    Log.e(TAG, "SHA-512 algorithm not available in thread", e);
                 } finally {
                     latch.countDown();
                 }
@@ -457,7 +457,7 @@ public class BenchmarkEngine {
     public void runLegacyBenchmark() {
         Log.d(TAG, "Running legacy benchmark...");
         
-        // Run only SHA-1 and MD5 for backward compatibility
+        // Run only SHA-512 and MD5 for backward compatibility
         runSha1Benchmark();
         runMd5Benchmark();
         

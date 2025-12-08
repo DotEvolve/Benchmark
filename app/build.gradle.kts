@@ -25,6 +25,11 @@ android {
         versionName = "17"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        
+        // Generate native debug symbols for Play Console
+        ndk {
+            debugSymbolLevel = "FULL"
+        }
     }
 
     buildTypes {
