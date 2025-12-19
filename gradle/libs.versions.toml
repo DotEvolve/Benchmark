@@ -28,7 +28,7 @@ profileinstaller = "1.4.1"
 activityKtx = "1.12.2"
 work = "2.11.0"
 composeBom = "2025.12.01"
-sonarqube = "7.2.1.6560"
+sonarqube = "7.2.2.6593"
 
 [libraries]
 admob-ads = { module = "com.appnext.sdk.adapters:admob-ads", version.ref = "admobAds" }
