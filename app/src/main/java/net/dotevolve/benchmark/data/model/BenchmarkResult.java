@@ -1,5 +1,7 @@
 package net.dotevolve.benchmark.data.model;
 
+import androidx.annotation.NonNull;
+
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -18,12 +20,16 @@ public class BenchmarkResult implements Serializable {
     private int cpuCores;
     private long totalMemory;
     private String architecture;
+    private String benchmarkVersion;
     
     // Performance scores
     private int overallScore;
     private int cryptoScore;
     private int efficiencyScore;
     private int stabilityScore;
+    private int computationalScore;
+    private int memoryScore;
+    private int multiThreadingScore;
     
     // Timing data
     private long sha1Time;
@@ -31,6 +37,11 @@ public class BenchmarkResult implements Serializable {
     private long aesTime;
     private long rsaTime;
     private long loopTime;
+    private long matrixTime;
+    private long sortTime;
+    private long compressionTime;
+    private long memoryBandwidthTime;
+    private long multiThreadedTime;
     
     // Advanced metrics
     private double cpuTemperature = -1; // -1 means not available
@@ -49,15 +60,24 @@ public class BenchmarkResult implements Serializable {
         this.cpuCores = metrics.getCpuCores();
         this.totalMemory = metrics.getTotalMemory();
         this.architecture = metrics.getArchitecture();
+        this.benchmarkVersion = metrics.getBenchmarkVersion();
         this.overallScore = metrics.getOverallScore();
         this.cryptoScore = metrics.getCryptoScore();
         this.efficiencyScore = metrics.getEfficiencyScore();
         this.stabilityScore = metrics.getStabilityScore();
+        this.computationalScore = metrics.getComputationalScore();
+        this.memoryScore = metrics.getMemoryScore();
+        this.multiThreadingScore = metrics.getMultiThreadingScore();
         this.sha1Time = metrics.getSha1TotalTime();
         this.md5Time = metrics.getMd5TotalTime();
         this.aesTime = metrics.getAesTotalTime();
         this.rsaTime = metrics.getRsaTotalTime();
         this.loopTime = metrics.getLoopOverheadTime();
+        this.matrixTime = metrics.getMatrixMultiplicationTime();
+        this.sortTime = metrics.getSortingTime();
+        this.compressionTime = metrics.getCompressionTime();
+        this.memoryBandwidthTime = metrics.getMemoryBandwidthTime();
+        this.multiThreadedTime = metrics.getMultiThreadedTime();
         
         if (advancedMetrics != null) {
             this.cpuTemperature = advancedMetrics.getCpuTemperature();
@@ -88,6 +108,8 @@ public class BenchmarkResult implements Serializable {
     public void setTotalMemory(long totalMemory) { this.totalMemory = totalMemory; }
     
     public String getArchitecture() { return architecture; }
+    public String getBenchmarkVersion() { return benchmarkVersion != null ? benchmarkVersion : "unknown"; }
+    public void setBenchmarkVersion(String benchmarkVersion) { this.benchmarkVersion = benchmarkVersion; }
     public void setArchitecture(String architecture) { this.architecture = architecture; }
     
     public int getOverallScore() { return overallScore; }
@@ -101,6 +123,15 @@ public class BenchmarkResult implements Serializable {
     
     public int getStabilityScore() { return stabilityScore; }
     public void setStabilityScore(int stabilityScore) { this.stabilityScore = stabilityScore; }
+    
+    public int getComputationalScore() { return computationalScore; }
+    public void setComputationalScore(int computationalScore) { this.computationalScore = computationalScore; }
+    
+    public int getMemoryScore() { return memoryScore; }
+    public void setMemoryScore(int memoryScore) { this.memoryScore = memoryScore; }
+    
+    public int getMultiThreadingScore() { return multiThreadingScore; }
+    public void setMultiThreadingScore(int multiThreadingScore) { this.multiThreadingScore = multiThreadingScore; }
     
     public long getSha1Time() { return sha1Time; }
     public void setSha1Time(long sha1Time) { this.sha1Time = sha1Time; }
@@ -116,6 +147,21 @@ public class BenchmarkResult implements Serializable {
     
     public long getLoopTime() { return loopTime; }
     public void setLoopTime(long loopTime) { this.loopTime = loopTime; }
+    
+    public long getMatrixTime() { return matrixTime; }
+    public void setMatrixTime(long matrixTime) { this.matrixTime = matrixTime; }
+    
+    public long getSortTime() { return sortTime; }
+    public void setSortTime(long sortTime) { this.sortTime = sortTime; }
+    
+    public long getCompressionTime() { return compressionTime; }
+    public void setCompressionTime(long compressionTime) { this.compressionTime = compressionTime; }
+    
+    public long getMemoryBandwidthTime() { return memoryBandwidthTime; }
+    public void setMemoryBandwidthTime(long memoryBandwidthTime) { this.memoryBandwidthTime = memoryBandwidthTime; }
+    
+    public long getMultiThreadedTime() { return multiThreadedTime; }
+    public void setMultiThreadedTime(long multiThreadedTime) { this.multiThreadedTime = multiThreadedTime; }
     
     public double getCpuTemperature() { return cpuTemperature; }
     public void setCpuTemperature(double cpuTemperature) { this.cpuTemperature = cpuTemperature; }
@@ -185,6 +231,7 @@ public class BenchmarkResult implements Serializable {
         return cpuTemperature != -1 || batteryLevel != -1 || memoryUsage != -1;
     }
     
+    @NonNull
     @Override
     public String toString() {
         return "BenchmarkResult{" +

@@ -10,12 +10,10 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.os.Build;
 import android.util.Log;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -26,7 +24,7 @@ public class PerformanceDatabaseHelper extends SQLiteOpenHelper {
     
     private static final String TAG = "PerformanceDB";
     private static final String DATABASE_NAME = "benchmark_performance.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 3;
     
     // Table names
     private static final String TABLE_BENCHMARKS = "benchmarks";
@@ -41,12 +39,16 @@ public class PerformanceDatabaseHelper extends SQLiteOpenHelper {
     private static final String COLUMN_CPU_CORES = "cpu_cores";
     private static final String COLUMN_TOTAL_MEMORY = "total_memory";
     private static final String COLUMN_ARCHITECTURE = "architecture";
+    private static final String COLUMN_ENGINE_VERSION = "engine_version";
     
     // Performance scores
     private static final String COLUMN_OVERALL_SCORE = "overall_score";
     private static final String COLUMN_CRYPTO_SCORE = "crypto_score";
     private static final String COLUMN_EFFICIENCY_SCORE = "efficiency_score";
     private static final String COLUMN_STABILITY_SCORE = "stability_score";
+    private static final String COLUMN_COMPUTATIONAL_SCORE = "computational_score";
+    private static final String COLUMN_MEMORY_SCORE = "memory_score";
+    private static final String COLUMN_MULTI_THREAD_SCORE = "multi_thread_score";
     
     // Timing data
     private static final String COLUMN_SHA1_TIME = "sha1_time";
@@ -54,6 +56,11 @@ public class PerformanceDatabaseHelper extends SQLiteOpenHelper {
     private static final String COLUMN_AES_TIME = "aes_time";
     private static final String COLUMN_RSA_TIME = "rsa_time";
     private static final String COLUMN_LOOP_TIME = "loop_time";
+    private static final String COLUMN_MATRIX_TIME = "matrix_time";
+    private static final String COLUMN_SORT_TIME = "sort_time";
+    private static final String COLUMN_COMPRESSION_TIME = "compression_time";
+    private static final String COLUMN_MEMORY_BANDWIDTH_TIME = "memory_bandwidth_time";
+    private static final String COLUMN_MULTI_THREAD_TIME = "multi_thread_time";
     
     // Advanced metrics
     private static final String COLUMN_CPU_TEMPERATURE = "cpu_temperature";
@@ -107,15 +114,24 @@ public class PerformanceDatabaseHelper extends SQLiteOpenHelper {
                 COLUMN_CPU_CORES + " INTEGER, " +
                 COLUMN_TOTAL_MEMORY + " INTEGER, " +
                 COLUMN_ARCHITECTURE + " TEXT, " +
+                COLUMN_ENGINE_VERSION + " TEXT, " +
                 COLUMN_OVERALL_SCORE + " INTEGER NOT NULL, " +
                 COLUMN_CRYPTO_SCORE + " INTEGER, " +
                 COLUMN_EFFICIENCY_SCORE + " INTEGER, " +
                 COLUMN_STABILITY_SCORE + " INTEGER, " +
+                COLUMN_COMPUTATIONAL_SCORE + " INTEGER, " +
+                COLUMN_MEMORY_SCORE + " INTEGER, " +
+                COLUMN_MULTI_THREAD_SCORE + " INTEGER, " +
                 COLUMN_SHA1_TIME + " INTEGER, " +
                 COLUMN_MD5_TIME + " INTEGER, " +
                 COLUMN_AES_TIME + " INTEGER, " +
                 COLUMN_RSA_TIME + " INTEGER, " +
                 COLUMN_LOOP_TIME + " INTEGER, " +
+                COLUMN_MATRIX_TIME + " INTEGER, " +
+                COLUMN_SORT_TIME + " INTEGER, " +
+                COLUMN_COMPRESSION_TIME + " INTEGER, " +
+                COLUMN_MEMORY_BANDWIDTH_TIME + " INTEGER, " +
+                COLUMN_MULTI_THREAD_TIME + " INTEGER, " +
                 COLUMN_CPU_TEMPERATURE + " REAL, " +
                 COLUMN_BATTERY_LEVEL + " INTEGER, " +
                 COLUMN_MEMORY_USAGE + " INTEGER, " +
@@ -167,17 +183,26 @@ public class PerformanceDatabaseHelper extends SQLiteOpenHelper {
         values.put(COLUMN_CPU_CORES, metrics.getCpuCores());
         values.put(COLUMN_TOTAL_MEMORY, metrics.getTotalMemory());
         values.put(COLUMN_ARCHITECTURE, metrics.getArchitecture());
+        values.put(COLUMN_ENGINE_VERSION, metrics.getBenchmarkVersion());
         
         values.put(COLUMN_OVERALL_SCORE, metrics.getOverallScore());
         values.put(COLUMN_CRYPTO_SCORE, metrics.getCryptoScore());
         values.put(COLUMN_EFFICIENCY_SCORE, metrics.getEfficiencyScore());
         values.put(COLUMN_STABILITY_SCORE, metrics.getStabilityScore());
+        values.put(COLUMN_COMPUTATIONAL_SCORE, metrics.getComputationalScore());
+        values.put(COLUMN_MEMORY_SCORE, metrics.getMemoryScore());
+        values.put(COLUMN_MULTI_THREAD_SCORE, metrics.getMultiThreadingScore());
         
         values.put(COLUMN_SHA1_TIME, metrics.getSha1TotalTime());
         values.put(COLUMN_MD5_TIME, metrics.getMd5TotalTime());
         values.put(COLUMN_AES_TIME, metrics.getAesTotalTime());
         values.put(COLUMN_RSA_TIME, metrics.getRsaTotalTime());
         values.put(COLUMN_LOOP_TIME, metrics.getLoopOverheadTime());
+        values.put(COLUMN_MATRIX_TIME, metrics.getMatrixMultiplicationTime());
+        values.put(COLUMN_SORT_TIME, metrics.getSortingTime());
+        values.put(COLUMN_COMPRESSION_TIME, metrics.getCompressionTime());
+        values.put(COLUMN_MEMORY_BANDWIDTH_TIME, metrics.getMemoryBandwidthTime());
+        values.put(COLUMN_MULTI_THREAD_TIME, metrics.getMultiThreadedTime());
         
         if (advancedMetrics != null) {
             values.put(COLUMN_CPU_TEMPERATURE, advancedMetrics.getCpuTemperature());
@@ -390,15 +415,24 @@ public class PerformanceDatabaseHelper extends SQLiteOpenHelper {
         result.setCpuCores(cursor.getInt(cursor.getColumnIndex(COLUMN_CPU_CORES)));
         result.setTotalMemory(cursor.getLong(cursor.getColumnIndex(COLUMN_TOTAL_MEMORY)));
         result.setArchitecture(cursor.getString(cursor.getColumnIndex(COLUMN_ARCHITECTURE)));
+        result.setBenchmarkVersion(cursor.getString(cursor.getColumnIndex(COLUMN_ENGINE_VERSION)));
         result.setOverallScore(cursor.getInt(cursor.getColumnIndex(COLUMN_OVERALL_SCORE)));
         result.setCryptoScore(cursor.getInt(cursor.getColumnIndex(COLUMN_CRYPTO_SCORE)));
         result.setEfficiencyScore(cursor.getInt(cursor.getColumnIndex(COLUMN_EFFICIENCY_SCORE)));
         result.setStabilityScore(cursor.getInt(cursor.getColumnIndex(COLUMN_STABILITY_SCORE)));
+        result.setComputationalScore(cursor.getInt(cursor.getColumnIndex(COLUMN_COMPUTATIONAL_SCORE)));
+        result.setMemoryScore(cursor.getInt(cursor.getColumnIndex(COLUMN_MEMORY_SCORE)));
+        result.setMultiThreadingScore(cursor.getInt(cursor.getColumnIndex(COLUMN_MULTI_THREAD_SCORE)));
         result.setSha1Time(cursor.getLong(cursor.getColumnIndex(COLUMN_SHA1_TIME)));
         result.setMd5Time(cursor.getLong(cursor.getColumnIndex(COLUMN_MD5_TIME)));
         result.setAesTime(cursor.getLong(cursor.getColumnIndex(COLUMN_AES_TIME)));
         result.setRsaTime(cursor.getLong(cursor.getColumnIndex(COLUMN_RSA_TIME)));
         result.setLoopTime(cursor.getLong(cursor.getColumnIndex(COLUMN_LOOP_TIME)));
+        result.setMatrixTime(cursor.getLong(cursor.getColumnIndex(COLUMN_MATRIX_TIME)));
+        result.setSortTime(cursor.getLong(cursor.getColumnIndex(COLUMN_SORT_TIME)));
+        result.setCompressionTime(cursor.getLong(cursor.getColumnIndex(COLUMN_COMPRESSION_TIME)));
+        result.setMemoryBandwidthTime(cursor.getLong(cursor.getColumnIndex(COLUMN_MEMORY_BANDWIDTH_TIME)));
+        result.setMultiThreadedTime(cursor.getLong(cursor.getColumnIndex(COLUMN_MULTI_THREAD_TIME)));
         
         // Advanced metrics
         if (!cursor.isNull(cursor.getColumnIndex(COLUMN_CPU_TEMPERATURE))) {

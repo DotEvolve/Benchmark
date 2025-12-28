@@ -89,7 +89,11 @@ public class BenchmarkResultAdapter extends RecyclerView.Adapter<BenchmarkResult
             
             // Build details string
             StringBuilder details = new StringBuilder();
+            details.append("Engine v").append(result.getBenchmarkVersion()).append("\n");
             details.append("Crypto: ").append(result.getCryptoScore()).append(" | ");
+            details.append("Comp: ").append(result.getComputationalScore()).append(" | ");
+            details.append("Memory: ").append(result.getMemoryScore()).append("\n");
+            details.append("Multi-thread: ").append(result.getMultiThreadingScore()).append(" | ");
             details.append("Efficiency: ").append(result.getEfficiencyScore()).append(" | ");
             details.append("Stability: ").append(result.getStabilityScore());
             

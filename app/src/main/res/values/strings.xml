@@ -42,9 +42,11 @@
     <string name="performance_trends">Performance Trends</string>
     <string name="recent_results">Recent Results</string>
     <string name="no_data_available">No data available</string>
-    <string name="loading">Loading...</string>
+    <string name="loading">Loading…</string>
 
     <string name="default_notification_channel_id" translatable="false">fcm_default_channel</string>
     <string name="schedule_daily_benchmark">Schedule Daily Benchmark</string>
     <string name="toggle_dark_mode">Toggle Dark Mode</string>
+    <string name="share">📤 Share</string>
+    <string name="dec_25_2025">Dec 25, 2025</string>
 </resources>

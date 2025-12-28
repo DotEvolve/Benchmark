@@ -28,19 +28,31 @@ public class PerformanceMetrics {
     private long aesTotalTime;
     private long rsaTotalTime;
     private long loopOverheadTime;
+    private long matrixMultiplicationTime;
+    private long sortingTime;
+    private long compressionTime;
+    private long memoryBandwidthTime;
+    private long multiThreadedTime;
     
-    // Iteration counts
-    static final int SHA1_ITERATIONS = 100000;
-    static final int MD5_ITERATIONS = 100000;
-    static final int AES_ITERATIONS = 10000;
-    private static final int RSA_ITERATIONS = 1000;
-    static final int LOOP_ITERATIONS = 1000000;
+    // Iteration counts - increased for more challenging benchmarks
+    static final int SHA1_ITERATIONS = 500000;
+    static final int MD5_ITERATIONS = 500000;
+    static final int AES_ITERATIONS = 50000;
+    private static final int RSA_ITERATIONS = 5000;
+    static final int LOOP_ITERATIONS = 10000000;
+    static final int MATRIX_SIZE = 512; // For matrix multiplication
+    static final int SORT_ARRAY_SIZE = 100000; // For sorting benchmark
+    static final int COMPRESSION_ITERATIONS = 1000;
+    static final int MEMORY_TEST_SIZE = 50 * 1024 * 1024; // 50MB memory test
     
     // Individual timing samples for statistical analysis
     private final List<Long> sha1Samples = new ArrayList<>();
     private final List<Long> md5Samples = new ArrayList<>();
     private final List<Long> aesSamples = new ArrayList<>();
     private final List<Long> rsaSamples = new ArrayList<>();
+    private final List<Long> matrixSamples = new ArrayList<>();
+    private final List<Long> sortSamples = new ArrayList<>();
+    private final List<Long> compressionSamples = new ArrayList<>();
     
     // System information
     private String deviceModel;
@@ -48,12 +60,16 @@ public class PerformanceMetrics {
     private int cpuCores;
     private long totalMemory;
     private String architecture;
+    private String benchmarkVersion = "unknown";
     
     // Performance scores
     private int overallScore;
     private int cryptoScore;
     private int efficiencyScore;
     private int stabilityScore;
+    private int computationalScore;
+    private int memoryScore;
+    private int multiThreadingScore;
     
     // Performance categories
     public enum PerformanceCategory {
@@ -144,6 +160,51 @@ public class PerformanceMetrics {
         Log.d(TAG, "Loop Overhead Time: " + formatNanoTime(loopOverheadTime));
     }
     
+    public void startMatrixTiming() {
+        matrixMultiplicationTime = System.nanoTime();
+    }
+    
+    public void endMatrixTiming() {
+        matrixMultiplicationTime = System.nanoTime() - matrixMultiplicationTime;
+        Log.d(TAG, "Matrix Multiplication Time: " + formatNanoTime(matrixMultiplicationTime));
+    }
+    
+    public void startSortTiming() {
+        sortingTime = System.nanoTime();
+    }
+    
+    public void endSortTiming() {
+        sortingTime = System.nanoTime() - sortingTime;
+        Log.d(TAG, "Sorting Time: " + formatNanoTime(sortingTime));
+    }
+    
+    public void startCompressionTiming() {
+        compressionTime = System.nanoTime();
+    }
+    
+    public void endCompressionTiming() {
+        compressionTime = System.nanoTime() - compressionTime;
+        Log.d(TAG, "Compression Time: " + formatNanoTime(compressionTime));
+    }
+    
+    public void startMemoryTiming() {
+        memoryBandwidthTime = System.nanoTime();
+    }
+    
+    public void endMemoryTiming() {
+        memoryBandwidthTime = System.nanoTime() - memoryBandwidthTime;
+        Log.d(TAG, "Memory Bandwidth Time: " + formatNanoTime(memoryBandwidthTime));
+    }
+    
+    public void startMultiThreadedTiming() {
+        multiThreadedTime = System.nanoTime();
+    }
+    
+    public void endMultiThreadedTiming() {
+        multiThreadedTime = System.nanoTime() - multiThreadedTime;
+        Log.d(TAG, "Multi-threaded Time: " + formatNanoTime(multiThreadedTime));
+    }
+    
     // Sample collection for statistical analysis
     public void addSha1Sample(long time) {
         sha1Samples.add(time);
@@ -161,55 +222,177 @@ public class PerformanceMetrics {
         rsaSamples.add(time);
     }
     
+    public void addMatrixSample(long time) {
+        matrixSamples.add(time);
+    }
+    
+    public void addSortSample(long time) {
+        sortSamples.add(time);
+    }
+    
+    public void addCompressionSample(long time) {
+        compressionSamples.add(time);
+    }
+    
     // Performance calculations
     public void calculateScores() {
         cryptoScore = calculateCryptoScore();
         efficiencyScore = calculateEfficiencyScore();
         stabilityScore = calculateStabilityScore();
-        overallScore = (cryptoScore + efficiencyScore + stabilityScore) / 3;
+        computationalScore = calculateComputationalScore();
+        memoryScore = calculateMemoryScore();
+        multiThreadingScore = calculateMultiThreadingScore();
+        
+        // Weighted overall score - more emphasis on computational and crypto performance
+        overallScore = (int) Math.round(
+            cryptoScore * 0.25 +
+            computationalScore * 0.30 +
+            memoryScore * 0.20 +
+            efficiencyScore * 0.15 +
+            stabilityScore * 0.05 +
+            multiThreadingScore * 0.05
+        );
         
         Log.d(TAG, "Scores - Overall: " + overallScore + 
               ", Crypto: " + cryptoScore + 
+              ", Computational: " + computationalScore +
+              ", Memory: " + memoryScore +
               ", Efficiency: " + efficiencyScore + 
-              ", Stability: " + stabilityScore);
+              ", Stability: " + stabilityScore +
+              ", MultiThreading: " + multiThreadingScore);
     }
     
     private int calculateCryptoScore() {
-        // Based on operations per second
+        // Based on operations per second with realistic thresholds
+        // Modern high-end devices: 200K+ ops/sec for SHA-1, 300K+ for MD5
+        // Mid-range devices: 50K-150K ops/sec
+        // Low-end devices: 10K-50K ops/sec
+        
         double sha1OpsPerSec = (SHA1_ITERATIONS * 1_000_000_000.0) / sha1TotalTime;
         double md5OpsPerSec = (MD5_ITERATIONS * 1_000_000_000.0) / md5TotalTime;
+        double aesOpsPerSec = (AES_ITERATIONS * 1_000_000_000.0) / aesTotalTime;
         
-        // Normalize to 0-100 scale (adjust thresholds based on testing)
-        int sha1Score = Math.min(100, (int) (sha1OpsPerSec / 1000)); // 1000 ops/sec = 100 points
-        int md5Score = Math.min(100, (int) (md5OpsPerSec / 1000));
+        // Normalize using logarithmic scale for better differentiation
+        // 100 points = 200K ops/sec (high-end), 50 points = 50K ops/sec (mid-range), 0 points = 5K ops/sec (low-end)
+        int sha1Score = normalizeLogarithmic(sha1OpsPerSec, 5000, 200000, 100);
+        int md5Score = normalizeLogarithmic(md5OpsPerSec, 8000, 300000, 100);
+        int aesScore = normalizeLogarithmic(aesOpsPerSec, 1000, 20000, 100);
         
-        return (sha1Score + md5Score) / 2;
+        return (sha1Score + md5Score + aesScore) / 3;
     }
     
     private int calculateEfficiencyScore() {
-        // Based on time per operation efficiency
+        // Based on time per operation efficiency with realistic thresholds
+        // High-end: <50ns per hash, Mid-range: 50-200ns, Low-end: >200ns
         double sha1Efficiency = (double) sha1TotalTime / SHA1_ITERATIONS;
         double md5Efficiency = (double) md5TotalTime / MD5_ITERATIONS;
+        double aesEfficiency = (double) aesTotalTime / AES_ITERATIONS;
         
         // Lower time per operation = higher efficiency
-        int sha1EffScore = Math.max(0, 100 - (int) (sha1Efficiency / 1000)); // 1000ns = 0 points
-        int md5EffScore = Math.max(0, 100 - (int) (md5Efficiency / 1000));
+        // 100 points = 10ns, 50 points = 100ns, 0 points = 1000ns
+        int sha1EffScore = normalizeInverse(sha1Efficiency, 10, 1000, 100);
+        int md5EffScore = normalizeInverse(md5Efficiency, 8, 800, 100);
+        int aesEffScore = normalizeInverse(aesEfficiency, 50, 5000, 100);
         
-        return (sha1EffScore + md5EffScore) / 2;
+        return (sha1EffScore + md5EffScore + aesEffScore) / 3;
     }
     
     private int calculateStabilityScore() {
-        // Based on standard deviation of samples (lower deviation = higher stability)
+        // Based on coefficient of variation (CV) - more accurate than raw std dev
         if (sha1Samples.size() < 2) return 50; // Default if no samples
         
-        double sha1StdDev = calculateStandardDeviation(sha1Samples);
-        double md5StdDev = calculateStandardDeviation(md5Samples);
+        double sha1CV = calculateCoefficientOfVariation(sha1Samples);
+        double md5CV = calculateCoefficientOfVariation(md5Samples);
+        double aesCV = calculateCoefficientOfVariation(aesSamples);
         
-        // Lower standard deviation = higher stability score
-        int sha1Stability = Math.max(0, 100 - (int) (sha1StdDev / 1000));
-        int md5Stability = Math.max(0, 100 - (int) (md5StdDev / 1000));
+        // Lower CV = higher stability score
+        // 100 points = CV < 0.05 (5%), 50 points = CV = 0.15 (15%), 0 points = CV > 0.5 (50%)
+        int sha1Stability = normalizeInverse(sha1CV * 100, 5, 50, 100);
+        int md5Stability = normalizeInverse(md5CV * 100, 5, 50, 100);
+        int aesStability = normalizeInverse(aesCV * 100, 5, 50, 100);
         
-        return (sha1Stability + md5Stability) / 2;
+        return (sha1Stability + md5Stability + aesStability) / 3;
+    }
+    
+    private int calculateComputationalScore() {
+        // Based on matrix multiplication and sorting performance
+        if (matrixMultiplicationTime == 0 || sortingTime == 0) {
+            return 50; // Default if not run
+        }
+        
+        // Matrix multiplication: O(n^3) complexity
+        // High-end: <100ms for 512x512, Mid-range: 100-500ms, Low-end: >500ms
+        double matrixScore = normalizeInverse(matrixMultiplicationTime / 1_000_000.0, 50, 1000, 100);
+        
+        // Sorting: O(n log n) complexity
+        // High-end: <50ms for 100K elements, Mid-range: 50-200ms, Low-end: >200ms
+        double sortScore = normalizeInverse(sortingTime / 1_000_000.0, 20, 500, 100);
+        
+        return (int) Math.round((matrixScore + sortScore) / 2);
+    }
+    
+    private int calculateMemoryScore() {
+        // Based on memory bandwidth and compression performance
+        if (memoryBandwidthTime == 0 || compressionTime == 0) {
+            return 50; // Default if not run
+        }
+        
+        // Memory bandwidth: MB/s
+        // High-end: >5000 MB/s, Mid-range: 2000-5000 MB/s, Low-end: <2000 MB/s
+        double memoryBandwidth = (MEMORY_TEST_SIZE * 1_000_000_000.0) / (memoryBandwidthTime * 1024.0 * 1024.0);
+        double bandwidthScore = normalizeLogarithmic(memoryBandwidth, 500, 8000, 100);
+        
+        // Compression: ops/sec
+        double compressionOpsPerSec = (COMPRESSION_ITERATIONS * 1_000_000_000.0) / compressionTime;
+        double compressionScore = normalizeLogarithmic(compressionOpsPerSec, 50, 500, 100);
+        
+        return (int) Math.round((bandwidthScore + compressionScore) / 2);
+    }
+    
+    private int calculateMultiThreadingScore() {
+        // Based on multi-threaded performance improvement
+        if (multiThreadedTime == 0) {
+            return 50; // Default if not run
+        }
+        
+        // Compare single-threaded vs multi-threaded performance
+        // High-end: >3x speedup, Mid-range: 2-3x, Low-end: <2x
+        long singleThreadedTime = sha1TotalTime + md5TotalTime + matrixMultiplicationTime;
+        double speedup = (double) singleThreadedTime / multiThreadedTime;
+        
+        // 100 points = 4x speedup, 50 points = 2x speedup, 0 points = 1x (no improvement)
+        return (int) Math.max(0, Math.min(100, (speedup - 1) * 33.33));
+    }
+    
+    // Helper methods for score normalization
+    private int normalizeLogarithmic(double value, double min, double max, int maxScore) {
+        if (value <= min) return 0;
+        if (value >= max) return maxScore;
+        
+        // Logarithmic normalization for better distribution
+        double logMin = Math.log(min);
+        double logMax = Math.log(max);
+        double logValue = Math.log(value);
+        
+        return (int) Math.round(((logValue - logMin) / (logMax - logMin)) * maxScore);
+    }
+    
+    private int normalizeInverse(double value, double best, double worst, int maxScore) {
+        // Inverse normalization: lower value = higher score
+        if (value <= best) return maxScore;
+        if (value >= worst) return 0;
+        
+        return (int) Math.round(maxScore * (1.0 - (value - best) / (worst - best)));
+    }
+    
+    private double calculateCoefficientOfVariation(List<Long> samples) {
+        if (samples.size() < 2) return 0;
+        
+        double mean = samples.stream().mapToLong(Long::longValue).average().orElse(0);
+        if (mean == 0) return 0;
+        
+        double stdDev = calculateStandardDeviation(samples);
+        return stdDev / mean; // CV = std dev / mean
     }
     
     private double calculateStandardDeviation(List<Long> samples) {
@@ -228,6 +411,7 @@ public class PerformanceMetrics {
         StringBuilder result = new StringBuilder();
         
         result.append("=== PERFORMANCE BENCHMARK RESULTS ===\n\n");
+        result.append("Engine Version: ").append(benchmarkVersion).append("\n\n");
         
         // System Information
         result.append("📱 DEVICE INFORMATION\n");
@@ -249,13 +433,41 @@ public class PerformanceMetrics {
         result.append("  Time per Op: ").append(formatNanoTime(md5TotalTime / MD5_ITERATIONS)).append("\n");
         result.append("  Operations/sec: ").append(formatOpsPerSec(md5TotalTime, MD5_ITERATIONS)).append("\n\n");
         
+        if (matrixMultiplicationTime > 0) {
+            result.append("Matrix Multiplication (").append(MATRIX_SIZE).append("x").append(MATRIX_SIZE).append("):\n");
+            result.append("  Total Time: ").append(formatNanoTime(matrixMultiplicationTime)).append("\n\n");
+        }
+        
+        if (sortingTime > 0) {
+            result.append("Sorting (").append(SORT_ARRAY_SIZE).append(" elements):\n");
+            result.append("  Total Time: ").append(formatNanoTime(sortingTime)).append("\n\n");
+        }
+        
+        if (compressionTime > 0) {
+            result.append("Compression (").append(COMPRESSION_ITERATIONS).append(" iterations):\n");
+            result.append("  Total Time: ").append(formatNanoTime(compressionTime)).append("\n\n");
+        }
+        
+        if (memoryBandwidthTime > 0) {
+            result.append("Memory Bandwidth (").append(formatBytes(MEMORY_TEST_SIZE)).append("):\n");
+            result.append("  Total Time: ").append(formatNanoTime(memoryBandwidthTime)).append("\n\n");
+        }
+        
+        if (multiThreadedTime > 0) {
+            result.append("Multi-threaded Performance:\n");
+            result.append("  Total Time: ").append(formatNanoTime(multiThreadedTime)).append("\n\n");
+        }
+        
         // Performance Scores
         result.append("📊 PERFORMANCE SCORES\n");
         result.append("Overall Score: ").append(overallScore).append("/100 (")
               .append(getPerformanceCategory(overallScore).name()).append(")\n");
         result.append("Crypto Performance: ").append(cryptoScore).append("/100\n");
+        result.append("Computational: ").append(computationalScore).append("/100\n");
+        result.append("Memory: ").append(memoryScore).append("/100\n");
         result.append("Efficiency: ").append(efficiencyScore).append("/100\n");
-        result.append("Stability: ").append(stabilityScore).append("/100\n\n");
+        result.append("Stability: ").append(stabilityScore).append("/100\n");
+        result.append("Multi-threading: ").append(multiThreadingScore).append("/100\n\n");
         
         // Performance Analysis
         result.append("🔍 PERFORMANCE ANALYSIS\n");
@@ -298,6 +510,31 @@ public class PerformanceMetrics {
         info.append("Operations per Second: ").append(formatOpsPerSec(md5TotalTime, MD5_ITERATIONS)).append("\n");
         info.append("Operations per Millisecond: ").append(String.format(Locale.US, "%.2f", 
             (MD5_ITERATIONS * 1_000_000.0) / md5TotalTime)).append("\n\n");
+        
+        // AES Details
+        if (aesTotalTime > 0) {
+            info.append("🔐 AES ENCRYPTION PERFORMANCE\n");
+            info.append("Iterations: ").append(AES_ITERATIONS).append("\n");
+            info.append("Total Time: ").append(formatNanoTime(aesTotalTime)).append("\n");
+            info.append("Average per Operation: ").append(formatNanoTime(aesTotalTime / AES_ITERATIONS)).append("\n");
+            info.append("Operations per Second: ").append(formatOpsPerSec(aesTotalTime, AES_ITERATIONS)).append("\n\n");
+        }
+        
+        // Matrix Multiplication Details
+        if (matrixMultiplicationTime > 0) {
+            info.append("🔢 MATRIX MULTIPLICATION PERFORMANCE\n");
+            info.append("Matrix Size: ").append(MATRIX_SIZE).append("x").append(MATRIX_SIZE).append("\n");
+            info.append("Total Time: ").append(formatNanoTime(matrixMultiplicationTime)).append("\n");
+            info.append("Operations: ").append(MATRIX_SIZE * MATRIX_SIZE * MATRIX_SIZE).append(" (O(n³))\n\n");
+        }
+        
+        // Sorting Details
+        if (sortingTime > 0) {
+            info.append("📊 SORTING PERFORMANCE\n");
+            info.append("Array Size: ").append(SORT_ARRAY_SIZE).append(" elements\n");
+            info.append("Total Time: ").append(formatNanoTime(sortingTime)).append("\n");
+            info.append("Time per Element: ").append(formatNanoTime(sortingTime / SORT_ARRAY_SIZE)).append("\n\n");
+        }
         
         // System Performance
         info.append("💻 SYSTEM PERFORMANCE\n");
@@ -384,15 +621,24 @@ public class PerformanceMetrics {
             benchmarkData.put("cpuCores", cpuCores);
             benchmarkData.put("totalMemory", totalMemory);
             benchmarkData.put("architecture", architecture);
+            benchmarkData.put("benchmarkVersion", benchmarkVersion);
             benchmarkData.put("overallScore", overallScore);
             benchmarkData.put("cryptoScore", cryptoScore);
+            benchmarkData.put("computationalScore", computationalScore);
+            benchmarkData.put("memoryScore", memoryScore);
             benchmarkData.put("efficiencyScore", efficiencyScore);
             benchmarkData.put("stabilityScore", stabilityScore);
+            benchmarkData.put("multiThreadingScore", multiThreadingScore);
             benchmarkData.put("sha1TotalTime", sha1TotalTime);
             benchmarkData.put("md5TotalTime", md5TotalTime);
             benchmarkData.put("aesTotalTime", aesTotalTime);
             benchmarkData.put("rsaTotalTime", rsaTotalTime);
             benchmarkData.put("loopOverheadTime", loopOverheadTime);
+            benchmarkData.put("matrixMultiplicationTime", matrixMultiplicationTime);
+            benchmarkData.put("sortingTime", sortingTime);
+            benchmarkData.put("compressionTime", compressionTime);
+            benchmarkData.put("memoryBandwidthTime", memoryBandwidthTime);
+            benchmarkData.put("multiThreadedTime", multiThreadedTime);
             benchmarkData.put("timestamp", Timestamp.now());
 
             db.collection("benchmarks")
@@ -459,5 +705,15 @@ public class PerformanceMetrics {
     public long getAesTotalTime() { return aesTotalTime; }
     public long getRsaTotalTime() { return rsaTotalTime; }
     public long getLoopOverheadTime() { return loopOverheadTime; }
+    public long getMatrixMultiplicationTime() { return matrixMultiplicationTime; }
+    public long getSortingTime() { return sortingTime; }
+    public long getCompressionTime() { return compressionTime; }
+    public long getMemoryBandwidthTime() { return memoryBandwidthTime; }
+    public long getMultiThreadedTime() { return multiThreadedTime; }
+    public int getComputationalScore() { return computationalScore; }
+    public int getMemoryScore() { return memoryScore; }
+    public int getMultiThreadingScore() { return multiThreadingScore; }
+    public String getBenchmarkVersion() { return benchmarkVersion; }
+    public void setBenchmarkVersion(String benchmarkVersion) { this.benchmarkVersion = benchmarkVersion; }
 }
 

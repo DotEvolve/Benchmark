@@ -13,9 +13,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v6
     - name: Cache Gradle dependencies
-      uses: actions/cache@v4
+      uses: actions/cache@v5
       with:
         path: |
           ~/.gradle/caches
@@ -23,7 +23,7 @@ jobs:
         key: gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
         restore-keys: |
           gradle-${{ runner.os }}-
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v6
     - name: set up JDK 17
       uses: actions/setup-java@v5
       with:
@@ -36,16 +36,16 @@ jobs:
     - name: Build with Gradle
       run: ./gradlew build
 
-  auto_merge_dependabot:
-    name: 'Dependabot Auto Merge'
-    needs: [build]
-    runs-on: ubuntu-latest
-    if: ${{ github.actor == 'dependabot[bot]' && github.event_name == 'pull_request'}} # Detect that the PR author is dependabot
-    permissions:
-      pull-requests: write
-    steps:
-      - name: Enable auto-merge for Dependabot PRs
-        run: gh pr merge --auto --merge "$PR_URL" # Use Github CLI to merge automatically the PR
-        env:
-          PR_URL: ${{github.event.pull_request.html_url}}
-          GH_TOKEN: ${{ github.token }}
+#  auto_merge_dependabot:
+#    name: 'Dependabot Auto Merge'
+#    needs: [build]
+#    runs-on: ubuntu-latest
+#    if: ${{ github.actor == 'dependabot[bot]' && github.event_name == 'pull_request'}} # Detect that the PR author is dependabot
+#    permissions:
+#      pull-requests: write
+#    steps:
+#      - name: Enable auto-merge for Dependabot PRs
+#        run: gh pr merge --auto --merge "$PR_URL" # Use Github CLI to merge automatically the PR
+#        env:
+#          PR_URL: ${{github.event.pull_request.html_url}}
+#          GH_TOKEN: ${{ github.token }}

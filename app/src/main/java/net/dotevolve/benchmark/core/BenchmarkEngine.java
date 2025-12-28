@@ -4,10 +4,17 @@ import net.dotevolve.benchmark.R;
 import android.content.Context;
 import android.util.Log;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Random;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.zip.GZIPOutputStream;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
@@ -18,6 +25,13 @@ import javax.crypto.SecretKey;
  */
 public class BenchmarkEngine {
     private static final String TAG = "BenchmarkEngine";
+    /**
+     * Benchmark engine versioning follows MAJOR.MINOR.PATCH (semver):
+     * - MAJOR: breaking test-suite/scoring changes that invalidate comparisons.
+     * - MINOR: new tests or scoring tweaks that remain comparable within the major line.
+     * - PATCH: bug fixes or perf tweaks that do not affect final scoring logic.
+     */
+    public static final String ENGINE_VERSION = "2.0.0";
     
     private final PerformanceMetrics metrics;
     private final Context context;
@@ -25,7 +39,8 @@ public class BenchmarkEngine {
     
     // Progress tracking
     private final AtomicInteger currentProgress = new AtomicInteger(0);
-    private final int totalTests = 4; // SHA-1, MD5, AES, RSA
+    private final int totalTests = 9; // SHA-512, MD5, AES, Loop, Matrix, Sort, Compression, Memory, MultiThread
+    private final Random random = new Random();
     
     public interface BenchmarkProgressCallback {
         void onProgressUpdate(int progress, String currentTest);
@@ -38,6 +53,7 @@ public class BenchmarkEngine {
     public BenchmarkEngine(Context context) {
         this.context = context;
         this.metrics = new PerformanceMetrics(context);
+        this.metrics.setBenchmarkVersion(ENGINE_VERSION);
         this.testString = context.getResources().getString(R.string.testString);
     }
     
@@ -49,9 +65,9 @@ public class BenchmarkEngine {
         Log.d(TAG, "Starting comprehensive benchmark...");
         
         try {
-            // Test 1: SHA-1 Hash Performance
+            // Test 1: SHA-512 Hash Performance
             runSha1Benchmark();
-            updateProgress(1, "SHA-1 Complete");
+            updateProgress(1, "SHA-512 Complete");
             
             // Test 2: MD5 Hash Performance  
             runMd5Benchmark();
@@ -64,6 +80,26 @@ public class BenchmarkEngine {
             // Test 4: Loop Overhead Test
             runLoopOverheadTest();
             updateProgress(4, "Loop Overhead Complete");
+            
+            // Test 5: Matrix Multiplication
+            runMatrixMultiplicationBenchmark();
+            updateProgress(5, "Matrix Multiplication Complete");
+            
+            // Test 6: Sorting Performance
+            runSortingBenchmark();
+            updateProgress(6, "Sorting Complete");
+            
+            // Test 7: Compression Performance
+            runCompressionBenchmark();
+            updateProgress(7, "Compression Complete");
+            
+            // Test 8: Memory Bandwidth
+            runMemoryBandwidthBenchmark();
+            updateProgress(8, "Memory Bandwidth Complete");
+            
+            // Test 9: Multi-threaded Performance
+            runMultiThreadedBenchmark();
+            updateProgress(9, "Multi-threaded Complete");
             
             // Calculate final scores
             metrics.calculateScores();
@@ -80,11 +116,11 @@ public class BenchmarkEngine {
     }
     
     private void runSha1Benchmark() {
-        Log.d(TAG, "Running SHA-1 benchmark...");
+        Log.d(TAG, "Running SHA-512 benchmark...");
         metrics.startSha1Timing();
         
         try {
-            MessageDigest sha1 = MessageDigest.getInstance("SHA-1");
+            MessageDigest sha1 = MessageDigest.getInstance("SHA-512");
             byte[] inputBytes = testString.getBytes(StandardCharsets.UTF_8);
             
             for (int i = 0; i < PerformanceMetrics.SHA1_ITERATIONS; i++) {
@@ -100,13 +136,13 @@ public class BenchmarkEngine {
                 sha1.reset();
             }
         } catch (NoSuchAlgorithmException e) {
-            Log.e(TAG, "SHA-1 algorithm not available", e);
+            Log.e(TAG, "SHA-512 algorithm not available", e);
         }
         
         metrics.endSha1Timing();
         
         if (progressCallback != null) {
-            progressCallback.onTestComplete("SHA-1", metrics.getSha1TotalTime());
+            progressCallback.onTestComplete("SHA-512", metrics.getSha1TotalTime());
         }
     }
     
@@ -151,7 +187,8 @@ public class BenchmarkEngine {
             keyGen.init(256);
             SecretKey secretKey = keyGen.generateKey();
             
-            Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+            // Use AES/CBC/PKCS5Padding for better compatibility and performance testing
+            Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
             cipher.init(Cipher.ENCRYPT_MODE, secretKey);
             
             byte[] inputBytes = testString.getBytes(StandardCharsets.UTF_8);
@@ -179,16 +216,229 @@ public class BenchmarkEngine {
         Log.d(TAG, "Running loop overhead test...");
         metrics.startLoopTiming();
         
-        // Simple loop to measure overhead
-        int dummy = 0;
+        // More complex loop with multiple operations to measure overhead
+        long dummy = 0;
         for (int i = 0; i < PerformanceMetrics.LOOP_ITERATIONS; i++) {
-            dummy += i;
+            dummy += i * 2;
+            dummy -= i / 3;
+            dummy ^= i;
         }
         
         metrics.endLoopTiming();
         
         if (progressCallback != null) {
             progressCallback.onTestComplete("Loop Overhead", metrics.getLoopOverheadTime());
+        }
+    }
+    
+    private void runMatrixMultiplicationBenchmark() {
+        Log.d(TAG, "Running matrix multiplication benchmark...");
+        metrics.startMatrixTiming();
+        
+        int size = PerformanceMetrics.MATRIX_SIZE;
+        double[][] matrixA = new double[size][size];
+        double[][] matrixB = new double[size][size];
+        double[][] result = new double[size][size];
+        
+        // Initialize matrices with random values
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                matrixA[i][j] = random.nextDouble();
+                matrixB[i][j] = random.nextDouble();
+            }
+        }
+        
+        // Perform matrix multiplication: C = A * B
+        long startTime = System.nanoTime();
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                result[i][j] = 0;
+                for (int k = 0; k < size; k++) {
+                    result[i][j] += matrixA[i][k] * matrixB[k][j];
+                }
+            }
+        }
+        long endTime = System.nanoTime();
+        
+        metrics.addMatrixSample(endTime - startTime);
+        metrics.endMatrixTiming();
+        
+        if (progressCallback != null) {
+            progressCallback.onTestComplete("Matrix Multiplication", metrics.getMatrixMultiplicationTime());
+        }
+    }
+    
+    private void runSortingBenchmark() {
+        Log.d(TAG, "Running sorting benchmark...");
+        metrics.startSortTiming();
+        
+        int size = PerformanceMetrics.SORT_ARRAY_SIZE;
+        int[] array = new int[size];
+        
+        // Initialize array with random values
+        for (int i = 0; i < size; i++) {
+            array[i] = random.nextInt();
+        }
+        
+        // Perform quicksort
+        long startTime = System.nanoTime();
+        quickSort(array, 0, size - 1);
+        long endTime = System.nanoTime();
+        
+        metrics.addSortSample(endTime - startTime);
+        metrics.endSortTiming();
+        
+        if (progressCallback != null) {
+            progressCallback.onTestComplete("Sorting", metrics.getSortingTime());
+        }
+    }
+    
+    private void quickSort(int[] arr, int low, int high) {
+        if (low < high) {
+            int pi = partition(arr, low, high);
+            quickSort(arr, low, pi - 1);
+            quickSort(arr, pi + 1, high);
+        }
+    }
+    
+    private int partition(int[] arr, int low, int high) {
+        int pivot = arr[high];
+        int i = (low - 1);
+        
+        for (int j = low; j < high; j++) {
+            if (arr[j] < pivot) {
+                i++;
+                int temp = arr[i];
+                arr[i] = arr[j];
+                arr[j] = temp;
+            }
+        }
+        
+        int temp = arr[i + 1];
+        arr[i + 1] = arr[high];
+        arr[high] = temp;
+        
+        return i + 1;
+    }
+    
+    private void runCompressionBenchmark() {
+        Log.d(TAG, "Running compression benchmark...");
+        metrics.startCompressionTiming();
+        
+        // Create test data
+        StringBuilder testData = new StringBuilder();
+        for (int i = 0; i < 10000; i++) {
+            testData.append(testString).append(i);
+        }
+        byte[] data = testData.toString().getBytes(StandardCharsets.UTF_8);
+        
+        for (int i = 0; i < PerformanceMetrics.COMPRESSION_ITERATIONS; i++) {
+            long startTime = System.nanoTime();
+            try {
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                GZIPOutputStream gzos = new GZIPOutputStream(baos);
+                gzos.write(data);
+                gzos.close();
+                byte[] compressed = baos.toByteArray();
+                long endTime = System.nanoTime();
+                metrics.addCompressionSample(endTime - startTime);
+            } catch (IOException e) {
+                Log.e(TAG, "Compression failed", e);
+            }
+        }
+        
+        metrics.endCompressionTiming();
+        
+        if (progressCallback != null) {
+            progressCallback.onTestComplete("Compression", metrics.getCompressionTime());
+        }
+    }
+    
+    private void runMemoryBandwidthBenchmark() {
+        Log.d(TAG, "Running memory bandwidth benchmark...");
+        metrics.startMemoryTiming();
+        
+        int size = PerformanceMetrics.MEMORY_TEST_SIZE / 4; // int array size
+        int[] array1 = new int[size];
+        int[] array2 = new int[size];
+        
+        // Initialize arrays
+        for (int i = 0; i < size; i++) {
+            array1[i] = random.nextInt();
+            array2[i] = random.nextInt();
+        }
+        
+        // Perform memory-intensive operations: copy, reverse, sum
+        long startTime = System.nanoTime();
+        
+        // Sequential memory access pattern
+        for (int i = 0; i < size; i++) {
+            array2[i] = array1[i];
+        }
+        
+        // Reverse copy
+        for (int i = 0; i < size / 2; i++) {
+            int temp = array1[i];
+            array1[i] = array1[size - 1 - i];
+            array1[size - 1 - i] = temp;
+        }
+        
+        // Sum operation
+        long sum = 0;
+        for (int i = 0; i < size; i++) {
+            sum += array1[i] + array2[i];
+        }
+        
+        long endTime = System.nanoTime();
+        metrics.endMemoryTiming();
+        
+        if (progressCallback != null) {
+            progressCallback.onTestComplete("Memory Bandwidth", metrics.getMemoryBandwidthTime());
+        }
+    }
+    
+    private void runMultiThreadedBenchmark() {
+        Log.d(TAG, "Running multi-threaded benchmark...");
+        metrics.startMultiThreadedTiming();
+        
+        int numThreads = Math.min(metrics.getCpuCores(), 8); // Use up to 8 threads
+        ExecutorService executor = Executors.newFixedThreadPool(numThreads);
+        CountDownLatch latch = new CountDownLatch(numThreads);
+        
+        // Each thread performs SHA-512 hashing
+        int iterationsPerThread = PerformanceMetrics.SHA1_ITERATIONS / numThreads;
+        
+        for (int t = 0; t < numThreads; t++) {
+            final int threadId = t;
+            executor.submit(() -> {
+                try {
+                    MessageDigest sha1 = MessageDigest.getInstance("SHA-512");
+                    byte[] inputBytes = (testString + threadId).getBytes(StandardCharsets.UTF_8);
+                    
+                    for (int i = 0; i < iterationsPerThread; i++) {
+                        sha1.update(inputBytes);
+                        byte[] hash = sha1.digest();
+                        sha1.reset();
+                    }
+                } catch (NoSuchAlgorithmException e) {
+                    Log.e(TAG, "SHA-512 algorithm not available in thread", e);
+                } finally {
+                    latch.countDown();
+                }
+            });
+        }
+        
+        try {
+            latch.await();
+        } catch (InterruptedException e) {
+            Log.e(TAG, "Multi-threaded benchmark interrupted", e);
+        }
+        
+        executor.shutdown();
+        metrics.endMultiThreadedTiming();
+        
+        if (progressCallback != null) {
+            progressCallback.onTestComplete("Multi-threaded", metrics.getMultiThreadedTime());
         }
     }
     
@@ -207,7 +457,7 @@ public class BenchmarkEngine {
     public void runLegacyBenchmark() {
         Log.d(TAG, "Running legacy benchmark...");
         
-        // Run only SHA-1 and MD5 for backward compatibility
+        // Run only SHA-512 and MD5 for backward compatibility
         runSha1Benchmark();
         runMd5Benchmark();
         
