@@ -4,7 +4,7 @@
   <img src="public/images/cropped_circle_image.png" alt="Benchmark App Icon" width="120" height="120">
   
   [![Android](https://img.shields.io/badge/Platform-Android-green.svg)](https://android.com)
-  [![API](https://img.shields.io/badge/API-34%2B-brightgreen.svg)](https://android-arsenal.com/api?level=34)
+  [![API](https://img.shields.io/badge/API-23%2B-brightgreen.svg)](https://android-arsenal.com/api?level=23)
   [![Version](https://img.shields.io/badge/Version-16.0-blue.svg)](https://github.com/dotevolve/benchmark)
   [![License](https://img.shields.io/badge/License-MIT-orange.svg)](LICENSE)
 </div>
@@ -249,5 +249,5 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 <div align="center">
   <p>Made with ❤️ by <a href="https://dotevolve.net">DotEvolve</a></p>
-  <p>© 2024 DotEvolve. All rights reserved.</p>
+  <p>© 2025 DotEvolve. All rights reserved.</p>
 </div>
