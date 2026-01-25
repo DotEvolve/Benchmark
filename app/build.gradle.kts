@@ -82,6 +82,7 @@ android {
         buildConfig = true
         viewBinding = true
         compose = true
+        resValues = true
     }
 
     lint {
