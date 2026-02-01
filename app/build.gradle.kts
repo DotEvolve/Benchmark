@@ -6,7 +6,6 @@ plugins {
     alias(libs.plugins.google.gms.google.services)
     alias(libs.plugins.google.firebase.crashlytics)
     alias(libs.plugins.google.firebase.perf)
-    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
 
     alias(libs.plugins.jacoco)
@@ -21,8 +20,8 @@ android {
         applicationId = "net.dotevolve.benchmark"
         minSdk = 23
         targetSdk = 36
-        versionCode = 18
-        versionName = "18"
+        versionCode = 19
+        versionName = "19"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         
@@ -83,6 +82,7 @@ android {
         buildConfig = true
         viewBinding = true
         compose = true
+        resValues = true
     }
 
     lint {
