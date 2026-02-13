@@ -27,7 +27,7 @@ playAppUpdate = "2.1.0"
 profileinstaller = "1.4.1"
 activityKtx = "1.12.3"
 work = "2.11.1"
-composeBom = "2026.01.01"
+composeBom = "2026.02.00"
 sonarqube = "7.2.2.6593"
 
 [libraries]
