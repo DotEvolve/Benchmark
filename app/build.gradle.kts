@@ -14,14 +14,14 @@ plugins {
 
 android {
     namespace = "net.dotevolve.benchmark"
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "net.dotevolve.benchmark"
-        minSdk = 23
-        targetSdk = 36
-        versionCode = 19
-        versionName = "19"
+        minSdk = 24
+        targetSdk = 37
+        versionCode = 20
+        versionName = "20"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         
@@ -67,10 +67,6 @@ android {
             resValue("string", "admob_interstitial_ad_unit_id", "ca-app-pub-3940256099942544/1033173712")
 
         }
-    }
-
-    firebaseCrashlytics {
-        nativeSymbolUploadEnabled = true
     }
 
     compileOptions {
@@ -131,9 +127,8 @@ dependencies {
     implementation(libs.compose.ui.graphics)
     implementation(libs.compose.material3)
     implementation(libs.activity.compose)
-    implementation(libs.compose.ui.tooling)
+    debugImplementation(libs.compose.ui.tooling)
     implementation(libs.compose.ui.tooling.preview)
-    implementation(libs.ui.tooling)
 
     testImplementation(libs.junit)
 
@@ -162,8 +157,8 @@ tasks.register<JacocoReport>("jacocoTestReportDebug") {
                 "**/R$*.class",
                 "**/BuildConfig.*",
                 "**/Manifest*.*",
-                "**/*\$ViewBinder*.*", // For ViewBinding
-                "**/*\$ViewBinding*.*", // For ViewBinding
+                "**/*${'$'}ViewBinder*.*", // For ViewBinding
+                "**/*${'$'}ViewBinding*.*", // For ViewBinding
                 "**/*Module*.*", // Exclude Hilt/Dagger modules if any
                 "**/*Factory*.*", // Exclude Hilt/Dagger factories if any
                 "**/*_MembersInjector*.*" // Exclude Hilt/Dagger injectors if any

@@ -36,11 +36,12 @@ class FirebaseMessagingService : FirebaseMessagingService() {
      * the previous token had been compromised. This is called when the
      * FCM registration token is initially generated so this is where you would retrieve the token.
      */
+    @Deprecated("Deprecated in Java")
     override fun onNewToken(token: String) {
         Log.d(TAG, "Refreshed token: $token")
 
         // If you want to send messages to this application instance or
-        // manage this apps subscriptions on the server side, send the
+        // manage this app subscriptions on the server side, send the
         // FCM registration token to your app server.
         sendRegistrationToServer(token)
     }
