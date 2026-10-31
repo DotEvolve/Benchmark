@@ -336,7 +336,7 @@ public class MainActivity extends AppCompatActivity {
             adWidthPixels = displayMetrics.widthPixels;
         }
         int adWidth = (int) (adWidthPixels / displayMetrics.density);
-        adView.setAdSize(AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(this, adWidth));
+        adView.setAdSize(AdSize.getLargeAnchoredAdaptiveBannerAdSize(this, adWidth));
 
         adContainerView.addView(adView);
 

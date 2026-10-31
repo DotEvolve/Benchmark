@@ -7,6 +7,7 @@ import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.IntentCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -66,7 +67,7 @@ public class ResultDetailActivity extends AppCompatActivity {
     }
     
     private void displayResult() {
-        BenchmarkResult result = (BenchmarkResult) getIntent().getSerializableExtra("benchmark_result");
+        BenchmarkResult result = IntentCompat.getSerializableExtra(getIntent(), "benchmark_result", BenchmarkResult.class);
         if (result == null) {
             detailText.setText("No result data available");
             return;
@@ -135,7 +136,7 @@ public class ResultDetailActivity extends AppCompatActivity {
     
     @Override
     public boolean onSupportNavigateUp() {
-        onBackPressed();
+        getOnBackPressedDispatcher().onBackPressed();
         return true;
     }
 }
