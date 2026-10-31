@@ -8,6 +8,7 @@ import net.dotevolve.benchmark.BuildConfig;
 
 import android.os.Bundle;
 import android.util.Base64;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -301,7 +302,15 @@ public class MainActivity extends AppCompatActivity {
 
         adView = new AdView(this);
         adView.setAdUnitId(BANNER_AD_UNIT_ID);
-        adView.setAdSize(AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(this, 360));
+
+        // Use actual display width instead of hardcoded value to avoid misalignment
+        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
+        int adWidthPixels = adContainerView.getWidth();
+        if (adWidthPixels == 0) {
+            adWidthPixels = displayMetrics.widthPixels;
+        }
+        int adWidth = (int) (adWidthPixels / displayMetrics.density);
+        adView.setAdSize(AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(this, adWidth));
 
         adContainerView.addView(adView);
 
@@ -542,7 +551,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showInterstitial() {
-        // Show the ad if it's ready. Otherwise restart the game.
+        // Show the ad if it's ready. Otherwise, restart the app.
         if (mInterstitialAd != null) {
             mInterstitialAd.show(this);
         } else {
