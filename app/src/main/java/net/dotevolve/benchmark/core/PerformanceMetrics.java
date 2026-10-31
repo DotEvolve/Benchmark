@@ -604,7 +604,7 @@ public class PerformanceMetrics {
     public void saveToHistory(Context context) {
         // Save to local database
         try {
-            PerformanceDatabaseHelper dbHelper = new PerformanceDatabaseHelper(context);
+            PerformanceDatabaseHelper dbHelper = PerformanceDatabaseHelper.getInstance(context);
             AdvancedMetrics advancedMetrics = new AdvancedMetrics(context);
             dbHelper.insertBenchmarkResult(this, advancedMetrics);
             Log.d(TAG, "Benchmark results saved to local history");
@@ -652,7 +652,7 @@ public class PerformanceMetrics {
     
     public static List<BenchmarkResult> getHistoricalResults(Context context, String deviceModel) {
         try {
-            PerformanceDatabaseHelper dbHelper = new PerformanceDatabaseHelper(context);
+            PerformanceDatabaseHelper dbHelper = PerformanceDatabaseHelper.getInstance(context);
             return dbHelper.getAllBenchmarkResults(deviceModel);
         } catch (Exception e) {
             Log.e(TAG, "Failed to get historical results", e);
@@ -662,7 +662,7 @@ public class PerformanceMetrics {
     
     public static List<BenchmarkResult> getRecentResults(Context context, String deviceModel, int days) {
         try {
-            PerformanceDatabaseHelper dbHelper = new PerformanceDatabaseHelper(context);
+            PerformanceDatabaseHelper dbHelper = PerformanceDatabaseHelper.getInstance(context);
             return dbHelper.getRecentBenchmarkResults(deviceModel, days);
         } catch (Exception e) {
             Log.e(TAG, "Failed to get recent results", e);
@@ -672,7 +672,7 @@ public class PerformanceMetrics {
     
     public static List<PerformanceTrend> getPerformanceTrends(Context context, String deviceModel, int days) {
         try {
-            PerformanceDatabaseHelper dbHelper = new PerformanceDatabaseHelper(context);
+            PerformanceDatabaseHelper dbHelper = PerformanceDatabaseHelper.getInstance(context);
             return dbHelper.getPerformanceTrends(deviceModel, days);
         } catch (Exception e) {
             Log.e(TAG, "Failed to get performance trends", e);
@@ -682,7 +682,7 @@ public class PerformanceMetrics {
     
     public static DeviceStatistics getDeviceStatistics(Context context, String deviceModel) {
         try {
-            PerformanceDatabaseHelper dbHelper = new PerformanceDatabaseHelper(context);
+            PerformanceDatabaseHelper dbHelper = PerformanceDatabaseHelper.getInstance(context);
             return dbHelper.getDeviceStatistics(deviceModel);
         } catch (Exception e) {
             Log.e(TAG, "Failed to get device statistics", e);

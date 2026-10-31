@@ -5,7 +5,11 @@ import net.dotevolve.benchmark.data.model.BenchmarkResult;
 import android.os.Bundle;
 import android.widget.TextView;
 
+import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.material.appbar.MaterialToolbar;
 
@@ -19,12 +23,33 @@ public class ResultDetailActivity extends AppCompatActivity {
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        EdgeToEdge.enable(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_result_detail);
         
         initializeViews();
         setupToolbar();
+        setupWindowInsets();
         displayResult();
+    }
+    
+    private void setupWindowInsets() {
+        android.view.View appBar = findViewById(R.id.appBarLayout);
+        if (appBar != null) {
+            ViewCompat.setOnApplyWindowInsetsListener(appBar, (v, insets) -> {
+                Insets bars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+                v.setPadding(bars.left, bars.top, bars.right, 0);
+                return insets;
+            });
+        }
+        android.view.View scrollView = findViewById(R.id.scrollView);
+        if (scrollView != null) {
+            ViewCompat.setOnApplyWindowInsetsListener(scrollView, (v, insets) -> {
+                Insets bars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+                v.setPadding(bars.left, 0, bars.right, bars.bottom);
+                return insets;
+            });
+        }
     }
     
     private void initializeViews() {

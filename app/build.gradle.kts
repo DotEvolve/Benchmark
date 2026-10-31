@@ -20,8 +20,8 @@ android {
         applicationId = "net.dotevolve.benchmark"
         minSdk = 24
         targetSdk = 37
-        versionCode = 20
-        versionName = "20"
+        versionCode = 21
+        versionName = "21"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         
@@ -120,6 +120,9 @@ dependencies {
     implementation(libs.firebase.messaging)
     implementation(libs.core.ktx)
     implementation(libs.work.runtime)
+    implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.lifecycle.runtime.ktx)
+    implementation(libs.lifecycle.viewmodel.ktx)
 
     // Jetpack Compose
     implementation(platform(libs.compose.bom))
@@ -157,8 +160,8 @@ tasks.register<JacocoReport>("jacocoTestReportDebug") {
                 "**/R$*.class",
                 "**/BuildConfig.*",
                 "**/Manifest*.*",
-                "**/*${'$'}ViewBinder*.*", // For ViewBinding
-                "**/*${'$'}ViewBinding*.*", // For ViewBinding
+                $$"**/*$ViewBinder*.*", // For ViewBinding
+                $$"**/*$ViewBinding*.*", // For ViewBinding
                 "**/*Module*.*", // Exclude Hilt/Dagger modules if any
                 "**/*Factory*.*", // Exclude Hilt/Dagger factories if any
                 "**/*_MembersInjector*.*" // Exclude Hilt/Dagger injectors if any

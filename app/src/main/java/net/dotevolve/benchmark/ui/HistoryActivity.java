@@ -14,8 +14,12 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -23,6 +27,8 @@ import com.google.android.material.appbar.MaterialToolbar;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Activity for viewing historical performance data and trends
@@ -30,6 +36,8 @@ import java.util.List;
 public class HistoryActivity extends AppCompatActivity implements BenchmarkResultAdapter.OnResultClickListener {
     
     private static final String TAG = "HistoryActivity";
+    
+    private final ExecutorService backgroundExecutor = Executors.newSingleThreadExecutor();
     
     private MaterialToolbar toolbar;
     private TextView deviceStatsText;
@@ -44,6 +52,7 @@ public class HistoryActivity extends AppCompatActivity implements BenchmarkResul
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        EdgeToEdge.enable(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history);
         
@@ -51,9 +60,29 @@ public class HistoryActivity extends AppCompatActivity implements BenchmarkResul
         
         initializeViews();
         setupToolbar();
+        setupWindowInsets();
         setupSpinner();
         setupRecyclerView();
         loadData();
+    }
+    
+    private void setupWindowInsets() {
+        android.view.View appBar = findViewById(R.id.appBarLayout);
+        if (appBar != null) {
+            ViewCompat.setOnApplyWindowInsetsListener(appBar, (v, insets) -> {
+                Insets bars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+                v.setPadding(bars.left, bars.top, bars.right, 0);
+                return insets;
+            });
+        }
+        android.view.View scrollView = findViewById(R.id.nestedScrollView);
+        if (scrollView != null) {
+            ViewCompat.setOnApplyWindowInsetsListener(scrollView, (v, insets) -> {
+                Insets bars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+                v.setPadding(bars.left, 0, bars.right, bars.bottom);
+                return insets;
+            });
+        }
     }
     
     private void initializeViews() {
@@ -105,10 +134,11 @@ public class HistoryActivity extends AppCompatActivity implements BenchmarkResul
     }
     
     private void loadDeviceStatistics() {
-        new Thread(() -> {
+        backgroundExecutor.execute(() -> {
             try {
                 DeviceStatistics stats = PerformanceMetrics.getDeviceStatistics(this, deviceModel);
                 runOnUiThread(() -> {
+                    if (isFinishing() || isDestroyed()) return;
                     if (stats != null) {
                         deviceStatsText.setText(stats.getSummary());
                     } else {
@@ -117,16 +147,20 @@ public class HistoryActivity extends AppCompatActivity implements BenchmarkResul
                 });
             } catch (Exception e) {
                 Log.e(TAG, "Failed to load device statistics", e);
-                runOnUiThread(() -> deviceStatsText.setText("Error loading statistics"));
+                runOnUiThread(() -> {
+                    if (isFinishing() || isDestroyed()) return;
+                    deviceStatsText.setText("Error loading statistics");
+                });
             }
-        }).start();
+        });
     }
     
     private void loadPerformanceTrends() {
-        new Thread(() -> {
+        backgroundExecutor.execute(() -> {
             try {
                 List<PerformanceTrend> trends = PerformanceMetrics.getPerformanceTrends(this, deviceModel, 30);
                 runOnUiThread(() -> {
+                    if (isFinishing() || isDestroyed()) return;
                     if (trends != null && !trends.isEmpty()) {
                         StringBuilder trendsText = new StringBuilder();
                         for (PerformanceTrend trend : trends) {
@@ -142,13 +176,16 @@ public class HistoryActivity extends AppCompatActivity implements BenchmarkResul
                 });
             } catch (Exception e) {
                 Log.e(TAG, "Failed to load performance trends", e);
-                runOnUiThread(() -> trendsText.setText("Error loading trends"));
+                runOnUiThread(() -> {
+                    if (isFinishing() || isDestroyed()) return;
+                    trendsText.setText("Error loading trends");
+                });
             }
-        }).start();
+        });
     }
     
     private void loadRecentResults(int days) {
-        new Thread(() -> {
+        backgroundExecutor.execute(() -> {
             try {
                 List<BenchmarkResult> results;
                 if (days == -1) {
@@ -158,6 +195,7 @@ public class HistoryActivity extends AppCompatActivity implements BenchmarkResul
                 }
                 
                 runOnUiThread(() -> {
+                    if (isFinishing() || isDestroyed()) return;
                     currentResults.clear();
                     if (results != null) {
                         currentResults.addAll(results);
@@ -168,11 +206,12 @@ public class HistoryActivity extends AppCompatActivity implements BenchmarkResul
             } catch (Exception e) {
                 Log.e(TAG, "Failed to load recent results", e);
                 runOnUiThread(() -> {
+                    if (isFinishing() || isDestroyed()) return;
                     currentResults.clear();
                     adapter.updateResults(currentResults);
                 });
             }
-        }).start();
+        });
     }
     
     private void loadPerformanceAnalysis() {
@@ -261,9 +300,15 @@ public class HistoryActivity extends AppCompatActivity implements BenchmarkResul
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            onBackPressed();
+            getOnBackPressedDispatcher().onBackPressed();
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onDestroy() {
+        backgroundExecutor.shutdown();
+        super.onDestroy();
     }
 }

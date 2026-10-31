@@ -7,7 +7,6 @@ import net.dotevolve.benchmark.ads.GoogleMobileAdsConsentManager;
 import net.dotevolve.benchmark.BuildConfig;
 
 import android.os.Bundle;
-import android.util.Base64;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
@@ -19,7 +18,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.app.Dialog;
 import android.content.SharedPreferences;
+import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+import android.view.ViewGroup;
 import android.content.Intent;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -40,10 +44,9 @@ import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 
 import net.dotevolve.benchmark.databinding.ActivityMainBinding;
 
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.Collections;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class MainActivity extends AppCompatActivity {
@@ -57,9 +60,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView scorer;
     private TextView result;
 
-    private String testString;
-    private String HashValue;
-    private String MD5Value;
+    private final ExecutorService backgroundExecutor = Executors.newSingleThreadExecutor();
 
     private final AtomicBoolean isMobileAdsInitializeCalled = new AtomicBoolean(false);
     private AdView adView; // This will be the programmatically created AdView
@@ -79,9 +80,12 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        EdgeToEdge.enable(this);
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        setupWindowInsets();
 
         TEST_DEVICE_HASHED_ID = getResources().getString(R.string.test_device_hashed_id);
 
@@ -103,6 +107,30 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void setupWindowInsets() {
+        ViewCompat.setOnApplyWindowInsetsListener(binding.appBarLayout, (v, insets) -> {
+            Insets bars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(bars.left, bars.top, bars.right, 0);
+            return insets;
+        });
+
+        ViewCompat.setOnApplyWindowInsetsListener(binding.getRoot(), (v, insets) -> {
+            Insets bars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            View adContainer = findViewById(R.id.adContainerView);
+            if (adContainer != null && adContainer.getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
+                ViewGroup.MarginLayoutParams mlp = (ViewGroup.MarginLayoutParams) adContainer.getLayoutParams();
+                mlp.bottomMargin = bars.bottom + (int) (8 * getResources().getDisplayMetrics().density);
+                adContainer.setLayoutParams(mlp);
+            }
+            if (binding.actionShare.getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
+                ViewGroup.MarginLayoutParams fabLp = (ViewGroup.MarginLayoutParams) binding.actionShare.getLayoutParams();
+                fabLp.bottomMargin = bars.bottom + (int) (72 * getResources().getDisplayMetrics().density);
+                binding.actionShare.setLayoutParams(fabLp);
+            }
+            return insets;
+        });
+    }
+
     private void setupUI() {
         setSupportActionBar(binding.toolbar);
 
@@ -110,8 +138,6 @@ public class MainActivity extends AppCompatActivity {
         scorer = findViewById(R.id.textScore);
 
         adContainerView = findViewById(R.id.adContainerView);
-
-        testString = getResources().getString(R.string.testString);
 
         Button mBeginButton = findViewById(R.id.button);
         mBeginButton.setOnClickListener(v -> {
@@ -151,12 +177,12 @@ public class MainActivity extends AppCompatActivity {
             
             @Override
             public void onBenchmarkComplete(PerformanceMetrics metrics) {
+                // Save to historical database in background thread (fixes main thread ANR)
+                backgroundExecutor.execute(() -> metrics.saveToHistory(MainActivity.this));
+
                 runOnUiThread(() -> {
                     isBenchmarkRunning = false;
                     currentMetrics = metrics;
-                    
-                    // Save to historical database
-                    metrics.saveToHistory(MainActivity.this);
                     
                     displayEnhancedResults();
                     showInterstitial();
@@ -190,8 +216,8 @@ public class MainActivity extends AppCompatActivity {
             scorer.setText("...");
         }
         
-        // Run benchmark in background thread
-        new Thread(() -> benchmarkEngine.runComprehensiveBenchmark()).start();
+        // Run benchmark in background thread via executor
+        backgroundExecutor.execute(() -> benchmarkEngine.runComprehensiveBenchmark());
     }
     
     private void displayEnhancedResults() {
@@ -272,10 +298,10 @@ public class MainActivity extends AppCompatActivity {
                         .setTestDeviceIds(Collections.singletonList(TEST_DEVICE_HASHED_ID))
                         .build());
 
-        new Thread(() -> MobileAds.initialize(this, initializationStatus -> {
+        backgroundExecutor.execute(() -> MobileAds.initialize(this, initializationStatus -> {
             Log.d(TAG, "Google Mobile Ads SDK Initialized.");
             runOnUiThread(this::loadBanner); // Programmatic banner
-        })).start();
+        }));
 
         requestNewInterstitial(); // Load interstitial after initialization
     }
@@ -547,6 +573,7 @@ public class MainActivity extends AppCompatActivity {
         if (adView != null) {
             adView.destroy();
         }
+        backgroundExecutor.shutdown();
         super.onDestroy();
     }
 
@@ -635,93 +662,5 @@ public class MainActivity extends AppCompatActivity {
                                             "onAdFailedToLoad() with error: " + error, Toast.LENGTH_SHORT).show();
                     }
                 });
-    }
-
-    /**
-     * @deprecated Use runEnhancedBenchmark() for comprehensive metrics
-     */
-    @Deprecated
-    public void compute() {
-        if (result == null || scorer == null) {
-            Log.e(TAG, "compute() called, but result/scorer TextViews are null in MainActivity.");
-            return;
-        }
-
-        String ttLongString;
-        String ttLongStringMD5;
-        String output;
-        long ttLong;
-        long ttLongMD5;
-        long ttLongLOOP;
-
-        output = "Calculating score...";
-        result.setText(output);
-
-        ttLongLOOP = System.nanoTime();
-        long ttLong2LOOP = System.nanoTime() - ttLongLOOP;
-
-        ttLong = System.nanoTime();
-        for (int i = 0; i < 100000; i++)
-            computeSHAHash(testString);
-        long ttLong2 = System.nanoTime() - ttLong;
-        ttLongString = Long.toString(ttLong2);
-
-        ttLongMD5 = System.nanoTime();
-        for (int i = 0; i < 100000; i++)
-            computeMD5hash(testString);
-        long ttLong2MD5 = System.nanoTime() - ttLongMD5;
-        ttLongStringMD5 = Long.toString(ttLong2MD5);
-
-        Integer score = Math.round((float) ttLong2LOOP / 10000000);
-        Integer score2 = Math.round((float) ttLong2 / 10000000);
-        Integer score3 = Math.round((float) ttLong2MD5 / 10000000);
-        int scoreAvg = (score + score2 + score3) / 3;
-        String scoreString = Integer.toString(scoreAvg);
-
-        output = "SHA1 hash: \n" + HashValue +
-                "\nTime Taken: " + ttLongString;
-        output += "\n\nMD5 hash: \n" + MD5Value +
-                "\n\nTime Taken: " + ttLongStringMD5;
-
-        showInterstitial();
-
-        result.setText(output);
-        scorer.setText(scoreString);
-    }
-
-    public void computeSHAHash(String password) {
-        MessageDigest mdSha1 = null;
-        try {
-            mdSha1 = MessageDigest.getInstance("SHA-1");
-        } catch (NoSuchAlgorithmException e1) {
-            Log.e(TAG, "Benchmark: Error initializing SHA1");
-        }
-        assert mdSha1 != null;
-        mdSha1.update(password.getBytes(StandardCharsets.US_ASCII));
-        byte[] data = mdSha1.digest();
-        StringBuilder sb = new StringBuilder();
-        String hex;
-        hex = Base64.encodeToString(data, 0, data.length, 0);
-        sb.append(hex);
-        HashValue = sb.toString();
-    }
-
-    public void computeMD5hash(String password) {
-        try {
-            MessageDigest digest = java.security.MessageDigest.getInstance("MD5");
-            digest.update(password.getBytes());
-            byte[] messageDigest = digest.digest();
-            StringBuilder MD5Hash = new StringBuilder();
-            for (byte aMessageDigest : messageDigest) {
-                StringBuilder h = new StringBuilder(
-                        Integer.toHexString(0xFF & aMessageDigest));
-                while (h.length() < 2)
-                    h.insert(0, "0");
-                MD5Hash.append(h);
-            }
-            MD5Value = MD5Hash.toString();
-        } catch (NoSuchAlgorithmException e) {
-            Log.e(TAG, "Benchmark: Error initializing MD5");
-        }
     }
 }

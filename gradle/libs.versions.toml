@@ -29,6 +29,8 @@ activityKtx = "1.13.0"
 work = "2.12.0"
 composeBom = "2026.09.00"
 sonarqube = "7.5.0.8588"
+coroutines = "1.11.0"
+lifecycle = "2.11.0"
 
 [libraries]
 admob-ads = { module = "com.appnext.sdk.adapters:admob-ads", version.ref = "admobAds" }
@@ -66,6 +68,9 @@ compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
 compose-material3 = { group = "androidx.compose.material3", name = "material3" }
 activity-compose = { group = "androidx.activity", name = "activity-compose", version = "1.13.0" }
+kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "coroutines" }
+lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycle" }
+lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycle" }
 
 
 [plugins]
