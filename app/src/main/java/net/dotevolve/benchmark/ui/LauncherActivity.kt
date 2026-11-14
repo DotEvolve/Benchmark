@@ -52,6 +52,14 @@ class LauncherActivity : ComponentActivity() {
         }
     }
 
+    private val updateResultLauncher = registerForActivityResult(
+        ActivityResultContracts.StartIntentSenderForResult()
+    ) { result ->
+        if (result.resultCode != RESULT_OK) {
+            Log.d(TAG, "Update flow cancelled or failed with result code: ${result.resultCode}")
+        }
+    }
+
     // Declare the launcher at the top of your Activity.
     private val requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
@@ -109,9 +117,8 @@ class LauncherActivity : ComponentActivity() {
             ) {
                 appUpdateManager.startUpdateFlowForResult(
                     appUpdateInfo,
-                    this,
-                    AppUpdateOptions.newBuilder(AppUpdateType.FLEXIBLE).build(),
-                    MY_REQUEST_CODE
+                    updateResultLauncher,
+                    AppUpdateOptions.newBuilder(AppUpdateType.FLEXIBLE).build()
                 )
             } else {
                 askNotificationPermission()
@@ -136,19 +143,6 @@ class LauncherActivity : ComponentActivity() {
     override fun onStop() {
         super.onStop()
         appUpdateManager.unregisterListener(installStateUpdatedListener)
-    }
-
-    @Suppress("OVERRIDE_DEPRECATION")
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == MY_REQUEST_CODE) {
-            if (resultCode != RESULT_OK) {
-                // The user has canceled or the update has failed.
-                // For a flexible update, you can choose to log this event but
-                // no further action is required as the app can continue.
-                Log.d(TAG, "Update flow cancelled or failed with result code: $resultCode")
-            }
-        }
     }
 
     private fun popupSnackbarForCompleteUpdate() {
@@ -206,7 +200,6 @@ class LauncherActivity : ComponentActivity() {
     }
 
     companion object {
-        private const val MY_REQUEST_CODE = 123
         private const val TAG = "LauncherActivity"
     }
 }
