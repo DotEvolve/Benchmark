@@ -138,11 +138,12 @@ class LauncherActivity : ComponentActivity() {
         appUpdateManager.unregisterListener(installStateUpdatedListener)
     }
 
+    @Suppress("OVERRIDE_DEPRECATION")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == MY_REQUEST_CODE) {
             if (resultCode != RESULT_OK) {
-                // The user has cancelled or the update has failed.
+                // The user has canceled or the update has failed.
                 // For a flexible update, you can choose to log this event but
                 // no further action is required as the app can continue.
                 Log.d(TAG, "Update flow cancelled or failed with result code: $resultCode")
