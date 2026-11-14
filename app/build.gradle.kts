@@ -1,9 +1,8 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import java.util.Properties
 
-apply(from = "google-services-mock.gradle.kts")
-
 plugins {
+    id("google-services-mock")
     alias(libs.plugins.android.application)
     alias(libs.plugins.google.gms.google.services)
     alias(libs.plugins.google.firebase.crashlytics)
@@ -77,7 +76,6 @@ android {
 
     buildFeatures {
         buildConfig = true
-        viewBinding = true
         compose = true
         resValues = true
     }
@@ -116,11 +114,6 @@ dependencies {
     implementation(libs.activity.ktx)
     implementation(libs.firebase.firestore)
 
-    implementation(libs.appcompat)
-    implementation(libs.material)
-    implementation(libs.constraintlayout)
-    implementation(libs.navigation.fragment)
-    implementation(libs.navigation.ui)
     implementation(libs.leanback)
     implementation(libs.firebase.messaging)
     implementation(libs.core.ktx)
