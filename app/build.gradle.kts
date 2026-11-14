@@ -1,9 +1,8 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import java.util.Properties
 
-apply(from = "google-services-mock.gradle.kts")
-
 plugins {
+    id("google-services-mock")
     alias(libs.plugins.android.application)
     alias(libs.plugins.google.gms.google.services)
     alias(libs.plugins.google.firebase.crashlytics)
@@ -62,11 +61,28 @@ android {
                 "proguard-rules.pro"
             )
             signingConfig = signingConfigs.getByName("debug")
-            resValue("string", "app_name", "Benchmark.DEBUG")
-            resValue("string", "admob_app_id", "ca-app-pub-3940256099942544~3347511713")
-            resValue("string", "admob_banner_ad_unit_id", "ca-app-pub-3940256099942544/9214589741")
-            resValue("string", "admob_interstitial_ad_unit_id", "ca-app-pub-3940256099942544/1033173712")
+            val properties = Properties()
+            val localPropertiesFile = rootProject.file("local.properties")
+            if (localPropertiesFile.exists()) {
+                properties.load(localPropertiesFile.inputStream())
+            }
 
+            val admobAppId = System.getenv("ADMOB_APP_ID")
+                ?: properties.getProperty("admob.appId")
+                ?: "ca-app-pub-3940256099942544~3347511713"
+
+            val admobBannerAdUnitId = System.getenv("ADMOB_BANNER_AD_UNIT_ID")
+                ?: properties.getProperty("admob.bannerAdUnitId")
+                ?: "ca-app-pub-3940256099942544/9214589741"
+
+            val admobInterstitialAdUnitId = System.getenv("ADMOB_INTERSTITIAL_AD_UNIT_ID")
+                ?: properties.getProperty("admob.interstitialAdUnitId")
+                ?: "ca-app-pub-3940256099942544/1033173712"
+
+            resValue("string", "app_name", "Benchmark.DEBUG")
+            resValue("string", "admob_app_id", admobAppId)
+            resValue("string", "admob_banner_ad_unit_id", admobBannerAdUnitId)
+            resValue("string", "admob_interstitial_ad_unit_id", admobInterstitialAdUnitId)
         }
     }
 
@@ -77,13 +93,8 @@ android {
 
     buildFeatures {
         buildConfig = true
-        viewBinding = true
         compose = true
         resValues = true
-    }
-
-    lint {
-        baseline = file("lint-baseline.xml")
     }
 }
 
@@ -120,11 +131,6 @@ dependencies {
     implementation(libs.activity.ktx)
     implementation(libs.firebase.firestore)
 
-    implementation(libs.appcompat)
-    implementation(libs.material)
-    implementation(libs.constraintlayout)
-    implementation(libs.navigation.fragment)
-    implementation(libs.navigation.ui)
     implementation(libs.leanback)
     implementation(libs.firebase.messaging)
     implementation(libs.core.ktx)
@@ -138,6 +144,8 @@ dependencies {
     implementation(libs.compose.ui)
     implementation(libs.compose.ui.graphics)
     implementation(libs.compose.material3)
+    implementation(libs.material.icons.extended)
+    implementation(libs.material)
     implementation(libs.activity.compose)
     debugImplementation(libs.compose.ui.tooling)
     implementation(libs.compose.ui.tooling.preview)
