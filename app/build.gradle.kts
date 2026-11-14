@@ -87,7 +87,11 @@ android {
     }
 }
 
+// Ensure Gradle runs Lint with JDK 21 even if the Gradle daemon is on JDK 17 (e.g. CodeQL autobuild)
+android.lint.toolchain.languageVersion.set(JavaLanguageVersion.of(21))
+
 kotlin {
+    jvmToolchain(21)
     compilerOptions {
         jvmTarget.set(JvmTarget.JVM_21)
     }
