@@ -126,11 +126,11 @@ public class ResultDetailActivity extends AppCompatActivity {
         if (nanoTime < 1_000) {
             return nanoTime + " ns";
         } else if (nanoTime < 1_000_000) {
-            return String.format("%.2f μs", nanoTime / 1_000.0);
+            return String.format(java.util.Locale.US, "%.2f μs", nanoTime / 1_000.0);
         } else if (nanoTime < 1_000_000_000) {
-            return String.format("%.2f ms", nanoTime / 1_000_000.0);
+            return String.format(java.util.Locale.US, "%.2f ms", nanoTime / 1_000_000.0);
         } else {
-            return String.format("%.2f s", nanoTime / 1_000_000_000.0);
+            return String.format(java.util.Locale.US, "%.2f s", nanoTime / 1_000_000_000.0);
         }
     }
     

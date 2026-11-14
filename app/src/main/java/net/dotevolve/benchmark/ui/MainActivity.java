@@ -238,11 +238,11 @@ public class MainActivity extends AppCompatActivity {
         if (nanoTime < 1_000) {
             return nanoTime + " ns";
         } else if (nanoTime < 1_000_000) {
-            return String.format("%.2f μs", nanoTime / 1_000.0);
+            return String.format(java.util.Locale.US, "%.2f μs", nanoTime / 1_000.0);
         } else if (nanoTime < 1_000_000_000) {
-            return String.format("%.2f ms", nanoTime / 1_000_000.0);
+            return String.format(java.util.Locale.US, "%.2f ms", nanoTime / 1_000_000.0);
         } else {
-            return String.format("%.2f s", nanoTime / 1_000_000_000.0);
+            return String.format(java.util.Locale.US, "%.2f s", nanoTime / 1_000_000_000.0);
         }
     }
 
@@ -543,7 +543,7 @@ public class MainActivity extends AppCompatActivity {
         if (bytes < 1024) return bytes + " B";
         int exp = (int) (Math.log(bytes) / Math.log(1024));
         String pre = "KMGTPE".charAt(exp - 1) + "";
-        return String.format("%.1f %sB", bytes / Math.pow(1024, exp), pre);
+        return String.format(java.util.Locale.US, "%.1f %sB", bytes / Math.pow(1024, exp), pre);
     }
 
     // Add onSupportNavigateUp for NavController integration

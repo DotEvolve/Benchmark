@@ -49,11 +49,11 @@ public class PerformanceTrend {
     
     // Utility methods
     public String getFormattedAverageScore() {
-        return String.format("%.1f", averageScore);
+        return String.format(java.util.Locale.US, "%.1f", averageScore);
     }
     
     public String getFormattedVariance() {
-        return String.format("%.2f", scoreVariance);
+        return String.format(java.util.Locale.US, "%.2f", scoreVariance);
     }
     
     public String getTrendIcon() {

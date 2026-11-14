@@ -81,10 +81,6 @@ android {
         compose = true
         resValues = true
     }
-
-    lint {
-        baseline = file("lint-baseline.xml")
-    }
 }
 
 // Ensure Gradle runs Lint with JDK 21 even if the Gradle daemon is on JDK 17 (e.g. CodeQL autobuild)

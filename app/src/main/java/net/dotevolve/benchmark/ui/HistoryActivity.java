@@ -253,17 +253,17 @@ public class HistoryActivity extends AppCompatActivity implements BenchmarkResul
         StringBuilder analysis = new StringBuilder();
         analysis.append("📊 PERFORMANCE ANALYSIS\n\n");
         analysis.append("Total Tests: ").append(totalResults).append("\n");
-        analysis.append("Average Score: ").append(String.format("%.1f", averageScore)).append("/100\n");
+        analysis.append("Average Score: ").append(String.format(java.util.Locale.US, "%.1f", averageScore)).append("/100\n");
         analysis.append("Best Score: ").append(bestScore).append("/100\n");
         analysis.append("Worst Score: ").append(worstScore).append("/100\n");
         analysis.append("Score Range: ").append(scoreRange).append(" points\n\n");
         
         analysis.append("📈 PERFORMANCE DISTRIBUTION\n");
-        analysis.append("Excellent (90+): ").append(excellentCount).append(" (").append(String.format("%.1f", (double) excellentCount / totalResults * 100)).append("%)\n");
-        analysis.append("Good (70-89): ").append(goodCount).append(" (").append(String.format("%.1f", (double) goodCount / totalResults * 100)).append("%)\n");
-        analysis.append("Average (50-69): ").append(averageCount).append(" (").append(String.format("%.1f", (double) averageCount / totalResults * 100)).append("%)\n");
-        analysis.append("Below Average (30-49): ").append(belowAverageCount).append(" (").append(String.format("%.1f", (double) belowAverageCount / totalResults * 100)).append("%)\n");
-        analysis.append("Poor (0-29): ").append(poorCount).append(" (").append(String.format("%.1f", (double) poorCount / totalResults * 100)).append("%)\n\n");
+        analysis.append("Excellent (90+): ").append(excellentCount).append(" (").append(String.format(java.util.Locale.US, "%.1f", (double) excellentCount / totalResults * 100)).append("%)\n");
+        analysis.append("Good (70-89): ").append(goodCount).append(" (").append(String.format(java.util.Locale.US, "%.1f", (double) goodCount / totalResults * 100)).append("%)\n");
+        analysis.append("Average (50-69): ").append(averageCount).append(" (").append(String.format(java.util.Locale.US, "%.1f", (double) averageCount / totalResults * 100)).append("%)\n");
+        analysis.append("Below Average (30-49): ").append(belowAverageCount).append(" (").append(String.format(java.util.Locale.US, "%.1f", (double) belowAverageCount / totalResults * 100)).append("%)\n");
+        analysis.append("Poor (0-29): ").append(poorCount).append(" (").append(String.format(java.util.Locale.US, "%.1f", (double) poorCount / totalResults * 100)).append("%)\n\n");
         
         // Performance consistency analysis
         if (scoreRange <= 10) {
