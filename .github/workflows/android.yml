@@ -54,8 +54,8 @@ jobs:
       run: chmod +x gradlew
 
     - name: Build with Gradle
-      # This single build command will execute the CI checks AND be traced by CodeQL!
-      run: ./gradlew build
+      # We explicitly disable the build-cache on CI so CodeQL can trace every compilation step
+      run: ./gradlew build --no-build-cache --no-daemon
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v3
