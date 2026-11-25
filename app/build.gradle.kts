@@ -120,11 +120,7 @@ dependencies {
     implementation(libs.activity.ktx)
     implementation(libs.firebase.firestore)
 
-    implementation(libs.appcompat)
     implementation(libs.material)
-    implementation(libs.constraintlayout)
-    implementation(libs.navigation.fragment)
-    implementation(libs.navigation.ui)
     implementation(libs.leanback)
     implementation(libs.firebase.messaging)
     implementation(libs.core.ktx)
