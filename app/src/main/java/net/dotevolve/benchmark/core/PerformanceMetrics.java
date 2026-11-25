@@ -361,7 +361,7 @@ public class PerformanceMetrics {
         double speedup = (double) singleThreadedTime / multiThreadedTime;
         
         // 100 points = 4x speedup, 50 points = 2x speedup, 0 points = 1x (no improvement)
-        return (int) Math.max(0, Math.min(100, (speedup - 1) * 33.33));
+        return (int) Math.clamp((speedup - 1) * 33.33, 0, 100);
     }
     
     // Helper methods for score normalization

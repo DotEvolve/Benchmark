@@ -7,7 +7,6 @@ import android.util.Log;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.io.IOException;
 
 /**
  * Advanced metrics collection for thermal, battery, memory, and system analysis
@@ -103,7 +102,9 @@ public class AdvancedMetrics {
             if (batteryManager != null) {
                 batteryLevel = batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY);
                 isCharging = batteryManager.isCharging();
-                batteryHealth = batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_STATUS);
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                    batteryHealth = batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_STATUS);
+                }
             }
             Log.d(TAG, "Battery Level: " + batteryLevel + "%, Charging: " + isCharging);
         } catch (Exception e) {
@@ -200,7 +201,7 @@ public class AdvancedMetrics {
         if (bytes < 1024) return bytes + " B";
         int exp = (int) (Math.log(bytes) / Math.log(1024));
         String pre = "KMGTPE".charAt(exp - 1) + "";
-        return String.format("%.1f %sB", bytes / Math.pow(1024, exp), pre);
+        return String.format(java.util.Locale.US, "%.1f %sB", bytes / Math.pow(1024, exp), pre);
     }
     
     // Getters
@@ -224,7 +225,7 @@ public class AdvancedMetrics {
     // Utility methods
     public String getFormattedCpuTemperature() {
         if (cpuTemperature == -1) return "N/A";
-        return String.format("%.1f°C", cpuTemperature);
+        return String.format(java.util.Locale.US, "%.1f°C", cpuTemperature);
     }
     
     public String getFormattedBatteryLevel() {
@@ -287,7 +288,7 @@ public class AdvancedMetrics {
         // Memory analysis
         analysis.append("💾 MEMORY STATUS\n");
         analysis.append("Memory Usage: ").append(getFormattedMemoryUsage()).append("\n");
-        analysis.append("Memory Usage: ").append(String.format("%.1f%%", getMemoryUsagePercent())).append("\n");
+        analysis.append("Memory Usage: ").append(String.format(java.util.Locale.US, "%.1f%%", getMemoryUsagePercent())).append("\n");
         if (getMemoryUsagePercent() > 90) {
             analysis.append("⚠️ Warning: High memory usage may slow down the system\n");
         }
@@ -296,7 +297,7 @@ public class AdvancedMetrics {
         // Storage analysis
         analysis.append("💿 STORAGE STATUS\n");
         analysis.append("Storage Usage: ").append(getFormattedStorageUsage()).append("\n");
-        analysis.append("Storage Usage: ").append(String.format("%.1f%%", getStorageUsagePercent())).append("\n");
+        analysis.append("Storage Usage: ").append(String.format(java.util.Locale.US, "%.1f%%", getStorageUsagePercent())).append("\n");
         if (getStorageUsagePercent() > 95) {
             analysis.append("⚠️ Warning: Low storage space may affect performance\n");
         }
@@ -305,7 +306,7 @@ public class AdvancedMetrics {
         // System analysis
         analysis.append("⚙️ SYSTEM STATUS\n");
         analysis.append("Background Apps: ").append(backgroundAppsCount).append("\n");
-        analysis.append("Performance Score: ").append(String.format("%.1f/100", performanceScore)).append("\n");
+        analysis.append("Performance Score: ").append(String.format(java.util.Locale.US, "%.1f/100", performanceScore)).append("\n");
         analysis.append("Status: ").append(getPerformanceStatus()).append("\n");
         
         if (performanceDegraded) {

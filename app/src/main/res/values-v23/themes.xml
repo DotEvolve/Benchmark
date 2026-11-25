@@ -1,4 +1,3 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
-
+<resources>
     <style name="Theme.Benchmark" parent="Base.Theme.Benchmark" />
 </resources>
