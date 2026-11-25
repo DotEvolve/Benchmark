@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.util.DisplayMetrics
 import android.util.Log
 import android.widget.Toast
+import androidx.core.content.edit
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -63,6 +64,8 @@ class MainActivity : ComponentActivity() {
     private var benchmarkProgressText by mutableStateOf("Ready to benchmark")
     private var benchmarkScoreText by mutableStateOf("-")
     private var showDialog by mutableStateOf(false)
+    private var isDarkMode by mutableStateOf(false)
+    private val completedTestsLog = mutableListOf<String>()
 
     private var bannerAdUnitId: String = ""
     private var interstitialAdUnitId: String = ""
@@ -75,6 +78,14 @@ class MainActivity : ComponentActivity() {
         bannerAdUnitId = getString(R.string.admob_banner_ad_unit_id)
         interstitialAdUnitId = getString(R.string.admob_interstitial_ad_unit_id)
 
+        val prefs = getSharedPreferences("settings", MODE_PRIVATE)
+        isDarkMode = if (prefs.contains("dark_mode")) {
+            prefs.getBoolean("dark_mode", false)
+        } else {
+            val nightMode = resources.configuration.uiMode and android.content.res.Configuration.UI_MODE_NIGHT_MASK
+            nightMode == android.content.res.Configuration.UI_MODE_NIGHT_YES
+        }
+
         benchmarkEngine = BenchmarkEngine(this)
         setupBenchmarkCallbacks()
 
@@ -86,7 +97,7 @@ class MainActivity : ComponentActivity() {
         }
 
         setContent {
-            MaterialTheme {
+            BenchmarkTheme(darkTheme = isDarkMode) {
                 MainScreen(
                     progressText = benchmarkProgressText,
                     scoreText = benchmarkScoreText,
@@ -129,13 +140,14 @@ class MainActivity : ComponentActivity() {
         benchmarkEngine.setProgressCallback(object : BenchmarkEngine.BenchmarkProgressCallback {
             override fun onProgressUpdate(progress: Int, currentTest: String) {
                 runOnUiThread {
-                    benchmarkProgressText = "Running \$currentTest...\nProgress: \$progress%"
+                    val logText = if (completedTestsLog.isEmpty()) "" else "\n" + completedTestsLog.joinToString("\n")
+                    benchmarkProgressText = "Running $currentTest...\nProgress: $progress%$logText"
                 }
             }
 
             override fun onTestComplete(testName: String, duration: Long) {
                 runOnUiThread {
-                    benchmarkProgressText += "\n✓ \$testName completed in \${formatNanoTime(duration)}"
+                    completedTestsLog.add("✓ $testName completed in ${formatNanoTime(duration)}")
                 }
             }
 
@@ -154,6 +166,7 @@ class MainActivity : ComponentActivity() {
 
     private fun runEnhancedBenchmark() {
         isBenchmarkRunning = true
+        completedTestsLog.clear()
         benchmarkProgressText = """
             🚀 Starting Enhanced Performance Benchmark...
             
@@ -241,15 +254,15 @@ class MainActivity : ComponentActivity() {
         } else {
             ScheduledBenchmarkWorker.scheduleDaily(this)
         }
-        prefs.edit().putBoolean("schedule_enabled", !enabled).apply()
+        prefs.edit { putBoolean("schedule_enabled", !enabled) }
         Toast.makeText(this, if (!enabled) "Daily benchmark scheduled" else "Daily benchmark canceled", Toast.LENGTH_SHORT).show()
     }
 
     private fun toggleDarkMode() {
         val prefs = getSharedPreferences("settings", MODE_PRIVATE)
-        val dark = prefs.getBoolean("dark_mode", false)
-        val newValue = !dark
-        prefs.edit().putBoolean("dark_mode", newValue).apply()
+        val newValue = !isDarkMode
+        isDarkMode = newValue
+        prefs.edit { putBoolean("dark_mode", newValue) }
         AppCompatDelegate.setDefaultNightMode(
             if (newValue) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
         )
@@ -412,6 +425,13 @@ fun MainScreen(
                     Text(if (isRunning) "Running..." else "Begin Test")
                 }
                 Spacer(modifier = Modifier.height(16.dp))
+                Text(
+                    text = "Score: $scoreText",
+                    style = MaterialTheme.typography.headlineMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.primary
+                )
+                Spacer(modifier = Modifier.height(16.dp))
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
@@ -423,31 +443,27 @@ fun MainScreen(
                         fontSize = 12.sp
                     )
                 }
-                Spacer(modifier = Modifier.height(16.dp))
-                Text(
-                    text = "Score: $scoreText",
-                    style = MaterialTheme.typography.headlineMedium,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.primary
-                )
             }
 
             // Ad Banner
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(60.dp),
+                    .wrapContentHeight()
+                    .navigationBarsPadding(),
                 contentAlignment = Alignment.Center
             ) {
                 if (bannerAdUnitId.isNotEmpty()) {
                     AndroidView(
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .wrapContentHeight(),
                         factory = { context ->
                             AdView(context).apply {
                                 setAdUnitId(bannerAdUnitId)
                                 val displayMetrics = context.resources.displayMetrics
                                 val adWidth = (displayMetrics.widthPixels / displayMetrics.density).toInt()
-                                setAdSize(AdSize.getLargeAnchoredAdaptiveBannerAdSize(context, adWidth))
+                                setAdSize(AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(context, adWidth))
                                 loadAd(AdRequest.Builder().build())
                             }
                         }

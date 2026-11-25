@@ -2,6 +2,7 @@ package net.dotevolve.benchmark.ui
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -16,26 +17,30 @@ import net.dotevolve.benchmark.core.PerformanceMetrics
 fun PerformanceVisualizer(metrics: PerformanceMetrics?, modifier: Modifier = Modifier) {
     if (metrics == null) return
 
+    val surfaceColor = MaterialTheme.colorScheme.surfaceVariant
+    val textColor = MaterialTheme.colorScheme.onSurfaceVariant.toArgb()
+    val trackColor = MaterialTheme.colorScheme.outlineVariant
+
     Canvas(modifier = modifier.fillMaxSize()) {
         val width = size.width
         val height = size.height
 
         // Background
-        drawRect(color = Color.LightGray, size = Size(width, height))
+        drawRect(color = surfaceColor, size = Size(width, height))
 
         // Title
         val paint = android.graphics.Paint().apply {
-            color = android.graphics.Color.BLACK
+            color = textColor
             textSize = 24f
             isAntiAlias = true
         }
         drawContext.canvas.nativeCanvas.drawText("Performance Visualization", 20f, 40f, paint)
 
         // Draw score bars
-        drawScoreBar("Overall", metrics.overallScore, 60f, width, Color.Blue, paint)
-        drawScoreBar("Crypto", metrics.cryptoScore, 100f, width, Color.Green, paint)
-        drawScoreBar("Efficiency", metrics.efficiencyScore, 140f, width, Color.Red, paint)
-        drawScoreBar("Stability", metrics.stabilityScore, 180f, width, Color.Magenta, paint)
+        drawScoreBar("Overall", metrics.overallScore, 60f, width, Color(0xFF2196F3), paint, trackColor)
+        drawScoreBar("Crypto", metrics.cryptoScore, 100f, width, Color(0xFF4CAF50), paint, trackColor)
+        drawScoreBar("Efficiency", metrics.efficiencyScore, 140f, width, Color(0xFFF44336), paint, trackColor)
+        drawScoreBar("Stability", metrics.stabilityScore, 180f, width, Color(0xFF9C27B0), paint, trackColor)
 
         // Draw device info
         paint.textSize = 16f
@@ -54,14 +59,22 @@ fun PerformanceVisualizer(metrics: PerformanceMetrics?, modifier: Modifier = Mod
     }
 }
 
-private fun DrawScope.drawScoreBar(label: String, score: Int, y: Float, width: Float, color: Color, textPaint: android.graphics.Paint) {
+private fun DrawScope.drawScoreBar(
+    label: String,
+    score: Int,
+    y: Float,
+    width: Float,
+    color: Color,
+    textPaint: android.graphics.Paint,
+    trackColor: Color
+) {
     val barWidth = width - 40f
     val barHeight = 20f
     val x = 20f
 
     // Background bar
     drawRect(
-        color = Color.LightGray,
+        color = trackColor,
         topLeft = Offset(x, y),
         size = Size(barWidth, barHeight)
     )
@@ -90,11 +103,11 @@ private fun getPerformanceCategory(score: Int): String {
 
 private fun getCategoryColor(category: String): androidx.compose.ui.graphics.Color {
     return when (category) {
-        "EXCELLENT" -> Color.Green
-        "GOOD" -> Color.Blue
-        "AVERAGE" -> Color.Yellow
-        "BELOW_AVERAGE" -> Color(0xFFFF8C00) // Orange
-        "POOR" -> Color.Red
+        "EXCELLENT" -> Color(0xFF4CAF50)
+        "GOOD" -> Color(0xFF2196F3)
+        "AVERAGE" -> Color(0xFFFFEB3B)
+        "BELOW_AVERAGE" -> Color(0xFFFF8C00)
+        "POOR" -> Color(0xFFF44336)
         else -> Color.Gray
     }
 }

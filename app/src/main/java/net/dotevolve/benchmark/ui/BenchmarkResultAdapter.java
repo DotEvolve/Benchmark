@@ -32,6 +32,7 @@ public class BenchmarkResultAdapter extends RecyclerView.Adapter<BenchmarkResult
         this.clickListener = listener;
     }
     
+    @android.annotation.SuppressLint("NotifyDataSetChanged")
     public void updateResults(List<BenchmarkResult> newResults) {
         this.results = newResults;
         notifyDataSetChanged();

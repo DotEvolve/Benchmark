@@ -23,8 +23,16 @@ class ResultDetailActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         val result = IntentCompat.getSerializableExtra(intent, "benchmark_result", BenchmarkResult::class.java)
 
+        val prefs = getSharedPreferences("settings", MODE_PRIVATE)
+        val isDarkMode = if (prefs.contains("dark_mode")) {
+            prefs.getBoolean("dark_mode", false)
+        } else {
+            val nightMode = resources.configuration.uiMode and android.content.res.Configuration.UI_MODE_NIGHT_MASK
+            nightMode == android.content.res.Configuration.UI_MODE_NIGHT_YES
+        }
+
         setContent {
-            MaterialTheme {
+            BenchmarkTheme(darkTheme = isDarkMode) {
                 ResultDetailScreen(
                     result = result,
                     onBackClick = { finish() }
