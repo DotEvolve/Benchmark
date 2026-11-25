@@ -1,14 +1,16 @@
 package net.dotevolve.benchmark.core;
-import com.google.firebase.Timestamp;
-import com.google.firebase.firestore.FirebaseFirestore;
-import net.dotevolve.benchmark.data.db.PerformanceDatabaseHelper;
-import net.dotevolve.benchmark.data.model.BenchmarkResult;
-import net.dotevolve.benchmark.data.model.DeviceStatistics;
-import net.dotevolve.benchmark.data.model.PerformanceTrend;
 
 import android.content.Context;
 import android.os.Build;
 import android.util.Log;
+
+import com.google.firebase.Timestamp;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import net.dotevolve.benchmark.data.db.PerformanceDatabaseHelper;
+import net.dotevolve.benchmark.data.model.BenchmarkResult;
+import net.dotevolve.benchmark.data.model.DeviceStatistics;
+import net.dotevolve.benchmark.data.model.PerformanceTrend;
 
 import java.util.ArrayList;
 import java.util.HashMap;

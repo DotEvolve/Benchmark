@@ -1,8 +1,9 @@
 package net.dotevolve.benchmark.core;
-import net.dotevolve.benchmark.R;
 
 import android.content.Context;
 import android.util.Log;
+
+import net.dotevolve.benchmark.R;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

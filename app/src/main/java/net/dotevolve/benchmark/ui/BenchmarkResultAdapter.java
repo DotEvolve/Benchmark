@@ -1,6 +1,4 @@
 package net.dotevolve.benchmark.ui;
-import net.dotevolve.benchmark.R;
-import net.dotevolve.benchmark.data.model.BenchmarkResult;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +7,9 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import net.dotevolve.benchmark.R;
+import net.dotevolve.benchmark.data.model.BenchmarkResult;
 
 import java.util.List;
 

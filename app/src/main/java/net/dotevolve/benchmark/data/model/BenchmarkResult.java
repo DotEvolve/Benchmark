@@ -2,12 +2,13 @@ package net.dotevolve.benchmark.data.model;
 
 import androidx.annotation.NonNull;
 
+import net.dotevolve.benchmark.core.AdvancedMetrics;
+import net.dotevolve.benchmark.core.PerformanceMetrics;
+
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
-import net.dotevolve.benchmark.core.PerformanceMetrics;
-import net.dotevolve.benchmark.core.AdvancedMetrics;
 
 /**
  * Data model for storing benchmark results
