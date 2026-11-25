@@ -14,7 +14,11 @@ plugins {
 
 android {
     namespace = "net.dotevolve.benchmark"
-    compileSdk = 37
+    compileSdk {
+        version = release(37) {
+            minorApiLevel = 2
+        }
+    }
 
     defaultConfig {
         applicationId = "net.dotevolve.benchmark"
