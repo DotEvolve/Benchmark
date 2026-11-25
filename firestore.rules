@@ -1,0 +1,86 @@
+rules_version = '2';
+
+// ===============================================================
+// Assumed Data Model
+// ===============================================================
+//
+// Collection: benchmarks
+// Document ID: auto-generated
+// Fields:
+//   - deviceModel: string
+//   - androidVersion: string
+//   - cpuCores: int
+//   - totalMemory: int
+//   - architecture: string
+//   - benchmarkVersion: string
+//   - overallScore: int
+//   - cryptoScore: int
+//   - computationalScore: int
+//   - memoryScore: int
+//   - efficiencyScore: int
+//   - stabilityScore: int
+//   - multiThreadingScore: int
+//   - sha1TotalTime: int
+//   - md5TotalTime: int
+//   - aesTotalTime: int
+//   - rsaTotalTime: int
+//   - loopOverheadTime: int
+//   - matrixMultiplicationTime: int
+//   - sortingTime: int
+//   - compressionTime: int
+//   - memoryBandwidthTime: int
+//   - multiThreadedTime: int
+//   - timestamp: timestamp
+//
+// ===============================================================
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /benchmarks/{benchmarkId} {
+      // Allow public read access to benchmark results
+      allow read: if true;
+
+      // Allow creating benchmark records with valid schema
+      allow create: if isValidBenchmark();
+
+      // Disallow updating or deleting submitted benchmark results
+      allow update, delete: if false;
+    }
+
+    function isValidBenchmark() {
+      let data = request.resource.data;
+      return data.keys().hasAll([
+        'deviceModel', 'androidVersion', 'cpuCores', 'totalMemory',
+        'architecture', 'benchmarkVersion', 'overallScore', 'cryptoScore',
+        'computationalScore', 'memoryScore', 'efficiencyScore', 'stabilityScore',
+        'multiThreadingScore', 'sha1TotalTime', 'md5TotalTime', 'aesTotalTime',
+        'rsaTotalTime', 'loopOverheadTime', 'matrixMultiplicationTime', 'sortingTime',
+        'compressionTime', 'memoryBandwidthTime', 'multiThreadedTime', 'timestamp'
+      ])
+      && data.deviceModel is string
+      && data.androidVersion is string
+      && data.cpuCores is int
+      && data.totalMemory is int
+      && data.architecture is string
+      && data.benchmarkVersion is string
+      && data.overallScore is int
+      && data.cryptoScore is int
+      && data.computationalScore is int
+      && data.memoryScore is int
+      && data.efficiencyScore is int
+      && data.stabilityScore is int
+      && data.multiThreadingScore is int
+      && data.sha1TotalTime is int
+      && data.md5TotalTime is int
+      && data.aesTotalTime is int
+      && data.rsaTotalTime is int
+      && data.loopOverheadTime is int
+      && data.matrixMultiplicationTime is int
+      && data.sortingTime is int
+      && data.compressionTime is int
+      && data.memoryBandwidthTime is int
+      && data.multiThreadedTime is int
+      && data.timestamp is timestamp;
+    }
+  }
+}
