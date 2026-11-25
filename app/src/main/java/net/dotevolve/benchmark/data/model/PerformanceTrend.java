@@ -1,5 +1,7 @@
 package net.dotevolve.benchmark.data.model;
 
+import androidx.annotation.NonNull;
+
 /**
  * Data model for performance trends over time
  */
@@ -57,23 +59,24 @@ public class PerformanceTrend {
     }
     
     public String getTrendIcon() {
-        switch (performanceTrend) {
-            case "IMPROVING": return "📈";
-            case "DECLINING": return "📉";
-            case "STABLE": return "➡️";
-            default: return "❓";
-        }
+        return switch (performanceTrend) {
+            case "IMPROVING" -> "📈";
+            case "DECLINING" -> "📉";
+            case "STABLE" -> "➡️";
+            default -> "❓";
+        };
     }
     
     public String getTrendDescription() {
-        switch (performanceTrend) {
-            case "IMPROVING": return "Performance is improving";
-            case "DECLINING": return "Performance is declining";
-            case "STABLE": return "Performance is stable";
-            default: return "Unknown trend";
-        }
+        return switch (performanceTrend) {
+            case "IMPROVING" -> "Performance is improving";
+            case "DECLINING" -> "Performance is declining";
+            case "STABLE" -> "Performance is stable";
+            default -> "Unknown trend";
+        };
     }
     
+    @NonNull
     @Override
     public String toString() {
         return "PerformanceTrend{" +
