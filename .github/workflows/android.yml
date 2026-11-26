@@ -61,3 +61,11 @@ jobs:
       uses: github/codeql-action/analyze@v4
       with:
         category: "/language:java-kotlin"
+
+    - name: Upload ProGuard Mapping Artifact
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: proguard-mapping
+        path: app/build/outputs/mapping/release/mapping.txt
+        if-no-files-found: ignore
