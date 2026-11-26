@@ -17,6 +17,7 @@ public class BenchmarkApiClientTest {
         BenchmarkResult result = new BenchmarkResult();
         result.setId(101L);
         result.setClientRunId("550e8400-e29b-41d4-a716-446655440000");
+        result.setClientDeviceId("  device-install-123  ");
         result.setRunType("full");
         result.setDeviceModel("Pixel 8 Pro");
         result.setDeviceManufacturer("  Google  ");
@@ -50,6 +51,7 @@ public class BenchmarkApiClientTest {
 
         assertNotNull(payload);
         assertEquals("550e8400-e29b-41d4-a716-446655440000", payload.getString("clientRunId"));
+        assertEquals("device-install-123", payload.getString("clientDeviceId"));
         assertEquals("full", payload.getString("runType"));
         assertEquals("Pixel 8 Pro", payload.getString("deviceModel"));
         assertEquals("Google", payload.getString("deviceManufacturer"));
@@ -133,6 +135,7 @@ public class BenchmarkApiClientTest {
         JSONObject payload = client.buildPayload(result);
 
         assertEquals("TB310XU", payload.getString("deviceModel"));
+        assertFalse(payload.has("clientDeviceId"));
         assertFalse(payload.has("deviceManufacturer"));
         assertFalse(payload.has("deviceBrand"));
     }

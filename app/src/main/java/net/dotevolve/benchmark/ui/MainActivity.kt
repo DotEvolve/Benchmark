@@ -25,6 +25,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -39,6 +40,7 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -95,6 +97,9 @@ class MainActivity : ComponentActivity() {
     private var benchmarkProgressText by mutableStateOf("Ready to benchmark")
     private var benchmarkScoreText by mutableStateOf("-")
     private var showDialog by mutableStateOf(false)
+    private var lastRunWebId by mutableStateOf<String?>(null)
+    private var isUploadingRun by mutableStateOf(false)
+    private var showWebResultsPrompt by mutableStateOf(false)
     private var isDarkMode by mutableStateOf(false)
     private val completedTestsLog = mutableListOf<String>()
 
@@ -133,7 +138,13 @@ class MainActivity : ComponentActivity() {
                     progressText = benchmarkProgressText,
                     scoreText = benchmarkScoreText,
                     isRunning = isBenchmarkRunning,
+                    hasWebRun = lastRunWebId != null,
                     onStartClick = { runEnhancedBenchmark() },
+                    onViewOnWebClick = {
+                        lastRunWebId?.let { runId ->
+                            WebLinks.openUrl(this, WebLinks.buildRunUrl(runId))
+                        }
+                    },
                     onShareClick = {
                         if (currentMetrics != null) {
                             showDialog = true
@@ -149,6 +160,49 @@ class MainActivity : ComponentActivity() {
                     bannerAdUnitId = bannerAdUnitId
                 )
 
+                if (showWebResultsPrompt && currentMetrics != null && lastRunWebId != null) {
+                    val metrics = currentMetrics!!
+                    val runId = lastRunWebId!!
+                    val syncNote = when {
+                        isUploadingRun -> "Uploading run to ${BuildConfig.BENCHMARK_API_BASE_URL.removePrefix("https://")}..."
+                        metrics.remoteId != null -> "Your run is synced and ready to view online."
+                        else -> "Saved locally. It will sync automatically once online."
+                    }
+                    AlertDialog(
+                        onDismissRequest = { showWebResultsPrompt = false },
+                        title = { Text("Benchmark Complete") },
+                        text = {
+                            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                                Text(
+                                    text = "Overall Score: ${metrics.overallScore}/100 (${getPerformanceCategory(metrics.overallScore)})",
+                                    fontWeight = FontWeight.SemiBold
+                                )
+                                Text("Would you like to check your full breakdown and global comparison on the website?")
+                                Text(
+                                    text = syncNote,
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                            }
+                        },
+                        confirmButton = {
+                            Button(
+                                onClick = {
+                                    showWebResultsPrompt = false
+                                    WebLinks.openUrl(this@MainActivity, WebLinks.buildRunUrl(runId))
+                                }
+                            ) {
+                                Text("Check on Website")
+                            }
+                        },
+                        dismissButton = {
+                            TextButton(onClick = { showWebResultsPrompt = false }) {
+                                Text("Later")
+                            }
+                        }
+                    )
+                }
+
                 if (showDialog && currentMetrics != null) {
                     MetricsDialog(
                         metrics = currentMetrics!!,
@@ -160,6 +214,12 @@ class MainActivity : ComponentActivity() {
                         onShare = {
                             shareResults()
                             showDialog = false
+                        },
+                        onViewOnWeb = lastRunWebId?.let { runId ->
+                            {
+                                showDialog = false
+                                WebLinks.openUrl(this@MainActivity, WebLinks.buildRunUrl(runId))
+                            }
                         }
                     )
                 }
@@ -183,13 +243,26 @@ class MainActivity : ComponentActivity() {
             }
 
             override fun onBenchmarkComplete(metrics: PerformanceMetrics) {
-                backgroundExecutor.execute { metrics.saveToHistory(this@MainActivity) }
+                val runId = metrics.ensureClientRunId()
                 runOnUiThread {
                     isBenchmarkRunning = false
                     currentMetrics = metrics
                     benchmarkProgressText = metrics.formattedResults
                     benchmarkScoreText = metrics.overallScore.toString()
+                    lastRunWebId = runId
+                    isUploadingRun = true
+                    showWebResultsPrompt = true
                     showInterstitial()
+                    backgroundExecutor.execute {
+                        metrics.saveToHistory(this@MainActivity)
+                        val resolvedId = metrics.webRunId ?: runId
+                        runOnUiThread {
+                            if (currentMetrics === metrics) {
+                                lastRunWebId = resolvedId
+                                isUploadingRun = false
+                            }
+                        }
+                    }
                 }
             }
         })
@@ -197,6 +270,9 @@ class MainActivity : ComponentActivity() {
 
     private fun runEnhancedBenchmark() {
         isBenchmarkRunning = true
+        lastRunWebId = null
+        isUploadingRun = false
+        showWebResultsPrompt = false
         completedTestsLog.clear()
         benchmarkProgressText = """
             🚀 Starting Enhanced Performance Benchmark...
@@ -408,7 +484,9 @@ fun MainScreen(
     progressText: String,
     scoreText: String,
     isRunning: Boolean,
+    hasWebRun: Boolean,
     onStartClick: () -> Unit,
+    onViewOnWebClick: () -> Unit,
     onShareClick: () -> Unit,
     onHistoryClick: () -> Unit,
     onToggleSchedule: () -> Unit,
@@ -462,6 +540,12 @@ fun MainScreen(
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.primary
                 )
+                if (!isRunning && hasWebRun) {
+                    Spacer(modifier = Modifier.height(12.dp))
+                    OutlinedButton(onClick = onViewOnWebClick) {
+                        Text("Check Results on Website")
+                    }
+                }
                 Spacer(modifier = Modifier.height(16.dp))
                 Card(
                     modifier = Modifier.fillMaxWidth(),
@@ -510,7 +594,8 @@ fun MetricsDialog(
     metrics: PerformanceMetrics,
     onDismiss: () -> Unit,
     onExport: () -> Unit,
-    onShare: () -> Unit
+    onShare: () -> Unit,
+    onViewOnWeb: (() -> Unit)? = null
 ) {
     PredictiveBackHandler { progress ->
         try {
@@ -588,8 +673,17 @@ fun MetricsDialog(
                     }
                 }
 
+                if (onViewOnWeb != null) {
+                    Button(
+                        onClick = onViewOnWeb,
+                        modifier = Modifier.fillMaxWidth().padding(top = 12.dp)
+                    ) {
+                        Text("View Results on Website")
+                    }
+                }
+
                 Row(
-                    modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
+                    modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     Button(onClick = onExport, modifier = Modifier.weight(1f)) {

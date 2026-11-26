@@ -115,6 +115,7 @@ public class BenchmarkApiClient {
     public JSONObject buildPayload(PerformanceMetrics metrics, String clientRunId) throws JSONException {
         JSONObject json = new JSONObject();
         json.put("clientRunId", clientRunId);
+        putOptionalTrimmedString(json, "clientDeviceId", metrics.getClientDeviceId());
         json.put("runType", metrics.getRunType());
         json.put("deviceModel", metrics.getDeviceModel());
         putOptionalTrimmedString(json, "deviceManufacturer", metrics.getDeviceManufacturer());
@@ -156,6 +157,7 @@ public class BenchmarkApiClient {
             clientRunId = java.util.UUID.nameUUIDFromBytes(seed.getBytes(StandardCharsets.UTF_8)).toString();
         }
         json.put("clientRunId", clientRunId);
+        putOptionalTrimmedString(json, "clientDeviceId", result.getClientDeviceId());
         json.put("runType", result.getRunType());
         json.put("deviceModel", result.getDeviceModel());
         putOptionalTrimmedString(json, "deviceManufacturer", result.getDeviceManufacturer());

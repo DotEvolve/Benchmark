@@ -64,6 +64,9 @@ public class PerformanceMetrics {
     private String architecture;
     private String benchmarkVersion = "unknown";
     private String runType = "full";
+    private String clientDeviceId;
+    private volatile String lastClientRunId;
+    private volatile String lastRemoteId;
     
     // Performance scores
     private int overallScore;
@@ -112,6 +115,9 @@ public class PerformanceMetrics {
         cpuCores = Runtime.getRuntime().availableProcessors();
         totalMemory = Runtime.getRuntime().maxMemory();
         architecture = Build.SUPPORTED_ABIS[0];
+        if (context != null) {
+            clientDeviceId = DeviceIdentityProvider.getOrCreateClientDeviceId(context);
+        }
         
         Log.d(TAG, "System Info - Model: " + deviceModel + 
               ", Manufacturer: " + deviceManufacturer +
@@ -608,10 +614,20 @@ public class PerformanceMetrics {
         return PerformanceCategory.fromScore(score);
     }
     
+    public synchronized String ensureClientRunId() {
+        if (lastClientRunId == null || lastClientRunId.trim().isEmpty()) {
+            lastClientRunId = UUID.randomUUID().toString();
+        }
+        return lastClientRunId;
+    }
+
     // Historical tracking methods
     public void saveToHistory(Context context) {
         long localId = -1;
-        String clientRunId = UUID.randomUUID().toString();
+        String clientRunId = ensureClientRunId();
+        if (clientDeviceId == null && context != null) {
+            clientDeviceId = DeviceIdentityProvider.getOrCreateClientDeviceId(context);
+        }
 
         // 1. Save to local database (offline-first guarantee)
         try {
@@ -629,6 +645,7 @@ public class PerformanceMetrics {
                 BenchmarkApiClient apiClient = new BenchmarkApiClient();
                 BenchmarkApiClient.ApiResult apiResult = apiClient.uploadBenchmark(this, clientRunId);
                 if (apiResult.status == BenchmarkApiClient.ApiResultStatus.SUCCESS) {
+                    this.lastRemoteId = apiResult.remoteId;
                     if (localId != -1) {
                         PerformanceDatabaseHelper.getInstance(context).markRunSynced(localId, apiResult.remoteId);
                     }
@@ -720,5 +737,12 @@ public class PerformanceMetrics {
     public void setBenchmarkVersion(String benchmarkVersion) { this.benchmarkVersion = benchmarkVersion; }
     public String getRunType() { return runType != null ? runType : "full"; }
     public void setRunType(String runType) { this.runType = runType; }
+    public String getClientDeviceId() { return clientDeviceId; }
+    public void setClientDeviceId(String clientDeviceId) { this.clientDeviceId = clientDeviceId; }
+    public String getClientRunId() { return lastClientRunId; }
+    public String getRemoteId() { return lastRemoteId; }
+    public String getWebRunId() {
+        return (lastRemoteId != null && !lastRemoteId.trim().isEmpty()) ? lastRemoteId : lastClientRunId;
+    }
 }
 
