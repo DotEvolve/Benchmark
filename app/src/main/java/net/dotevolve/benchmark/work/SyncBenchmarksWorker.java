@@ -1,6 +1,7 @@
 package net.dotevolve.benchmark.work;
 
 import android.content.Context;
+import android.os.Build;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -53,6 +54,12 @@ public class SyncBenchmarksWorker extends Worker {
                 String generatedId = java.util.UUID.randomUUID().toString();
                 result.setClientRunId(generatedId);
                 dbHelper.updateClientRunId(result.getId(), generatedId);
+            }
+            if (result.getDeviceManufacturer() == null || result.getDeviceManufacturer().trim().isEmpty()) {
+                result.setDeviceManufacturer(Build.MANUFACTURER);
+            }
+            if (result.getDeviceBrand() == null || result.getDeviceBrand().trim().isEmpty()) {
+                result.setDeviceBrand(Build.BRAND);
             }
             BenchmarkApiClient.ApiResult apiResult = client.uploadBenchmark(result);
             if (apiResult.status == BenchmarkApiClient.ApiResultStatus.SUCCESS) {

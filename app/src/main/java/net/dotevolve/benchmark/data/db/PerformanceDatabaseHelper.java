@@ -25,7 +25,7 @@ public class PerformanceDatabaseHelper extends SQLiteOpenHelper {
     
     private static final String TAG = "PerformanceDB";
     private static final String DATABASE_NAME = "benchmark_performance.db";
-    private static final int DATABASE_VERSION = 4;
+    private static final int DATABASE_VERSION = 5;
     
     // Table names
     private static final String TABLE_BENCHMARKS = "benchmarks";
@@ -36,6 +36,8 @@ public class PerformanceDatabaseHelper extends SQLiteOpenHelper {
     private static final String COLUMN_ID = "id";
     private static final String COLUMN_TIMESTAMP = "timestamp";
     private static final String COLUMN_DEVICE_MODEL = "device_model";
+    private static final String COLUMN_DEVICE_MANUFACTURER = "device_manufacturer";
+    private static final String COLUMN_DEVICE_BRAND = "device_brand";
     private static final String COLUMN_ANDROID_VERSION = "android_version";
     private static final String COLUMN_CPU_CORES = "cpu_cores";
     private static final String COLUMN_TOTAL_MEMORY = "total_memory";
@@ -126,6 +128,10 @@ public class PerformanceDatabaseHelper extends SQLiteOpenHelper {
                     + COLUMN_AES_TIME + " = 0 AND " + COLUMN_MATRIX_TIME + " = 0 AND " + COLUMN_MEMORY_BANDWIDTH_TIME + " = 0");
             db.execSQL("UPDATE " + TABLE_BENCHMARKS + " SET " + COLUMN_SYNCED + " = 1");
         }
+        if (oldVersion < 5) {
+            db.execSQL("ALTER TABLE " + TABLE_BENCHMARKS + " ADD COLUMN " + COLUMN_DEVICE_MANUFACTURER + " TEXT");
+            db.execSQL("ALTER TABLE " + TABLE_BENCHMARKS + " ADD COLUMN " + COLUMN_DEVICE_BRAND + " TEXT");
+        }
     }
     
     private void createBenchmarksTable(SQLiteDatabase db) {
@@ -133,6 +139,8 @@ public class PerformanceDatabaseHelper extends SQLiteOpenHelper {
                 COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 COLUMN_TIMESTAMP + " INTEGER NOT NULL, " +
                 COLUMN_DEVICE_MODEL + " TEXT NOT NULL, " +
+                COLUMN_DEVICE_MANUFACTURER + " TEXT, " +
+                COLUMN_DEVICE_BRAND + " TEXT, " +
                 COLUMN_ANDROID_VERSION + " TEXT, " +
                 COLUMN_CPU_CORES + " INTEGER, " +
                 COLUMN_TOTAL_MEMORY + " INTEGER, " +
@@ -210,6 +218,8 @@ public class PerformanceDatabaseHelper extends SQLiteOpenHelper {
         
         values.put(COLUMN_TIMESTAMP, timestamp);
         values.put(COLUMN_DEVICE_MODEL, metrics.getDeviceModel());
+        values.put(COLUMN_DEVICE_MANUFACTURER, metrics.getDeviceManufacturer());
+        values.put(COLUMN_DEVICE_BRAND, metrics.getDeviceBrand());
         values.put(COLUMN_ANDROID_VERSION, metrics.getAndroidVersion());
         values.put(COLUMN_CPU_CORES, metrics.getCpuCores());
         values.put(COLUMN_TOTAL_MEMORY, metrics.getTotalMemory());
@@ -482,6 +492,14 @@ public class PerformanceDatabaseHelper extends SQLiteOpenHelper {
         result.setId(cursor.getLong(cursor.getColumnIndexOrThrow(COLUMN_ID)));
         result.setTimestamp(cursor.getLong(cursor.getColumnIndexOrThrow(COLUMN_TIMESTAMP)));
         result.setDeviceModel(cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_DEVICE_MODEL)));
+        int manufacturerIdx = cursor.getColumnIndex(COLUMN_DEVICE_MANUFACTURER);
+        if (manufacturerIdx != -1 && !cursor.isNull(manufacturerIdx)) {
+            result.setDeviceManufacturer(cursor.getString(manufacturerIdx));
+        }
+        int brandIdx = cursor.getColumnIndex(COLUMN_DEVICE_BRAND);
+        if (brandIdx != -1 && !cursor.isNull(brandIdx)) {
+            result.setDeviceBrand(cursor.getString(brandIdx));
+        }
         result.setAndroidVersion(cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_ANDROID_VERSION)));
         result.setCpuCores(cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_CPU_CORES)));
         result.setTotalMemory(cursor.getLong(cursor.getColumnIndexOrThrow(COLUMN_TOTAL_MEMORY)));

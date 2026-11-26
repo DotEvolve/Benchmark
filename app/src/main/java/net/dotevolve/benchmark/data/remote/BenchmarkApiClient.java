@@ -117,6 +117,8 @@ public class BenchmarkApiClient {
         json.put("clientRunId", clientRunId);
         json.put("runType", metrics.getRunType());
         json.put("deviceModel", metrics.getDeviceModel());
+        putOptionalTrimmedString(json, "deviceManufacturer", metrics.getDeviceManufacturer());
+        putOptionalTrimmedString(json, "deviceBrand", metrics.getDeviceBrand());
         json.put("androidVersion", metrics.getAndroidVersion());
         json.put("cpuCores", metrics.getCpuCores());
         json.put("totalMemory", metrics.getTotalMemory());
@@ -156,6 +158,8 @@ public class BenchmarkApiClient {
         json.put("clientRunId", clientRunId);
         json.put("runType", result.getRunType());
         json.put("deviceModel", result.getDeviceModel());
+        putOptionalTrimmedString(json, "deviceManufacturer", result.getDeviceManufacturer());
+        putOptionalTrimmedString(json, "deviceBrand", result.getDeviceBrand());
         json.put("androidVersion", result.getAndroidVersion());
         json.put("cpuCores", result.getCpuCores());
         json.put("totalMemory", result.getTotalMemory());
@@ -183,6 +187,16 @@ public class BenchmarkApiClient {
 
         json.put("clientTimestampMs", result.getTimestamp() > 0 ? result.getTimestamp() : System.currentTimeMillis());
         return json;
+    }
+
+    private static void putOptionalTrimmedString(JSONObject json, String key, @Nullable String value) throws JSONException {
+        if (value == null) {
+            return;
+        }
+        String trimmed = value.trim();
+        if (!trimmed.isEmpty()) {
+            json.put(key, trimmed);
+        }
     }
 
     public ApiResult executeUpload(JSONObject payload) {
