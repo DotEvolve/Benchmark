@@ -1,8 +1,9 @@
 package net.dotevolve.benchmark.core;
-import net.dotevolve.benchmark.R;
 
 import android.content.Context;
 import android.util.Log;
+
+import net.dotevolve.benchmark.R;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -63,6 +64,7 @@ public class BenchmarkEngine {
     
     public void runComprehensiveBenchmark() {
         Log.d(TAG, "Starting comprehensive benchmark...");
+        metrics.setRunType("full");
         
         try {
             // Test 1: SHA-512 Hash Performance
@@ -456,6 +458,7 @@ public class BenchmarkEngine {
     // Legacy methods for backward compatibility
     public void runLegacyBenchmark() {
         Log.d(TAG, "Running legacy benchmark...");
+        metrics.setRunType("legacy");
         
         // Run only SHA-512 and MD5 for backward compatibility
         runSha1Benchmark();

@@ -2,26 +2,30 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import java.util.Properties
 
 plugins {
+    id("google-services-mock")
     alias(libs.plugins.android.application)
     alias(libs.plugins.google.gms.google.services)
     alias(libs.plugins.google.firebase.crashlytics)
     alias(libs.plugins.google.firebase.perf)
     alias(libs.plugins.kotlin.compose)
-
     alias(libs.plugins.jacoco)
     alias(libs.plugins.sonarqube)
 }
 
 android {
     namespace = "net.dotevolve.benchmark"
-    compileSdk = 37
+    compileSdk {
+        version = release(37) {
+            minorApiLevel = 2
+        }
+    }
 
     defaultConfig {
         applicationId = "net.dotevolve.benchmark"
         minSdk = 24
         targetSdk = 37
-        versionCode = 20
-        versionName = "20"
+        versionCode = 22
+        versionName = "22"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         
@@ -30,6 +34,23 @@ android {
             debugSymbolLevel = "FULL"
         }
     }
+
+    val properties = Properties()
+    val localPropertiesFile = rootProject.file("local.properties")
+    if (localPropertiesFile.exists()) {
+        properties.load(localPropertiesFile.inputStream())
+    }
+
+    val defaultReleaseApiBaseUrl = "https://benchmark.dotevolve.net"
+    val defaultDebugApiBaseUrl = "https://benchmark-dev.dotevolve.net"
+
+    val apiBaseUrlRelease = System.getenv("BENCHMARK_API_BASE_URL")
+        ?: properties.getProperty("benchmark.apiBaseUrl")
+        ?: defaultReleaseApiBaseUrl
+
+    val apiBaseUrlDebug = System.getenv("BENCHMARK_API_BASE_URL")
+        ?: properties.getProperty("benchmark.apiBaseUrl")
+        ?: defaultDebugApiBaseUrl
 
     buildTypes {
         release {
@@ -40,6 +61,8 @@ android {
 
             // Enables resource shrinking.
             isShrinkResources = true
+
+            buildConfigField("String", "BENCHMARK_API_BASE_URL", "\"$apiBaseUrlRelease\"")
 
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -56,40 +79,57 @@ android {
             enableUnitTestCoverage = true
             enableAndroidTestCoverage = true
 
+            buildConfigField("String", "BENCHMARK_API_BASE_URL", "\"$apiBaseUrlDebug\"")
+
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
             signingConfig = signingConfigs.getByName("debug")
-            resValue("string", "app_name", "Benchmark.DEBUG")
-            resValue("string", "admob_app_id", "ca-app-pub-3940256099942544~3347511713")
-            resValue("string", "admob_banner_ad_unit_id", "ca-app-pub-3940256099942544/9214589741")
-            resValue("string", "admob_interstitial_ad_unit_id", "ca-app-pub-3940256099942544/1033173712")
 
+            val admobAppId = System.getenv("ADMOB_APP_ID")
+                ?: properties.getProperty("admob.appId")
+                ?: "ca-app-pub-3940256099942544~3347511713"
+
+            val admobBannerAdUnitId = System.getenv("ADMOB_BANNER_AD_UNIT_ID")
+                ?: properties.getProperty("admob.bannerAdUnitId")
+                ?: "ca-app-pub-3940256099942544/9214589741"
+
+            val admobInterstitialAdUnitId = System.getenv("ADMOB_INTERSTITIAL_AD_UNIT_ID")
+                ?: properties.getProperty("admob.interstitialAdUnitId")
+                ?: "ca-app-pub-3940256099942544/1033173712"
+
+            resValue("string", "app_name", "Benchmark.DEBUG")
+            resValue("string", "admob_app_id", admobAppId)
+            resValue("string", "admob_banner_ad_unit_id", admobBannerAdUnitId)
+            resValue("string", "admob_interstitial_ad_unit_id", admobInterstitialAdUnitId)
         }
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
 
     buildFeatures {
         buildConfig = true
-        viewBinding = true
         compose = true
         resValues = true
     }
+}
 
-    lint {
-        baseline = file("lint-baseline.xml")
+// Ensure Gradle runs Lint with JDK 21 even if the Gradle daemon is on JDK 17 (e.g. CodeQL autobuild)
+android.lint.toolchain.languageVersion.set(JavaLanguageVersion.of(21))
+
+kotlin {
+    jvmToolchain(21)
+    compilerOptions {
+        jvmTarget.set(JvmTarget.JVM_21)
     }
 }
 
-kotlin {
-    compilerOptions {
-        jvmTarget.set(JvmTarget.JVM_17)
-    }
+tasks.withType<JavaCompile>().configureEach {
+    options.compilerArgs.add("-Xlint:deprecation")
 }
 
 dependencies {
@@ -109,28 +149,28 @@ dependencies {
     implementation(libs.play.app.update)
     implementation(libs.profileinstaller)
     implementation(libs.activity.ktx)
-    implementation(libs.firebase.firestore)
 
-    implementation(libs.appcompat)
-    implementation(libs.material)
-    implementation(libs.constraintlayout)
-    implementation(libs.navigation.fragment)
-    implementation(libs.navigation.ui)
     implementation(libs.leanback)
     implementation(libs.firebase.messaging)
     implementation(libs.core.ktx)
     implementation(libs.work.runtime)
+    implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.lifecycle.runtime.ktx)
+    implementation(libs.lifecycle.viewmodel.ktx)
 
     // Jetpack Compose
     implementation(platform(libs.compose.bom))
     implementation(libs.compose.ui)
     implementation(libs.compose.ui.graphics)
     implementation(libs.compose.material3)
+    implementation(libs.material.icons.extended)
+    implementation(libs.material)
     implementation(libs.activity.compose)
     debugImplementation(libs.compose.ui.tooling)
     implementation(libs.compose.ui.tooling.preview)
 
     testImplementation(libs.junit)
+    testImplementation(libs.json)
 
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
@@ -157,8 +197,8 @@ tasks.register<JacocoReport>("jacocoTestReportDebug") {
                 "**/R$*.class",
                 "**/BuildConfig.*",
                 "**/Manifest*.*",
-                "**/*${'$'}ViewBinder*.*", // For ViewBinding
-                "**/*${'$'}ViewBinding*.*", // For ViewBinding
+                $$"**/*$ViewBinder*.*", // For ViewBinding
+                $$"**/*$ViewBinding*.*", // For ViewBinding
                 "**/*Module*.*", // Exclude Hilt/Dagger modules if any
                 "**/*Factory*.*", // Exclude Hilt/Dagger factories if any
                 "**/*_MembersInjector*.*" // Exclude Hilt/Dagger injectors if any
@@ -213,4 +253,17 @@ tasks.register<Exec>("publishToAptoide") {
     doLast {
         println("Upload command finished.")
     }
+}
+
+afterEvaluate {
+    val zipReleaseNativeDebugSymbols = tasks.register<Zip>("zipReleaseNativeDebugSymbols") {
+        val symbolDir = layout.buildDirectory.dir("intermediates/native_debug_metadata/release/extractReleaseNativeDebugMetadata/out")
+        from(symbolDir)
+        destinationDirectory.set(layout.buildDirectory.dir("outputs/native-debug-symbols/release"))
+        archiveFileName.set("native-debug-symbols.zip")
+        dependsOn(tasks.named("extractReleaseNativeDebugMetadata"))
+    }
+
+    tasks.findByName("bundleRelease")?.finalizedBy(zipReleaseNativeDebugSymbols)
+    tasks.findByName("assembleRelease")?.finalizedBy(zipReleaseNativeDebugSymbols)
 }

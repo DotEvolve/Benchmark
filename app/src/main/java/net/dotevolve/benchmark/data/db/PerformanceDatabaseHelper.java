@@ -1,9 +1,4 @@
 package net.dotevolve.benchmark.data.db;
-import net.dotevolve.benchmark.data.model.BenchmarkResult;
-import net.dotevolve.benchmark.data.model.PerformanceTrend;
-import net.dotevolve.benchmark.data.model.DeviceStatistics;
-import net.dotevolve.benchmark.core.PerformanceMetrics;
-import net.dotevolve.benchmark.core.AdvancedMetrics;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -11,6 +6,12 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+
+import net.dotevolve.benchmark.core.AdvancedMetrics;
+import net.dotevolve.benchmark.core.PerformanceMetrics;
+import net.dotevolve.benchmark.data.model.BenchmarkResult;
+import net.dotevolve.benchmark.data.model.DeviceStatistics;
+import net.dotevolve.benchmark.data.model.PerformanceTrend;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -24,7 +25,7 @@ public class PerformanceDatabaseHelper extends SQLiteOpenHelper {
     
     private static final String TAG = "PerformanceDB";
     private static final String DATABASE_NAME = "benchmark_performance.db";
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 4;
     
     // Table names
     private static final String TABLE_BENCHMARKS = "benchmarks";
@@ -40,6 +41,10 @@ public class PerformanceDatabaseHelper extends SQLiteOpenHelper {
     private static final String COLUMN_TOTAL_MEMORY = "total_memory";
     private static final String COLUMN_ARCHITECTURE = "architecture";
     private static final String COLUMN_ENGINE_VERSION = "engine_version";
+    private static final String COLUMN_CLIENT_RUN_ID = "client_run_id";
+    private static final String COLUMN_RUN_TYPE = "run_type";
+    private static final String COLUMN_SYNCED = "synced";
+    private static final String COLUMN_REMOTE_ID = "remote_id";
     
     // Performance scores
     private static final String COLUMN_OVERALL_SCORE = "overall_score";
@@ -84,6 +89,19 @@ public class PerformanceDatabaseHelper extends SQLiteOpenHelper {
     private static final String COLUMN_BEST_SCORE = "best_score";
     private static final String COLUMN_WORST_SCORE = "worst_score";
     
+    private static volatile PerformanceDatabaseHelper INSTANCE;
+
+    public static PerformanceDatabaseHelper getInstance(Context context) {
+        if (INSTANCE == null) {
+            synchronized (PerformanceDatabaseHelper.class) {
+                if (INSTANCE == null) {
+                    INSTANCE = new PerformanceDatabaseHelper(context.getApplicationContext());
+                }
+            }
+        }
+        return INSTANCE;
+    }
+
     public PerformanceDatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -98,11 +116,16 @@ public class PerformanceDatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         Log.d(TAG, "Upgrading database from version " + oldVersion + " to " + newVersion);
-        // Handle database upgrades here
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_BENCHMARKS);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_PERFORMANCE_TRENDS);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_DEVICE_INFO);
-        onCreate(db);
+        if (oldVersion < 4) {
+            db.execSQL("ALTER TABLE " + TABLE_BENCHMARKS + " ADD COLUMN " + COLUMN_CLIENT_RUN_ID + " TEXT");
+            db.execSQL("ALTER TABLE " + TABLE_BENCHMARKS + " ADD COLUMN " + COLUMN_RUN_TYPE + " TEXT NOT NULL DEFAULT 'full'");
+            db.execSQL("ALTER TABLE " + TABLE_BENCHMARKS + " ADD COLUMN " + COLUMN_SYNCED + " INTEGER NOT NULL DEFAULT 0");
+            db.execSQL("ALTER TABLE " + TABLE_BENCHMARKS + " ADD COLUMN " + COLUMN_REMOTE_ID + " TEXT");
+            // Classify historical partial runs and mark all pre-v4 records synced so they are not re-uploaded
+            db.execSQL("UPDATE " + TABLE_BENCHMARKS + " SET " + COLUMN_RUN_TYPE + " = 'legacy' WHERE "
+                    + COLUMN_AES_TIME + " = 0 AND " + COLUMN_MATRIX_TIME + " = 0 AND " + COLUMN_MEMORY_BANDWIDTH_TIME + " = 0");
+            db.execSQL("UPDATE " + TABLE_BENCHMARKS + " SET " + COLUMN_SYNCED + " = 1");
+        }
     }
     
     private void createBenchmarksTable(SQLiteDatabase db) {
@@ -115,6 +138,10 @@ public class PerformanceDatabaseHelper extends SQLiteOpenHelper {
                 COLUMN_TOTAL_MEMORY + " INTEGER, " +
                 COLUMN_ARCHITECTURE + " TEXT, " +
                 COLUMN_ENGINE_VERSION + " TEXT, " +
+                COLUMN_CLIENT_RUN_ID + " TEXT, " +
+                COLUMN_RUN_TYPE + " TEXT NOT NULL DEFAULT 'full', " +
+                COLUMN_SYNCED + " INTEGER NOT NULL DEFAULT 0, " +
+                COLUMN_REMOTE_ID + " TEXT, " +
                 COLUMN_OVERALL_SCORE + " INTEGER NOT NULL, " +
                 COLUMN_CRYPTO_SCORE + " INTEGER, " +
                 COLUMN_EFFICIENCY_SCORE + " INTEGER, " +
@@ -171,7 +198,11 @@ public class PerformanceDatabaseHelper extends SQLiteOpenHelper {
     }
     
     // Insert benchmark results
-    public void insertBenchmarkResult(PerformanceMetrics metrics, AdvancedMetrics advancedMetrics) {
+    public long insertBenchmarkResult(PerformanceMetrics metrics, AdvancedMetrics advancedMetrics) {
+        return insertBenchmarkResult(metrics, advancedMetrics, java.util.UUID.randomUUID().toString(), metrics.getRunType());
+    }
+
+    public long insertBenchmarkResult(PerformanceMetrics metrics, AdvancedMetrics advancedMetrics, String clientRunId, String runType) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         
@@ -184,6 +215,12 @@ public class PerformanceDatabaseHelper extends SQLiteOpenHelper {
         values.put(COLUMN_TOTAL_MEMORY, metrics.getTotalMemory());
         values.put(COLUMN_ARCHITECTURE, metrics.getArchitecture());
         values.put(COLUMN_ENGINE_VERSION, metrics.getBenchmarkVersion());
+        String effectiveClientRunId = (clientRunId != null && !clientRunId.trim().isEmpty())
+                ? clientRunId
+                : java.util.UUID.randomUUID().toString();
+        values.put(COLUMN_CLIENT_RUN_ID, effectiveClientRunId);
+        values.put(COLUMN_RUN_TYPE, runType != null ? runType : "full");
+        values.put(COLUMN_SYNCED, 0);
         
         values.put(COLUMN_OVERALL_SCORE, metrics.getOverallScore());
         values.put(COLUMN_CRYPTO_SCORE, metrics.getCryptoScore());
@@ -213,12 +250,52 @@ public class PerformanceDatabaseHelper extends SQLiteOpenHelper {
         }
         
         long result = db.insert(TABLE_BENCHMARKS, null, values);
-        db.close();
         
         if (result != -1) {
             updateDeviceInfo(metrics.getDeviceModel(), timestamp, metrics.getOverallScore());
             updatePerformanceTrends(metrics.getDeviceModel(), timestamp, metrics.getOverallScore());
         }
+        return result;
+    }
+
+    public List<BenchmarkResult> getPendingSyncRuns(int limit) {
+        List<BenchmarkResult> results = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        String limitClause = limit > 0 ? " LIMIT " + limit : "";
+        String query = "SELECT * FROM " + TABLE_BENCHMARKS +
+                      " WHERE " + COLUMN_SYNCED + " = 0 AND " + COLUMN_RUN_TYPE + " = 'full'" +
+                      " ORDER BY " + COLUMN_TIMESTAMP + " ASC" + limitClause;
+
+        Cursor cursor = db.rawQuery(query, null);
+        if (cursor.moveToFirst()) {
+            do {
+                results.add(createBenchmarkResultFromCursor(cursor));
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        return results;
+    }
+
+    public void markRunSynced(long localId, String remoteId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_SYNCED, 1);
+        values.put(COLUMN_REMOTE_ID, remoteId);
+        db.update(TABLE_BENCHMARKS, values, COLUMN_ID + " = ?", new String[]{String.valueOf(localId)});
+    }
+
+    public void markRunPermanentFailure(long localId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_SYNCED, -1);
+        db.update(TABLE_BENCHMARKS, values, COLUMN_ID + " = ?", new String[]{String.valueOf(localId)});
+    }
+
+    public void updateClientRunId(long localId, String clientRunId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_CLIENT_RUN_ID, clientRunId);
+        db.update(TABLE_BENCHMARKS, values, COLUMN_ID + " = ?", new String[]{String.valueOf(localId)});
     }
     
     // Get all benchmark results for a device
@@ -240,7 +317,6 @@ public class PerformanceDatabaseHelper extends SQLiteOpenHelper {
         }
         
         cursor.close();
-        db.close();
         return results;
     }
     
@@ -265,7 +341,6 @@ public class PerformanceDatabaseHelper extends SQLiteOpenHelper {
         }
         
         cursor.close();
-        db.close();
         return results;
     }
     
@@ -290,7 +365,6 @@ public class PerformanceDatabaseHelper extends SQLiteOpenHelper {
         }
         
         cursor.close();
-        db.close();
         return trends;
     }
     
@@ -309,7 +383,6 @@ public class PerformanceDatabaseHelper extends SQLiteOpenHelper {
         }
         
         cursor.close();
-        db.close();
         return stats;
     }
     
@@ -326,10 +399,10 @@ public class PerformanceDatabaseHelper extends SQLiteOpenHelper {
             // Update existing device
             ContentValues values = new ContentValues();
             values.put(COLUMN_LAST_BENCHMARK, timestamp);
-            values.put(COLUMN_TOTAL_BENCHMARKS, cursor.getInt(cursor.getColumnIndex(COLUMN_TOTAL_BENCHMARKS)) + 1);
+            values.put(COLUMN_TOTAL_BENCHMARKS, cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_TOTAL_BENCHMARKS)) + 1);
             
-            int bestScore = cursor.getInt(cursor.getColumnIndex(COLUMN_BEST_SCORE));
-            int worstScore = cursor.getInt(cursor.getColumnIndex(COLUMN_WORST_SCORE));
+            int bestScore = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_BEST_SCORE));
+            int worstScore = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_WORST_SCORE));
             
             if (score > bestScore) values.put(COLUMN_BEST_SCORE, score);
             if (score < worstScore) values.put(COLUMN_WORST_SCORE, score);
@@ -350,7 +423,6 @@ public class PerformanceDatabaseHelper extends SQLiteOpenHelper {
         }
         
         cursor.close();
-        db.close();
     }
     
     // Update performance trends (simplified - would need more complex logic for real trends)
@@ -369,8 +441,8 @@ public class PerformanceDatabaseHelper extends SQLiteOpenHelper {
         
         if (cursor.moveToFirst()) {
             // Update existing trend
-            int testCount = cursor.getInt(cursor.getColumnIndex(COLUMN_TEST_COUNT)) + 1;
-            double currentAvg = cursor.getDouble(cursor.getColumnIndex(COLUMN_AVERAGE_SCORE));
+            int testCount = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_TEST_COUNT)) + 1;
+            double currentAvg = cursor.getDouble(cursor.getColumnIndexOrThrow(COLUMN_AVERAGE_SCORE));
             double newAvg = (currentAvg * (testCount - 1) + score) / testCount;
             
             ContentValues values = new ContentValues();
@@ -395,7 +467,6 @@ public class PerformanceDatabaseHelper extends SQLiteOpenHelper {
         }
         
         cursor.close();
-        db.close();
     }
     
     private String calculateTrend(double newAvg, double oldAvg) {
@@ -408,69 +479,89 @@ public class PerformanceDatabaseHelper extends SQLiteOpenHelper {
     // Helper methods to create objects from cursor
     private BenchmarkResult createBenchmarkResultFromCursor(Cursor cursor) {
         BenchmarkResult result = new BenchmarkResult();
-        result.setId(cursor.getLong(cursor.getColumnIndex(COLUMN_ID)));
-        result.setTimestamp(cursor.getLong(cursor.getColumnIndex(COLUMN_TIMESTAMP)));
-        result.setDeviceModel(cursor.getString(cursor.getColumnIndex(COLUMN_DEVICE_MODEL)));
-        result.setAndroidVersion(cursor.getString(cursor.getColumnIndex(COLUMN_ANDROID_VERSION)));
-        result.setCpuCores(cursor.getInt(cursor.getColumnIndex(COLUMN_CPU_CORES)));
-        result.setTotalMemory(cursor.getLong(cursor.getColumnIndex(COLUMN_TOTAL_MEMORY)));
-        result.setArchitecture(cursor.getString(cursor.getColumnIndex(COLUMN_ARCHITECTURE)));
-        result.setBenchmarkVersion(cursor.getString(cursor.getColumnIndex(COLUMN_ENGINE_VERSION)));
-        result.setOverallScore(cursor.getInt(cursor.getColumnIndex(COLUMN_OVERALL_SCORE)));
-        result.setCryptoScore(cursor.getInt(cursor.getColumnIndex(COLUMN_CRYPTO_SCORE)));
-        result.setEfficiencyScore(cursor.getInt(cursor.getColumnIndex(COLUMN_EFFICIENCY_SCORE)));
-        result.setStabilityScore(cursor.getInt(cursor.getColumnIndex(COLUMN_STABILITY_SCORE)));
-        result.setComputationalScore(cursor.getInt(cursor.getColumnIndex(COLUMN_COMPUTATIONAL_SCORE)));
-        result.setMemoryScore(cursor.getInt(cursor.getColumnIndex(COLUMN_MEMORY_SCORE)));
-        result.setMultiThreadingScore(cursor.getInt(cursor.getColumnIndex(COLUMN_MULTI_THREAD_SCORE)));
-        result.setSha1Time(cursor.getLong(cursor.getColumnIndex(COLUMN_SHA1_TIME)));
-        result.setMd5Time(cursor.getLong(cursor.getColumnIndex(COLUMN_MD5_TIME)));
-        result.setAesTime(cursor.getLong(cursor.getColumnIndex(COLUMN_AES_TIME)));
-        result.setRsaTime(cursor.getLong(cursor.getColumnIndex(COLUMN_RSA_TIME)));
-        result.setLoopTime(cursor.getLong(cursor.getColumnIndex(COLUMN_LOOP_TIME)));
-        result.setMatrixTime(cursor.getLong(cursor.getColumnIndex(COLUMN_MATRIX_TIME)));
-        result.setSortTime(cursor.getLong(cursor.getColumnIndex(COLUMN_SORT_TIME)));
-        result.setCompressionTime(cursor.getLong(cursor.getColumnIndex(COLUMN_COMPRESSION_TIME)));
-        result.setMemoryBandwidthTime(cursor.getLong(cursor.getColumnIndex(COLUMN_MEMORY_BANDWIDTH_TIME)));
-        result.setMultiThreadedTime(cursor.getLong(cursor.getColumnIndex(COLUMN_MULTI_THREAD_TIME)));
+        result.setId(cursor.getLong(cursor.getColumnIndexOrThrow(COLUMN_ID)));
+        result.setTimestamp(cursor.getLong(cursor.getColumnIndexOrThrow(COLUMN_TIMESTAMP)));
+        result.setDeviceModel(cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_DEVICE_MODEL)));
+        result.setAndroidVersion(cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_ANDROID_VERSION)));
+        result.setCpuCores(cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_CPU_CORES)));
+        result.setTotalMemory(cursor.getLong(cursor.getColumnIndexOrThrow(COLUMN_TOTAL_MEMORY)));
+        result.setArchitecture(cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_ARCHITECTURE)));
+        result.setBenchmarkVersion(cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_ENGINE_VERSION)));
+        result.setOverallScore(cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_OVERALL_SCORE)));
+        result.setCryptoScore(cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_CRYPTO_SCORE)));
+        result.setEfficiencyScore(cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_EFFICIENCY_SCORE)));
+        result.setStabilityScore(cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_STABILITY_SCORE)));
+        result.setComputationalScore(cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_COMPUTATIONAL_SCORE)));
+        result.setMemoryScore(cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_MEMORY_SCORE)));
+        result.setMultiThreadingScore(cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_MULTI_THREAD_SCORE)));
+        result.setSha1Time(cursor.getLong(cursor.getColumnIndexOrThrow(COLUMN_SHA1_TIME)));
+        result.setMd5Time(cursor.getLong(cursor.getColumnIndexOrThrow(COLUMN_MD5_TIME)));
+        result.setAesTime(cursor.getLong(cursor.getColumnIndexOrThrow(COLUMN_AES_TIME)));
+        result.setRsaTime(cursor.getLong(cursor.getColumnIndexOrThrow(COLUMN_RSA_TIME)));
+        result.setLoopTime(cursor.getLong(cursor.getColumnIndexOrThrow(COLUMN_LOOP_TIME)));
+        result.setMatrixTime(cursor.getLong(cursor.getColumnIndexOrThrow(COLUMN_MATRIX_TIME)));
+        result.setSortTime(cursor.getLong(cursor.getColumnIndexOrThrow(COLUMN_SORT_TIME)));
+        result.setCompressionTime(cursor.getLong(cursor.getColumnIndexOrThrow(COLUMN_COMPRESSION_TIME)));
+        result.setMemoryBandwidthTime(cursor.getLong(cursor.getColumnIndexOrThrow(COLUMN_MEMORY_BANDWIDTH_TIME)));
+        result.setMultiThreadedTime(cursor.getLong(cursor.getColumnIndexOrThrow(COLUMN_MULTI_THREAD_TIME)));
         
         // Advanced metrics
-        if (!cursor.isNull(cursor.getColumnIndex(COLUMN_CPU_TEMPERATURE))) {
-            result.setCpuTemperature(cursor.getDouble(cursor.getColumnIndex(COLUMN_CPU_TEMPERATURE)));
+        int cpuTempIdx = cursor.getColumnIndexOrThrow(COLUMN_CPU_TEMPERATURE);
+        if (!cursor.isNull(cpuTempIdx)) {
+            result.setCpuTemperature(cursor.getDouble(cpuTempIdx));
         }
-        if (!cursor.isNull(cursor.getColumnIndex(COLUMN_BATTERY_LEVEL))) {
-            result.setBatteryLevel(cursor.getInt(cursor.getColumnIndex(COLUMN_BATTERY_LEVEL)));
+        int batteryIdx = cursor.getColumnIndexOrThrow(COLUMN_BATTERY_LEVEL);
+        if (!cursor.isNull(batteryIdx)) {
+            result.setBatteryLevel(cursor.getInt(batteryIdx));
         }
-        if (!cursor.isNull(cursor.getColumnIndex(COLUMN_MEMORY_USAGE))) {
-            result.setMemoryUsage(cursor.getLong(cursor.getColumnIndex(COLUMN_MEMORY_USAGE)));
+        int memUsageIdx = cursor.getColumnIndexOrThrow(COLUMN_MEMORY_USAGE);
+        if (!cursor.isNull(memUsageIdx)) {
+            result.setMemoryUsage(cursor.getLong(memUsageIdx));
         }
-        result.setThermalThrottling(cursor.getInt(cursor.getColumnIndex(COLUMN_THERMAL_THROTTLING)) == 1);
-        result.setBackgroundAppsCount(cursor.getInt(cursor.getColumnIndex(COLUMN_BACKGROUND_APPS)));
+        result.setThermalThrottling(cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_THERMAL_THROTTLING)) == 1);
+        result.setBackgroundAppsCount(cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_BACKGROUND_APPS)));
+
+        int clientRunIdIdx = cursor.getColumnIndex(COLUMN_CLIENT_RUN_ID);
+        if (clientRunIdIdx != -1 && !cursor.isNull(clientRunIdIdx)) {
+            result.setClientRunId(cursor.getString(clientRunIdIdx));
+        }
+        int runTypeIdx = cursor.getColumnIndex(COLUMN_RUN_TYPE);
+        if (runTypeIdx != -1 && !cursor.isNull(runTypeIdx)) {
+            result.setRunType(cursor.getString(runTypeIdx));
+        }
+        int syncedIdx = cursor.getColumnIndex(COLUMN_SYNCED);
+        if (syncedIdx != -1 && !cursor.isNull(syncedIdx)) {
+            result.setSynced(cursor.getInt(syncedIdx));
+        }
+        int remoteIdIdx = cursor.getColumnIndex(COLUMN_REMOTE_ID);
+        if (remoteIdIdx != -1 && !cursor.isNull(remoteIdIdx)) {
+            result.setRemoteId(cursor.getString(remoteIdIdx));
+        }
         
         return result;
     }
     
     private PerformanceTrend createPerformanceTrendFromCursor(Cursor cursor) {
         PerformanceTrend trend = new PerformanceTrend();
-        trend.setId(cursor.getLong(cursor.getColumnIndex(COLUMN_ID)));
-        trend.setDeviceModel(cursor.getString(cursor.getColumnIndex(COLUMN_DEVICE_MODEL)));
-        trend.setTrendDate(cursor.getString(cursor.getColumnIndex(COLUMN_TREND_DATE)));
-        trend.setAverageScore(cursor.getDouble(cursor.getColumnIndex(COLUMN_AVERAGE_SCORE)));
-        trend.setScoreVariance(cursor.getDouble(cursor.getColumnIndex(COLUMN_SCORE_VARIANCE)));
-        trend.setTestCount(cursor.getInt(cursor.getColumnIndex(COLUMN_TEST_COUNT)));
-        trend.setPerformanceTrend(cursor.getString(cursor.getColumnIndex(COLUMN_PERFORMANCE_TREND)));
+        trend.setId(cursor.getLong(cursor.getColumnIndexOrThrow(COLUMN_ID)));
+        trend.setDeviceModel(cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_DEVICE_MODEL)));
+        trend.setTrendDate(cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_TREND_DATE)));
+        trend.setAverageScore(cursor.getDouble(cursor.getColumnIndexOrThrow(COLUMN_AVERAGE_SCORE)));
+        trend.setScoreVariance(cursor.getDouble(cursor.getColumnIndexOrThrow(COLUMN_SCORE_VARIANCE)));
+        trend.setTestCount(cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_TEST_COUNT)));
+        trend.setPerformanceTrend(cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_PERFORMANCE_TREND)));
         return trend;
     }
     
     private DeviceStatistics createDeviceStatisticsFromCursor(Cursor cursor) {
         DeviceStatistics stats = new DeviceStatistics();
-        stats.setDeviceId(cursor.getString(cursor.getColumnIndex(COLUMN_DEVICE_ID)));
-        stats.setDeviceModel(cursor.getString(cursor.getColumnIndex(COLUMN_DEVICE_MODEL)));
-        stats.setFirstBenchmark(cursor.getLong(cursor.getColumnIndex(COLUMN_FIRST_BENCHMARK)));
-        stats.setLastBenchmark(cursor.getLong(cursor.getColumnIndex(COLUMN_LAST_BENCHMARK)));
-        stats.setTotalBenchmarks(cursor.getInt(cursor.getColumnIndex(COLUMN_TOTAL_BENCHMARKS)));
-        stats.setBestScore(cursor.getInt(cursor.getColumnIndex(COLUMN_BEST_SCORE)));
-        stats.setWorstScore(cursor.getInt(cursor.getColumnIndex(COLUMN_WORST_SCORE)));
+        stats.setDeviceId(cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_DEVICE_ID)));
+        stats.setDeviceModel(cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_DEVICE_MODEL)));
+        stats.setFirstBenchmark(cursor.getLong(cursor.getColumnIndexOrThrow(COLUMN_FIRST_BENCHMARK)));
+        stats.setLastBenchmark(cursor.getLong(cursor.getColumnIndexOrThrow(COLUMN_LAST_BENCHMARK)));
+        stats.setTotalBenchmarks(cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_TOTAL_BENCHMARKS)));
+        stats.setBestScore(cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_BEST_SCORE)));
+        stats.setWorstScore(cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_WORST_SCORE)));
         return stats;
     }
 }

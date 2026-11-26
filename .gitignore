@@ -15,6 +15,8 @@ captures/
 *.aab
 *.apk
 output-metadata.json
+mapping.txt
+**/mapping.txt
 
 # IntelliJ
 *.iml

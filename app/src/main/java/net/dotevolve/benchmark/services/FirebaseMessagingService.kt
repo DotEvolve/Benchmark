@@ -32,17 +32,21 @@ class FirebaseMessagingService : FirebaseMessagingService() {
     }
 
     /**
-     * Called if the FCM registration token is updated. This may occur if the security of
-     * the previous token had been compromised. This is called when the
-     * FCM registration token is initially generated so this is where you would retrieve the token.
+     * Called when the current app instance has been successfully registered with FCM.
+     *
+     * @param installationId The Firebase Installation ID used for sending messages to this app instance.
      */
-    @Deprecated("Deprecated in Java")
+    override fun onRegistered(installationId: String) {
+        Log.d(TAG, "Registered token: $installationId")
+        sendRegistrationToServer(installationId)
+    }
+
+    /**
+     * Legacy callback retained for backward compatibility and Android Lint compliance.
+     */
+    @Suppress("OVERRIDE_DEPRECATION")
     override fun onNewToken(token: String) {
         Log.d(TAG, "Refreshed token: $token")
-
-        // If you want to send messages to this application instance or
-        // manage this app subscriptions on the server side, send the
-        // FCM registration token to your app server.
         sendRegistrationToServer(token)
     }
 

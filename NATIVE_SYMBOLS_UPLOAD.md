@@ -2,116 +2,59 @@
 
 ## Overview
 
-This app includes native libraries (from Firebase Crashlytics NDK and other dependencies), so Google Play Console requires native debug symbols to be uploaded for better crash and ANR analysis.
+This app uses native dependencies (such as Firebase NDK and native components). Google Play Console requires native debug symbols for symbolicated stack traces in crash and ANR reports.
 
-## Automatic Solution (Recommended)
+---
 
-The build is now configured to generate native debug symbols automatically. When you build a release bundle, the symbols will be generated in:
+## How Native Debug Symbols Work in AGP 8+ / 9+
 
+In `app/build.gradle.kts`, native debug symbol generation is enabled via:
+
+```kotlin
+android {
+    defaultConfig {
+        ndk {
+            debugSymbolLevel = "FULL"
+        }
+    }
+}
 ```
+
+### 1. Embedded in App Bundle (`.aab`) — Recommended & Automatic
+
+When you build a release bundle (`./gradlew bundleRelease`), Android Gradle Plugin (AGP) automatically packages the full unstripped native debug symbol tables directly inside the `.aab` file under:
+
+```text
+BUNDLE-METADATA/com.android.tools.build.debugsymbols/
+```
+
+**Result**: When you upload `app-release.aab` to Google Play Console, Play Console automatically extracts and processes the native debug symbols. **No separate `.zip` file upload is required.**
+
+---
+
+### 2. Standalone Zip Archive (`native-debug-symbols.zip`)
+
+If you are uploading APKs manually or require a standalone symbols archive, `app/build.gradle.kts` includes a custom Gradle task (`zipReleaseNativeDebugSymbols`) that packages extracted symbols into:
+
+```text
 app/build/outputs/native-debug-symbols/release/native-debug-symbols.zip
 ```
 
-## Upload Methods
+> **Note on File Creation**: If the project or its current dependencies do not include unstripped C/C++ (`.so`) native shared objects, AGP extracts 0 symbol files during `extractReleaseNativeDebugMetadata`, and the `.zip` file will not be generated. This is expected behavior when no unstripped native binaries exist in the build.
 
-### Method 1: Upload via Play Console UI (Easiest)
+---
 
-1. Build your release bundle:
-   ```bash
-   ./gradlew bundleRelease
-   ```
+## Verification Steps
 
-2. Locate the symbols file:
-   ```
-   app/build/outputs/native-debug-symbols/release/native-debug-symbols.zip
-   ```
+### Play Console Verification
+1. Upload your release bundle (`app-release.aab`) to Google Play Console.
+2. Go to **Release** → **App Bundle Explorer** (or select your release track).
+3. Select the uploaded version and navigate to **Downloads** / **Assets**.
+4. Confirm that **Native debug symbols** shows as processed/uploaded automatically.
 
-3. Go to Google Play Console → Your App → Release → Production (or your track)
+---
 
-4. Click on the version you just uploaded
+## Summary
 
-5. Scroll down to "Native debug symbols" section
-
-6. Click "Upload" and select the `native-debug-symbols.zip` file
-
-### Method 2: Upload via Play Console API (Automated)
-
-You can automate the upload using the Google Play Developer API. Here's a script example:
-
-```bash
-#!/bin/bash
-# upload-symbols.sh
-
-BUNDLE_PATH="app/build/outputs/bundle/release/app-release.aab"
-SYMBOLS_PATH="app/build/outputs/native-debug-symbols/release/native-debug-symbols.zip"
-PACKAGE_NAME="net.dotevolve.benchmark"
-VERSION_CODE="17"  # Update this to match your version
-
-# Upload symbols using Play Console API
-# Requires: pip install google-api-python-client google-auth-httplib2 google-auth-oauthlib
-python3 upload_symbols.py \
-  --package-name "$PACKAGE_NAME" \
-  --version-code "$VERSION_CODE" \
-  --symbols-file "$SYMBOLS_PATH"
-```
-
-### Method 3: Include in Bundle (Alternative)
-
-You can also configure the bundle to automatically include symbols, but this increases bundle size. The current configuration generates symbols separately, which is the recommended approach.
-
-## Verification
-
-After uploading, verify in Play Console:
-1. Go to Release → Your version
-2. Check "Native debug symbols" section
-3. Should show "Uploaded" with timestamp
-
-## Troubleshooting
-
-### Symbols not generated?
-
-1. Ensure you're building a release variant:
-   ```bash
-   ./gradlew bundleRelease
-   ```
-
-2. Check that `ndk.debugSymbolLevel = "FULL"` is set in `build.gradle.kts`
-
-3. Verify the output directory exists:
-   ```bash
-   ls -la app/build/outputs/native-debug-symbols/release/
-   ```
-
-### Upload fails?
-
-1. Ensure the symbols file matches the bundle version code
-2. Check file size (should be a few MB, not empty)
-3. Verify you have the correct permissions in Play Console
-
-## CI/CD Integration
-
-For automated builds, add this to your CI pipeline:
-
-```yaml
-# Example GitHub Actions
-- name: Build Release Bundle
-  run: ./gradlew bundleRelease
-
-- name: Upload Native Symbols
-  uses: r0adkll/upload-google-play@v1
-  with:
-    serviceAccountJsonPlainText: ${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT }}
-    packageName: net.dotevolve.benchmark
-    releaseFiles: app/build/outputs/native-debug-symbols/release/native-debug-symbols.zip
-    track: production
-```
-
-## Notes
-
-- Symbols are generated automatically when building release bundles
-- Symbols should be uploaded for each new release
-- Old symbols remain available for historical crash analysis
-- Symbol files are typically 1-5 MB in size
-
-
-
+- **Primary Delivery**: Symbols are automatically bundled inside `app-release.aab` via `ndk.debugSymbolLevel = "FULL"`.
+- **Manual Delivery**: If native libraries are present, `app/build/outputs/native-debug-symbols/release/native-debug-symbols.zip` is generated during `./gradlew bundleRelease` / `./gradlew assembleRelease`.

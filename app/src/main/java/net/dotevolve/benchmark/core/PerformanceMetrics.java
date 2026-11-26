@@ -1,20 +1,20 @@
 package net.dotevolve.benchmark.core;
-import com.google.firebase.Timestamp;
-import com.google.firebase.firestore.FirebaseFirestore;
-import net.dotevolve.benchmark.data.db.PerformanceDatabaseHelper;
-import net.dotevolve.benchmark.data.model.BenchmarkResult;
-import net.dotevolve.benchmark.data.model.DeviceStatistics;
-import net.dotevolve.benchmark.data.model.PerformanceTrend;
 
 import android.content.Context;
 import android.os.Build;
 import android.util.Log;
 
+import net.dotevolve.benchmark.data.db.PerformanceDatabaseHelper;
+import net.dotevolve.benchmark.data.model.BenchmarkResult;
+import net.dotevolve.benchmark.data.model.DeviceStatistics;
+import net.dotevolve.benchmark.data.model.PerformanceTrend;
+import net.dotevolve.benchmark.data.remote.BenchmarkApiClient;
+import net.dotevolve.benchmark.work.SyncBenchmarksWorker;
+
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
+import java.util.UUID;
 
 /**
  * Comprehensive performance metrics collection and analysis
@@ -61,6 +61,7 @@ public class PerformanceMetrics {
     private long totalMemory;
     private String architecture;
     private String benchmarkVersion = "unknown";
+    private String runType = "full";
     
     // Performance scores
     private int overallScore;
@@ -361,7 +362,8 @@ public class PerformanceMetrics {
         double speedup = (double) singleThreadedTime / multiThreadedTime;
         
         // 100 points = 4x speedup, 50 points = 2x speedup, 0 points = 1x (no improvement)
-        return (int) Math.max(0, Math.min(100, (speedup - 1) * 33.33));
+        double score = (speedup - 1) * 33.33;
+        return (int) Math.min(100.0, Math.max(0.0, score));
     }
     
     // Helper methods for score normalization
@@ -602,57 +604,50 @@ public class PerformanceMetrics {
     
     // Historical tracking methods
     public void saveToHistory(Context context) {
-        // Save to local database
+        long localId = -1;
+        String clientRunId = UUID.randomUUID().toString();
+
+        // 1. Save to local database (offline-first guarantee)
         try {
-            PerformanceDatabaseHelper dbHelper = new PerformanceDatabaseHelper(context);
+            PerformanceDatabaseHelper dbHelper = PerformanceDatabaseHelper.getInstance(context);
             AdvancedMetrics advancedMetrics = new AdvancedMetrics(context);
-            dbHelper.insertBenchmarkResult(this, advancedMetrics);
-            Log.d(TAG, "Benchmark results saved to local history");
+            localId = dbHelper.insertBenchmarkResult(this, advancedMetrics, clientRunId, runType);
+            Log.d(TAG, "Benchmark results saved to local history with id: " + localId);
         } catch (Exception e) {
             Log.e(TAG, "Failed to save benchmark results to local history", e);
         }
 
-        // Save to Firebase Firestore
-        try {
-            FirebaseFirestore db = FirebaseFirestore.getInstance();
-            Map<String, Object> benchmarkData = new HashMap<>();
-            benchmarkData.put("deviceModel", deviceModel);
-            benchmarkData.put("androidVersion", androidVersion);
-            benchmarkData.put("cpuCores", cpuCores);
-            benchmarkData.put("totalMemory", totalMemory);
-            benchmarkData.put("architecture", architecture);
-            benchmarkData.put("benchmarkVersion", benchmarkVersion);
-            benchmarkData.put("overallScore", overallScore);
-            benchmarkData.put("cryptoScore", cryptoScore);
-            benchmarkData.put("computationalScore", computationalScore);
-            benchmarkData.put("memoryScore", memoryScore);
-            benchmarkData.put("efficiencyScore", efficiencyScore);
-            benchmarkData.put("stabilityScore", stabilityScore);
-            benchmarkData.put("multiThreadingScore", multiThreadingScore);
-            benchmarkData.put("sha1TotalTime", sha1TotalTime);
-            benchmarkData.put("md5TotalTime", md5TotalTime);
-            benchmarkData.put("aesTotalTime", aesTotalTime);
-            benchmarkData.put("rsaTotalTime", rsaTotalTime);
-            benchmarkData.put("loopOverheadTime", loopOverheadTime);
-            benchmarkData.put("matrixMultiplicationTime", matrixMultiplicationTime);
-            benchmarkData.put("sortingTime", sortingTime);
-            benchmarkData.put("compressionTime", compressionTime);
-            benchmarkData.put("memoryBandwidthTime", memoryBandwidthTime);
-            benchmarkData.put("multiThreadedTime", multiThreadedTime);
-            benchmarkData.put("timestamp", Timestamp.now());
-
-            db.collection("benchmarks")
-                .add(benchmarkData)
-                .addOnSuccessListener(documentReference -> Log.d(TAG, "Benchmark results saved to Firestore with ID: " + documentReference.getId()))
-                .addOnFailureListener(e -> Log.e(TAG, "Error saving benchmark results to Firestore", e));
-        } catch (Exception e) {
-            Log.e(TAG, "Failed to save benchmark results to Firestore", e);
+        // 2. Upload full runs to Cloudflare API (or enqueue sync on failure)
+        if ("full".equals(runType)) {
+            try {
+                BenchmarkApiClient apiClient = new BenchmarkApiClient();
+                BenchmarkApiClient.ApiResult apiResult = apiClient.uploadBenchmark(this, clientRunId);
+                if (apiResult.status == BenchmarkApiClient.ApiResultStatus.SUCCESS) {
+                    if (localId != -1) {
+                        PerformanceDatabaseHelper.getInstance(context).markRunSynced(localId, apiResult.remoteId);
+                    }
+                    Log.d(TAG, "Benchmark uploaded directly to Cloudflare API: " + apiResult.remoteId);
+                } else if (apiResult.status == BenchmarkApiClient.ApiResultStatus.PERMANENT_ERROR) {
+                    if (localId != -1) {
+                        PerformanceDatabaseHelper.getInstance(context).markRunPermanentFailure(localId);
+                    }
+                    Log.e(TAG, "Permanent error uploading benchmark: " + apiResult.errorMessage);
+                } else {
+                    Log.w(TAG, "Transient error uploading benchmark (" + apiResult.errorMessage + "), enqueuing sync worker");
+                    SyncBenchmarksWorker.enqueue(context);
+                }
+            } catch (Exception e) {
+                Log.e(TAG, "Failed to upload benchmark directly, enqueuing sync worker", e);
+                SyncBenchmarksWorker.enqueue(context);
+            }
+        } else {
+            Log.d(TAG, "Skipping remote API upload for non-full run: " + runType);
         }
     }
     
     public static List<BenchmarkResult> getHistoricalResults(Context context, String deviceModel) {
         try {
-            PerformanceDatabaseHelper dbHelper = new PerformanceDatabaseHelper(context);
+            PerformanceDatabaseHelper dbHelper = PerformanceDatabaseHelper.getInstance(context);
             return dbHelper.getAllBenchmarkResults(deviceModel);
         } catch (Exception e) {
             Log.e(TAG, "Failed to get historical results", e);
@@ -662,7 +657,7 @@ public class PerformanceMetrics {
     
     public static List<BenchmarkResult> getRecentResults(Context context, String deviceModel, int days) {
         try {
-            PerformanceDatabaseHelper dbHelper = new PerformanceDatabaseHelper(context);
+            PerformanceDatabaseHelper dbHelper = PerformanceDatabaseHelper.getInstance(context);
             return dbHelper.getRecentBenchmarkResults(deviceModel, days);
         } catch (Exception e) {
             Log.e(TAG, "Failed to get recent results", e);
@@ -672,7 +667,7 @@ public class PerformanceMetrics {
     
     public static List<PerformanceTrend> getPerformanceTrends(Context context, String deviceModel, int days) {
         try {
-            PerformanceDatabaseHelper dbHelper = new PerformanceDatabaseHelper(context);
+            PerformanceDatabaseHelper dbHelper = PerformanceDatabaseHelper.getInstance(context);
             return dbHelper.getPerformanceTrends(deviceModel, days);
         } catch (Exception e) {
             Log.e(TAG, "Failed to get performance trends", e);
@@ -682,7 +677,7 @@ public class PerformanceMetrics {
     
     public static DeviceStatistics getDeviceStatistics(Context context, String deviceModel) {
         try {
-            PerformanceDatabaseHelper dbHelper = new PerformanceDatabaseHelper(context);
+            PerformanceDatabaseHelper dbHelper = PerformanceDatabaseHelper.getInstance(context);
             return dbHelper.getDeviceStatistics(deviceModel);
         } catch (Exception e) {
             Log.e(TAG, "Failed to get device statistics", e);
@@ -715,5 +710,7 @@ public class PerformanceMetrics {
     public int getMultiThreadingScore() { return multiThreadingScore; }
     public String getBenchmarkVersion() { return benchmarkVersion; }
     public void setBenchmarkVersion(String benchmarkVersion) { this.benchmarkVersion = benchmarkVersion; }
+    public String getRunType() { return runType != null ? runType : "full"; }
+    public void setRunType(String runType) { this.runType = runType; }
 }
 

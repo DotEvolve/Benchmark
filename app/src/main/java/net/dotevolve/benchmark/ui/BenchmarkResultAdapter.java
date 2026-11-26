@@ -1,6 +1,4 @@
 package net.dotevolve.benchmark.ui;
-import net.dotevolve.benchmark.R;
-import net.dotevolve.benchmark.data.model.BenchmarkResult;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +7,9 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import net.dotevolve.benchmark.R;
+import net.dotevolve.benchmark.data.model.BenchmarkResult;
 
 import java.util.List;
 
@@ -32,6 +33,7 @@ public class BenchmarkResultAdapter extends RecyclerView.Adapter<BenchmarkResult
         this.clickListener = listener;
     }
     
+    @android.annotation.SuppressLint("NotifyDataSetChanged")
     public void updateResults(List<BenchmarkResult> newResults) {
         this.results = newResults;
         notifyDataSetChanged();
@@ -57,11 +59,11 @@ public class BenchmarkResultAdapter extends RecyclerView.Adapter<BenchmarkResult
     }
     
     class ResultViewHolder extends RecyclerView.ViewHolder {
-        private TextView dateText;
-        private TextView timeText;
-        private TextView scoreText;
-        private TextView categoryText;
-        private TextView detailsText;
+        private final TextView dateText;
+        private final TextView timeText;
+        private final TextView scoreText;
+        private final TextView categoryText;
+        private final TextView detailsText;
         
         public ResultViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -73,7 +75,7 @@ public class BenchmarkResultAdapter extends RecyclerView.Adapter<BenchmarkResult
             
             itemView.setOnClickListener(v -> {
                 if (clickListener != null) {
-                    int position = getAdapterPosition();
+                    int position = getBindingAdapterPosition();
                     if (position != RecyclerView.NO_POSITION) {
                         clickListener.onResultClick(results.get(position));
                     }
