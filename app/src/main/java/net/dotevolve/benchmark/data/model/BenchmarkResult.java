@@ -51,6 +51,12 @@ public class BenchmarkResult implements Serializable {
     private boolean thermalThrottling = false;
     private int backgroundAppsCount = 0;
     
+    // Cloudflare API sync tracking
+    private String clientRunId;
+    private String runType = "full";
+    private int synced = 0;
+    private String remoteId;
+    
     // Constructors
     public BenchmarkResult() {}
     
@@ -231,6 +237,18 @@ public class BenchmarkResult implements Serializable {
     public boolean hasAdvancedMetrics() {
         return cpuTemperature != -1 || batteryLevel != -1 || memoryUsage != -1;
     }
+    
+    public String getClientRunId() { return clientRunId; }
+    public void setClientRunId(String clientRunId) { this.clientRunId = clientRunId; }
+    
+    public String getRunType() { return runType != null ? runType : "full"; }
+    public void setRunType(String runType) { this.runType = runType; }
+    
+    public int getSynced() { return synced; }
+    public void setSynced(int synced) { this.synced = synced; }
+    
+    public String getRemoteId() { return remoteId; }
+    public void setRemoteId(String remoteId) { this.remoteId = remoteId; }
     
     @NonNull
     @Override

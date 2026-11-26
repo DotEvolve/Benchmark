@@ -35,6 +35,23 @@ android {
         }
     }
 
+    val properties = Properties()
+    val localPropertiesFile = rootProject.file("local.properties")
+    if (localPropertiesFile.exists()) {
+        properties.load(localPropertiesFile.inputStream())
+    }
+
+    val defaultReleaseApiBaseUrl = "https://benchmark.dotevolve.net"
+    val defaultDebugApiBaseUrl = "https://benchmark-dev.dotevolve.net"
+
+    val apiBaseUrlRelease = System.getenv("BENCHMARK_API_BASE_URL")
+        ?: properties.getProperty("benchmark.apiBaseUrl")
+        ?: defaultReleaseApiBaseUrl
+
+    val apiBaseUrlDebug = System.getenv("BENCHMARK_API_BASE_URL")
+        ?: properties.getProperty("benchmark.apiBaseUrl")
+        ?: defaultDebugApiBaseUrl
+
     buildTypes {
         release {
             versionNameSuffix = "-RELEASE"
@@ -44,6 +61,8 @@ android {
 
             // Enables resource shrinking.
             isShrinkResources = true
+
+            buildConfigField("String", "BENCHMARK_API_BASE_URL", "\"$apiBaseUrlRelease\"")
 
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -60,16 +79,13 @@ android {
             enableUnitTestCoverage = true
             enableAndroidTestCoverage = true
 
+            buildConfigField("String", "BENCHMARK_API_BASE_URL", "\"$apiBaseUrlDebug\"")
+
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
             signingConfig = signingConfigs.getByName("debug")
-            val properties = Properties()
-            val localPropertiesFile = rootProject.file("local.properties")
-            if (localPropertiesFile.exists()) {
-                properties.load(localPropertiesFile.inputStream())
-            }
 
             val admobAppId = System.getenv("ADMOB_APP_ID")
                 ?: properties.getProperty("admob.appId")
@@ -133,7 +149,6 @@ dependencies {
     implementation(libs.play.app.update)
     implementation(libs.profileinstaller)
     implementation(libs.activity.ktx)
-    implementation(libs.firebase.firestore)
 
     implementation(libs.leanback)
     implementation(libs.firebase.messaging)
@@ -155,6 +170,7 @@ dependencies {
     implementation(libs.compose.ui.tooling.preview)
 
     testImplementation(libs.junit)
+    testImplementation(libs.json)
 
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)

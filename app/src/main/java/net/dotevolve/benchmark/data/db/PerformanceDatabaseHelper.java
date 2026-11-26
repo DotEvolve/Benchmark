@@ -25,7 +25,7 @@ public class PerformanceDatabaseHelper extends SQLiteOpenHelper {
     
     private static final String TAG = "PerformanceDB";
     private static final String DATABASE_NAME = "benchmark_performance.db";
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 4;
     
     // Table names
     private static final String TABLE_BENCHMARKS = "benchmarks";
@@ -41,6 +41,10 @@ public class PerformanceDatabaseHelper extends SQLiteOpenHelper {
     private static final String COLUMN_TOTAL_MEMORY = "total_memory";
     private static final String COLUMN_ARCHITECTURE = "architecture";
     private static final String COLUMN_ENGINE_VERSION = "engine_version";
+    private static final String COLUMN_CLIENT_RUN_ID = "client_run_id";
+    private static final String COLUMN_RUN_TYPE = "run_type";
+    private static final String COLUMN_SYNCED = "synced";
+    private static final String COLUMN_REMOTE_ID = "remote_id";
     
     // Performance scores
     private static final String COLUMN_OVERALL_SCORE = "overall_score";
@@ -112,11 +116,16 @@ public class PerformanceDatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         Log.d(TAG, "Upgrading database from version " + oldVersion + " to " + newVersion);
-        // Handle database upgrades here
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_BENCHMARKS);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_PERFORMANCE_TRENDS);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_DEVICE_INFO);
-        onCreate(db);
+        if (oldVersion < 4) {
+            db.execSQL("ALTER TABLE " + TABLE_BENCHMARKS + " ADD COLUMN " + COLUMN_CLIENT_RUN_ID + " TEXT");
+            db.execSQL("ALTER TABLE " + TABLE_BENCHMARKS + " ADD COLUMN " + COLUMN_RUN_TYPE + " TEXT NOT NULL DEFAULT 'full'");
+            db.execSQL("ALTER TABLE " + TABLE_BENCHMARKS + " ADD COLUMN " + COLUMN_SYNCED + " INTEGER NOT NULL DEFAULT 0");
+            db.execSQL("ALTER TABLE " + TABLE_BENCHMARKS + " ADD COLUMN " + COLUMN_REMOTE_ID + " TEXT");
+            // Classify historical partial runs and mark all pre-v4 records synced so they are not re-uploaded
+            db.execSQL("UPDATE " + TABLE_BENCHMARKS + " SET " + COLUMN_RUN_TYPE + " = 'legacy' WHERE "
+                    + COLUMN_AES_TIME + " = 0 AND " + COLUMN_MATRIX_TIME + " = 0 AND " + COLUMN_MEMORY_BANDWIDTH_TIME + " = 0");
+            db.execSQL("UPDATE " + TABLE_BENCHMARKS + " SET " + COLUMN_SYNCED + " = 1");
+        }
     }
     
     private void createBenchmarksTable(SQLiteDatabase db) {
@@ -129,6 +138,10 @@ public class PerformanceDatabaseHelper extends SQLiteOpenHelper {
                 COLUMN_TOTAL_MEMORY + " INTEGER, " +
                 COLUMN_ARCHITECTURE + " TEXT, " +
                 COLUMN_ENGINE_VERSION + " TEXT, " +
+                COLUMN_CLIENT_RUN_ID + " TEXT, " +
+                COLUMN_RUN_TYPE + " TEXT NOT NULL DEFAULT 'full', " +
+                COLUMN_SYNCED + " INTEGER NOT NULL DEFAULT 0, " +
+                COLUMN_REMOTE_ID + " TEXT, " +
                 COLUMN_OVERALL_SCORE + " INTEGER NOT NULL, " +
                 COLUMN_CRYPTO_SCORE + " INTEGER, " +
                 COLUMN_EFFICIENCY_SCORE + " INTEGER, " +
@@ -185,7 +198,11 @@ public class PerformanceDatabaseHelper extends SQLiteOpenHelper {
     }
     
     // Insert benchmark results
-    public void insertBenchmarkResult(PerformanceMetrics metrics, AdvancedMetrics advancedMetrics) {
+    public long insertBenchmarkResult(PerformanceMetrics metrics, AdvancedMetrics advancedMetrics) {
+        return insertBenchmarkResult(metrics, advancedMetrics, java.util.UUID.randomUUID().toString(), metrics.getRunType());
+    }
+
+    public long insertBenchmarkResult(PerformanceMetrics metrics, AdvancedMetrics advancedMetrics, String clientRunId, String runType) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         
@@ -198,6 +215,12 @@ public class PerformanceDatabaseHelper extends SQLiteOpenHelper {
         values.put(COLUMN_TOTAL_MEMORY, metrics.getTotalMemory());
         values.put(COLUMN_ARCHITECTURE, metrics.getArchitecture());
         values.put(COLUMN_ENGINE_VERSION, metrics.getBenchmarkVersion());
+        String effectiveClientRunId = (clientRunId != null && !clientRunId.trim().isEmpty())
+                ? clientRunId
+                : java.util.UUID.randomUUID().toString();
+        values.put(COLUMN_CLIENT_RUN_ID, effectiveClientRunId);
+        values.put(COLUMN_RUN_TYPE, runType != null ? runType : "full");
+        values.put(COLUMN_SYNCED, 0);
         
         values.put(COLUMN_OVERALL_SCORE, metrics.getOverallScore());
         values.put(COLUMN_CRYPTO_SCORE, metrics.getCryptoScore());
@@ -232,6 +255,47 @@ public class PerformanceDatabaseHelper extends SQLiteOpenHelper {
             updateDeviceInfo(metrics.getDeviceModel(), timestamp, metrics.getOverallScore());
             updatePerformanceTrends(metrics.getDeviceModel(), timestamp, metrics.getOverallScore());
         }
+        return result;
+    }
+
+    public List<BenchmarkResult> getPendingSyncRuns(int limit) {
+        List<BenchmarkResult> results = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        String limitClause = limit > 0 ? " LIMIT " + limit : "";
+        String query = "SELECT * FROM " + TABLE_BENCHMARKS +
+                      " WHERE " + COLUMN_SYNCED + " = 0 AND " + COLUMN_RUN_TYPE + " = 'full'" +
+                      " ORDER BY " + COLUMN_TIMESTAMP + " ASC" + limitClause;
+
+        Cursor cursor = db.rawQuery(query, null);
+        if (cursor.moveToFirst()) {
+            do {
+                results.add(createBenchmarkResultFromCursor(cursor));
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        return results;
+    }
+
+    public void markRunSynced(long localId, String remoteId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_SYNCED, 1);
+        values.put(COLUMN_REMOTE_ID, remoteId);
+        db.update(TABLE_BENCHMARKS, values, COLUMN_ID + " = ?", new String[]{String.valueOf(localId)});
+    }
+
+    public void markRunPermanentFailure(long localId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_SYNCED, -1);
+        db.update(TABLE_BENCHMARKS, values, COLUMN_ID + " = ?", new String[]{String.valueOf(localId)});
+    }
+
+    public void updateClientRunId(long localId, String clientRunId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_CLIENT_RUN_ID, clientRunId);
+        db.update(TABLE_BENCHMARKS, values, COLUMN_ID + " = ?", new String[]{String.valueOf(localId)});
     }
     
     // Get all benchmark results for a device
@@ -456,6 +520,23 @@ public class PerformanceDatabaseHelper extends SQLiteOpenHelper {
         }
         result.setThermalThrottling(cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_THERMAL_THROTTLING)) == 1);
         result.setBackgroundAppsCount(cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_BACKGROUND_APPS)));
+
+        int clientRunIdIdx = cursor.getColumnIndex(COLUMN_CLIENT_RUN_ID);
+        if (clientRunIdIdx != -1 && !cursor.isNull(clientRunIdIdx)) {
+            result.setClientRunId(cursor.getString(clientRunIdIdx));
+        }
+        int runTypeIdx = cursor.getColumnIndex(COLUMN_RUN_TYPE);
+        if (runTypeIdx != -1 && !cursor.isNull(runTypeIdx)) {
+            result.setRunType(cursor.getString(runTypeIdx));
+        }
+        int syncedIdx = cursor.getColumnIndex(COLUMN_SYNCED);
+        if (syncedIdx != -1 && !cursor.isNull(syncedIdx)) {
+            result.setSynced(cursor.getInt(syncedIdx));
+        }
+        int remoteIdIdx = cursor.getColumnIndex(COLUMN_REMOTE_ID);
+        if (remoteIdIdx != -1 && !cursor.isNull(remoteIdIdx)) {
+            result.setRemoteId(cursor.getString(remoteIdIdx));
+        }
         
         return result;
     }
