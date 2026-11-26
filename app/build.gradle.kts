@@ -42,7 +42,7 @@ android {
     }
 
     val defaultReleaseApiBaseUrl = "https://benchmark.dotevolve.net"
-    val defaultDebugApiBaseUrl = "https://dev.benchmark.dotevolve.net"
+    val defaultDebugApiBaseUrl = "https://benchmark-dev.dotevolve.net"
 
     val apiBaseUrlRelease = System.getenv("BENCHMARK_API_BASE_URL")
         ?: properties.getProperty("benchmark.apiBaseUrl")

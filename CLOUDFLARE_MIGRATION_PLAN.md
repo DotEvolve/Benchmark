@@ -47,7 +47,7 @@ Both Android (`DotEvolve/Benchmark`) and Web (`DotEvolve/benchmark.dotevolve.net
 
 ### Endpoints (by Build Type)
 - **`release` buildType**: `https://benchmark.dotevolve.net/api/v1/benchmarks`
-- **`debug` buildType**: `https://dev.benchmark.dotevolve.net/api/v1/benchmarks` (configurable via `local.properties` `benchmark.apiBaseUrl` / `BENCHMARK_API_BASE_URL` env var per `AGENTS.md` §7.3)
+- **`debug` buildType**: `https://benchmark-dev.dotevolve.net/api/v1/benchmarks` (configurable via `local.properties` `benchmark.apiBaseUrl` / `BENCHMARK_API_BASE_URL` env var per `AGENTS.md` §7.3)
 
 ### Request Headers
 - `Content-Type: application/json; charset=utf-8`
@@ -112,7 +112,7 @@ Both Android (`DotEvolve/Benchmark`) and Web (`DotEvolve/benchmark.dotevolve.net
 2. **Update [`app/build.gradle.kts`](app/build.gradle.kts)**:
    - Remove `implementation(libs.firebase.firestore)`.
    - In `defaultConfig` / `buildTypes`:
-     - Inject `buildConfigField("String", "BENCHMARK_API_BASE_URL", ...)` reading `System.getenv("BENCHMARK_API_BASE_URL")` or `local.properties` `benchmark.apiBaseUrl` (`"https://benchmark.dotevolve.net"` for `release`, `"https://dev.benchmark.dotevolve.net"` for `debug`).
+     - Inject `buildConfigField("String", "BENCHMARK_API_BASE_URL", ...)` reading `System.getenv("BENCHMARK_API_BASE_URL")` or `local.properties` `benchmark.apiBaseUrl` (`"https://benchmark.dotevolve.net"` for `release`, `"https://benchmark-dev.dotevolve.net"` for `debug`).
      - *(Rule check per `AGENTS.md` §7.3: resolve URL via `BuildConfig` / Gradle properties / env vars cleanly.)*
 3. **Update [`app/src/main/AndroidManifest.xml`](app/src/main/AndroidManifest.xml)**:
    - Explicitly add:
@@ -176,7 +176,7 @@ Run inside `/Users/sadiq/GitHub/Benchmark` per `Benchmark/AGENTS.md`:
 ./gradlew test
 ./gradlew lintDebug
 ```
-Confirm zero references to `FirebaseFirestore` / `firebase-firestore` remain in `app/src/` and `gradle/`, and verify `Benchmark` debug build posts to the dev Cloudflare endpoint (`dev.benchmark.dotevolve.net/api/v1/benchmarks`) and handles `400`/`429`/`500` gracefully.
+Confirm zero references to `FirebaseFirestore` / `firebase-firestore` remain in `app/src/` and `gradle/`, and verify `Benchmark` debug build posts to the dev Cloudflare endpoint (`benchmark-dev.dotevolve.net/api/v1/benchmarks`) and handles `400`/`429`/`500` gracefully.
 
 ### Step 7: Legacy Firebase Hosting Cleanup (After `benchmark.dotevolve.net` Production Cutover)
 In a separate discrete PR on `DotEvolve/Benchmark`:
