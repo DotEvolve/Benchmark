@@ -148,7 +148,12 @@ public class BenchmarkApiClient {
 
     public JSONObject buildPayload(BenchmarkResult result) throws JSONException {
         JSONObject json = new JSONObject();
-        json.put("clientRunId", result.getClientRunId() != null ? result.getClientRunId() : java.util.UUID.randomUUID().toString());
+        String clientRunId = result.getClientRunId();
+        if (clientRunId == null || clientRunId.trim().isEmpty()) {
+            String seed = "benchmark-run-" + result.getId() + "-" + result.getTimestamp();
+            clientRunId = java.util.UUID.nameUUIDFromBytes(seed.getBytes(StandardCharsets.UTF_8)).toString();
+        }
+        json.put("clientRunId", clientRunId);
         json.put("runType", result.getRunType());
         json.put("deviceModel", result.getDeviceModel());
         json.put("androidVersion", result.getAndroidVersion());

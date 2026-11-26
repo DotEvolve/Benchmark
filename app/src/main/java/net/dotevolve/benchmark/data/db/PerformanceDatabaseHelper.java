@@ -121,6 +121,10 @@ public class PerformanceDatabaseHelper extends SQLiteOpenHelper {
             db.execSQL("ALTER TABLE " + TABLE_BENCHMARKS + " ADD COLUMN " + COLUMN_RUN_TYPE + " TEXT NOT NULL DEFAULT 'full'");
             db.execSQL("ALTER TABLE " + TABLE_BENCHMARKS + " ADD COLUMN " + COLUMN_SYNCED + " INTEGER NOT NULL DEFAULT 0");
             db.execSQL("ALTER TABLE " + TABLE_BENCHMARKS + " ADD COLUMN " + COLUMN_REMOTE_ID + " TEXT");
+            // Classify historical partial runs and mark all pre-v4 records synced so they are not re-uploaded
+            db.execSQL("UPDATE " + TABLE_BENCHMARKS + " SET " + COLUMN_RUN_TYPE + " = 'legacy' WHERE "
+                    + COLUMN_AES_TIME + " = 0 AND " + COLUMN_MATRIX_TIME + " = 0 AND " + COLUMN_MEMORY_BANDWIDTH_TIME + " = 0");
+            db.execSQL("UPDATE " + TABLE_BENCHMARKS + " SET " + COLUMN_SYNCED + " = 1");
         }
     }
     
@@ -211,7 +215,10 @@ public class PerformanceDatabaseHelper extends SQLiteOpenHelper {
         values.put(COLUMN_TOTAL_MEMORY, metrics.getTotalMemory());
         values.put(COLUMN_ARCHITECTURE, metrics.getArchitecture());
         values.put(COLUMN_ENGINE_VERSION, metrics.getBenchmarkVersion());
-        values.put(COLUMN_CLIENT_RUN_ID, clientRunId);
+        String effectiveClientRunId = (clientRunId != null && !clientRunId.trim().isEmpty())
+                ? clientRunId
+                : java.util.UUID.randomUUID().toString();
+        values.put(COLUMN_CLIENT_RUN_ID, effectiveClientRunId);
         values.put(COLUMN_RUN_TYPE, runType != null ? runType : "full");
         values.put(COLUMN_SYNCED, 0);
         
@@ -281,6 +288,13 @@ public class PerformanceDatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(COLUMN_SYNCED, -1);
+        db.update(TABLE_BENCHMARKS, values, COLUMN_ID + " = ?", new String[]{String.valueOf(localId)});
+    }
+
+    public void updateClientRunId(long localId, String clientRunId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_CLIENT_RUN_ID, clientRunId);
         db.update(TABLE_BENCHMARKS, values, COLUMN_ID + " = ?", new String[]{String.valueOf(localId)});
     }
     

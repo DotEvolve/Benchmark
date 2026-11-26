@@ -93,4 +93,20 @@ public class BenchmarkApiClientTest {
         assertNotNull(transientErr.errorMessage);
         assertTrue(transientErr.errorMessage.contains("Rate Limited"));
     }
+
+    @Test
+    public void testBuildPayloadFromBenchmarkResult_missingClientRunId_isDeterministic() throws Exception {
+        BenchmarkResult result = new BenchmarkResult();
+        result.setId(42L);
+        result.setTimestamp(1795700000000L);
+        result.setRunType("full");
+        result.setDeviceModel("Pixel 8 Pro");
+
+        BenchmarkApiClient client = new BenchmarkApiClient("https://benchmark-dev.dotevolve.net");
+        String firstId = client.buildPayload(result).getString("clientRunId");
+        String secondId = client.buildPayload(result).getString("clientRunId");
+
+        assertNotNull(firstId);
+        assertEquals(firstId, secondId);
+    }
 }

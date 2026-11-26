@@ -49,6 +49,11 @@ public class SyncBenchmarksWorker extends Worker {
         boolean hasTransientError = false;
 
         for (BenchmarkResult result : pending) {
+            if (result.getClientRunId() == null || result.getClientRunId().trim().isEmpty()) {
+                String generatedId = java.util.UUID.randomUUID().toString();
+                result.setClientRunId(generatedId);
+                dbHelper.updateClientRunId(result.getId(), generatedId);
+            }
             BenchmarkApiClient.ApiResult apiResult = client.uploadBenchmark(result);
             if (apiResult.status == BenchmarkApiClient.ApiResultStatus.SUCCESS) {
                 dbHelper.markRunSynced(result.getId(), apiResult.remoteId);
