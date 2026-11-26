@@ -4,10 +4,13 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
@@ -15,6 +18,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -50,6 +54,10 @@ class ResultDetailActivity : ComponentActivity() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ResultDetailScreen(result: BenchmarkResult?, onBackClick: () -> Unit) {
+    val context = LocalContext.current
+    val webRunId = result?.remoteId?.takeIf { it.isNotBlank() }
+        ?: result?.clientRunId?.takeIf { it.isNotBlank() }
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -63,16 +71,32 @@ fun ResultDetailScreen(result: BenchmarkResult?, onBackClick: () -> Unit) {
         }
     ) { padding ->
         val details = result?.let { generateDetails(it) } ?: "No result data available"
-        Text(
-            text = details,
+        Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .verticalScroll(rememberScrollState())
-                .padding(16.dp),
-            fontFamily = FontFamily.Monospace,
-            fontSize = 14.sp
-        )
+        ) {
+            Text(
+                text = details,
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxWidth()
+                    .verticalScroll(rememberScrollState())
+                    .padding(16.dp),
+                fontFamily = FontFamily.Monospace,
+                fontSize = 14.sp
+            )
+            if (webRunId != null) {
+                Button(
+                    onClick = { WebLinks.openUrl(context, WebLinks.buildRunUrl(webRunId)) },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 12.dp)
+                ) {
+                    Text("View on Web")
+                }
+            }
+        }
     }
 }
 

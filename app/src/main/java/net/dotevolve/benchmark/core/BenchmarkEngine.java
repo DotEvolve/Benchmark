@@ -64,6 +64,7 @@ public class BenchmarkEngine {
     
     public void runComprehensiveBenchmark() {
         Log.d(TAG, "Starting comprehensive benchmark...");
+        metrics.resetRunIds();
         metrics.setRunType("full");
         
         try {
@@ -458,6 +459,7 @@ public class BenchmarkEngine {
     // Legacy methods for backward compatibility
     public void runLegacyBenchmark() {
         Log.d(TAG, "Running legacy benchmark...");
+        metrics.resetRunIds();
         metrics.setRunType("legacy");
         
         // Run only SHA-512 and MD5 for backward compatibility
