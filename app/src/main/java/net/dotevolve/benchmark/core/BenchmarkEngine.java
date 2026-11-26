@@ -161,7 +161,7 @@ public class BenchmarkEngine {
             KeyGenerator keyGen = KeyGenerator.getInstance("AES");
             keyGen.init(256);
             SecretKey key = keyGen.generateKey();
-            Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+            Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
             cipher.init(Cipher.ENCRYPT_MODE, key);
             byte[] aesInput = buildDeterministicPayload(testString, 256, 0x9E3779B97F4A7C15L);
             for (int i = 0; i < 100; i++) {
@@ -295,7 +295,7 @@ public class BenchmarkEngine {
             KeyGenerator keyGen = KeyGenerator.getInstance("AES");
             keyGen.init(256);
             SecretKey secretKey = keyGen.generateKey();
-            Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+            Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
             cipher.init(Cipher.ENCRYPT_MODE, secretKey);
 
             metrics.startAesTiming();
@@ -405,7 +405,7 @@ public class BenchmarkEngine {
         long seed = 0xD1B54A32D192ED03L;
         for (int i = 0; i < size; i++) {
             seed = xorshift64(seed);
-            array[i] = (int) (seed ^ (seed >>> 32));
+            array[i] = Long.hashCode(seed);
         }
 
         metrics.startSortTiming();
@@ -427,7 +427,7 @@ public class BenchmarkEngine {
         byte[] data = buildCompressionPayload(testString, COMPRESSION_PAYLOAD_BYTES);
         byte[] deflateBuffer = new byte[8192];
         int totalIterations = PerformanceMetrics.COMPRESSION_ITERATIONS;
-        int batchSize = Math.max(1, totalIterations / COMPRESSION_BATCHES);
+        int batchSize = totalIterations / COMPRESSION_BATCHES;
         long localAcc = 0L;
 
         Deflater deflater = new Deflater(Deflater.DEFAULT_COMPRESSION);
@@ -509,7 +509,7 @@ public class BenchmarkEngine {
 
     private void runMultiThreadedBenchmark() {
         logDebug("Running multi-threaded SHA-512 benchmark...");
-        int numThreads = Math.max(1, Math.min(metrics.getCpuCores(), 8));
+        int numThreads = Math.clamp(metrics.getCpuCores(), 1, 8);
         byte[] basePayload = buildDeterministicPayload(testString, HASH_PAYLOAD_BYTES, 0x517CC1B727220A95L);
         int totalIterations = PerformanceMetrics.SHA1_ITERATIONS;
         int baseIterations = totalIterations / numThreads;
