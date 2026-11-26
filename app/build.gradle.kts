@@ -238,3 +238,16 @@ tasks.register<Exec>("publishToAptoide") {
         println("Upload command finished.")
     }
 }
+
+afterEvaluate {
+    val zipReleaseNativeDebugSymbols = tasks.register<Zip>("zipReleaseNativeDebugSymbols") {
+        val symbolDir = layout.buildDirectory.dir("intermediates/native_debug_metadata/release/extractReleaseNativeDebugMetadata/out")
+        from(symbolDir)
+        destinationDirectory.set(layout.buildDirectory.dir("outputs/native-debug-symbols/release"))
+        archiveFileName.set("native-debug-symbols.zip")
+        dependsOn(tasks.named("extractReleaseNativeDebugMetadata"))
+    }
+
+    tasks.findByName("bundleRelease")?.finalizedBy(zipReleaseNativeDebugSymbols)
+    tasks.findByName("assembleRelease")?.finalizedBy(zipReleaseNativeDebugSymbols)
+}

@@ -91,6 +91,7 @@ fun HistoryScreen(
     onBackClick: () -> Unit,
     onResultClick: (BenchmarkResult) -> Unit
 ) {
+    val context = androidx.compose.ui.platform.LocalContext.current
     val coroutineScope = rememberCoroutineScope()
     var deviceStats by remember { mutableStateOf<DeviceStatistics?>(null) }
     var trends by remember { mutableStateOf<List<PerformanceTrend>?>(null) }
@@ -100,12 +101,12 @@ fun HistoryScreen(
     LaunchedEffect(deviceModel) {
         coroutineScope.launch {
             val stats = withContext(Dispatchers.IO) {
-                try { PerformanceMetrics.getDeviceStatistics(null, deviceModel) } catch (e: Exception) { null }
+                try { PerformanceMetrics.getDeviceStatistics(context, deviceModel) } catch (e: Exception) { null }
             }
             deviceStats = stats
 
             val trendList = withContext(Dispatchers.IO) {
-                try { PerformanceMetrics.getPerformanceTrends(null, deviceModel, 30) } catch (e: Exception) { null }
+                try { PerformanceMetrics.getPerformanceTrends(context, deviceModel, 30) } catch (e: Exception) { null }
             }
             trends = trendList
         }
@@ -116,9 +117,9 @@ fun HistoryScreen(
             val res = withContext(Dispatchers.IO) {
                 try {
                     if (selectedDays == -1) {
-                        PerformanceMetrics.getHistoricalResults(null, deviceModel)
+                        PerformanceMetrics.getHistoricalResults(context, deviceModel)
                     } else {
-                        PerformanceMetrics.getRecentResults(null, deviceModel, selectedDays)
+                        PerformanceMetrics.getRecentResults(context, deviceModel, selectedDays)
                     }
                 } catch (e: Exception) {
                     emptyList<BenchmarkResult>()

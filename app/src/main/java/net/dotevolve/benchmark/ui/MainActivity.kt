@@ -7,8 +7,10 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.PredictiveBackHandler
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import kotlin.coroutines.cancellation.CancellationException
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -71,6 +73,8 @@ import net.dotevolve.benchmark.work.ScheduledBenchmarkWorker
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicBoolean
+import kotlin.math.ln
+import kotlin.math.pow
 
 class MainActivity : ComponentActivity() {
 
@@ -387,9 +391,9 @@ class MainActivity : ComponentActivity() {
 
     private fun formatBytes(bytes: Long): String {
         if (bytes < 1024) return "$bytes B"
-        val exp = (Math.log(bytes.toDouble()) / Math.log(1024.0)).toInt()
+        val exp = (ln(bytes.toDouble()) / ln(1024.0)).toInt()
         val pre = "KMGTPE"[exp - 1]
-        return String.format(java.util.Locale.US, "%.1f %sB", bytes / Math.pow(1024.0, exp.toDouble()), pre)
+        return String.format(java.util.Locale.US, "%.1f %sB", bytes / 1024.0.pow(exp.toDouble()), pre)
     }
 
     override fun onDestroy() {
@@ -490,7 +494,7 @@ fun MainScreen(
                                 setAdUnitId(bannerAdUnitId)
                                 val displayMetrics = context.resources.displayMetrics
                                 val adWidth = (displayMetrics.widthPixels / displayMetrics.density).toInt()
-                                setAdSize(AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(context, adWidth))
+                                setAdSize(AdSize.getLargeAnchoredAdaptiveBannerAdSize(context, adWidth))
                                 loadAd(AdRequest.Builder().build())
                             }
                         }
@@ -508,6 +512,15 @@ fun MetricsDialog(
     onExport: () -> Unit,
     onShare: () -> Unit
 ) {
+    PredictiveBackHandler { progress ->
+        try {
+            progress.collect { }
+            onDismiss()
+        } catch (_: CancellationException) {
+            // Back gesture was cancelled
+        }
+    }
+
     Dialog(
         onDismissRequest = onDismiss,
         properties = DialogProperties(usePlatformDefaultWidth = false)
