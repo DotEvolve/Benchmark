@@ -21,7 +21,6 @@ import java.util.zip.Deflater;
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
-import javax.crypto.spec.IvParameterSpec;
 
 /**
  * Enhanced benchmark engine (v2.0.0) with isolated kernel timing, warm-up,
@@ -46,7 +45,6 @@ public class BenchmarkEngine {
     private static final int HASH_PAYLOAD_BYTES = 64;
     private static final int AES_PAYLOAD_BYTES = 1024;
     private static final int COMPRESSION_PAYLOAD_BYTES = 64 * 1024;
-    private static final int MEMORY_STRIDE = 16;
 
     private final PerformanceMetrics metrics;
     private final String testString;
@@ -164,7 +162,7 @@ public class BenchmarkEngine {
             keyGen.init(256);
             SecretKey key = keyGen.generateKey();
             Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
-            cipher.init(Cipher.ENCRYPT_MODE, key, new IvParameterSpec(new byte[16]));
+            cipher.init(Cipher.ENCRYPT_MODE, key);
             byte[] aesInput = buildDeterministicPayload(testString, 256, 0x9E3779B97F4A7C15L);
             for (int i = 0; i < 100; i++) {
                 acc ^= cipher.doFinal(aesInput)[0];
@@ -207,14 +205,14 @@ public class BenchmarkEngine {
             deflater.end();
         }
 
-        blackholeSink ^= acc;
+        blackholeSink = acc;
     }
 
     private void runSha1Benchmark() {
         logDebug("Running SHA-512 benchmark...");
         byte[] inputBytes = buildDeterministicPayload(testString, HASH_PAYLOAD_BYTES, 0x517CC1B727220A95L);
         int totalIterations = PerformanceMetrics.SHA1_ITERATIONS;
-        int batchSize = Math.max(1, totalIterations / SHA1_BATCHES);
+        int batchSize = totalIterations / SHA1_BATCHES;
         long localAcc = 0L;
 
         try {
@@ -239,11 +237,9 @@ public class BenchmarkEngine {
             metrics.endSha1Timing();
         } catch (NoSuchAlgorithmException e) {
             logError("SHA-512 algorithm not available", e);
-            metrics.startSha1Timing();
-            metrics.endSha1Timing();
         }
 
-        blackholeSink ^= localAcc;
+        blackholeSink = localAcc;
 
         if (progressCallback != null) {
             progressCallback.onTestComplete("SHA-512", metrics.getSha1TotalTime());
@@ -254,7 +250,7 @@ public class BenchmarkEngine {
         logDebug("Running MD5 benchmark...");
         byte[] inputBytes = buildDeterministicPayload(testString, HASH_PAYLOAD_BYTES, 0x9E3779B97F4A7C15L);
         int totalIterations = PerformanceMetrics.MD5_ITERATIONS;
-        int batchSize = Math.max(1, totalIterations / MD5_BATCHES);
+        int batchSize = totalIterations / MD5_BATCHES;
         long localAcc = 0L;
 
         try {
@@ -279,11 +275,9 @@ public class BenchmarkEngine {
             metrics.endMd5Timing();
         } catch (NoSuchAlgorithmException e) {
             logError("MD5 algorithm not available", e);
-            metrics.startMd5Timing();
-            metrics.endMd5Timing();
         }
 
-        blackholeSink ^= localAcc;
+        blackholeSink = localAcc;
 
         if (progressCallback != null) {
             progressCallback.onTestComplete("MD5", metrics.getMd5TotalTime());
@@ -294,17 +288,15 @@ public class BenchmarkEngine {
         logDebug("Running AES-256 benchmark...");
         byte[] inputBytes = buildDeterministicPayload(testString, AES_PAYLOAD_BYTES, 0xBF58476D1CE4E5B9L);
         int totalIterations = PerformanceMetrics.AES_ITERATIONS;
-        int batchSize = Math.max(1, totalIterations / AES_BATCHES);
+        int batchSize = totalIterations / AES_BATCHES;
         long localAcc = 0L;
 
         try {
             KeyGenerator keyGen = KeyGenerator.getInstance("AES");
             keyGen.init(256);
             SecretKey secretKey = keyGen.generateKey();
-            byte[] ivBytes = buildDeterministicPayload(testString, 16, 0x94D049BB133111EBL);
-            IvParameterSpec ivSpec = new IvParameterSpec(ivBytes);
             Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
-            cipher.init(Cipher.ENCRYPT_MODE, secretKey, ivSpec);
+            cipher.init(Cipher.ENCRYPT_MODE, secretKey);
 
             metrics.startAesTiming();
 
@@ -324,11 +316,9 @@ public class BenchmarkEngine {
             metrics.endAesTiming();
         } catch (Exception e) {
             logError("AES benchmark failed", e);
-            metrics.startAesTiming();
-            metrics.endAesTiming();
         }
 
-        blackholeSink ^= localAcc;
+        blackholeSink = localAcc;
 
         if (progressCallback != null) {
             progressCallback.onTestComplete("AES-256", metrics.getAesTotalTime());
@@ -350,7 +340,7 @@ public class BenchmarkEngine {
         }
         metrics.endLoopTiming();
 
-        blackholeSink ^= intAcc ^ Double.doubleToRawLongBits(fpAcc);
+        blackholeSink = intAcc ^ Double.doubleToRawLongBits(fpAcc);
 
         if (progressCallback != null) {
             progressCallback.onTestComplete("ALU / FP Loop", metrics.getLoopOverheadTime());
@@ -399,7 +389,7 @@ public class BenchmarkEngine {
         for (int i = 0; i < size; i++) {
             trace += result[i][i];
         }
-        blackholeSink ^= Double.doubleToRawLongBits(trace);
+        blackholeSink = Double.doubleToRawLongBits(trace);
 
         if (progressCallback != null) {
             progressCallback.onTestComplete("Matrix Multiplication", metrics.getMatrixMultiplicationTime());
@@ -425,7 +415,7 @@ public class BenchmarkEngine {
         metrics.endSortTiming();
         metrics.addSortSample(Math.max(1L, endTime - startTime));
 
-        blackholeSink ^= ((long) array[0] << 32) ^ (array[size - 1] & 0xFFFFFFFFL);
+        blackholeSink = ((long) array[0] << 32) ^ (array[size - 1] & 0xFFFFFFFFL);
 
         if (progressCallback != null) {
             progressCallback.onTestComplete("Sorting", metrics.getSortingTime());
@@ -466,7 +456,7 @@ public class BenchmarkEngine {
             deflater.end();
         }
 
-        blackholeSink ^= localAcc;
+        blackholeSink = localAcc;
 
         if (progressCallback != null) {
             progressCallback.onTestComplete("Compression", metrics.getCompressionTime());
@@ -490,24 +480,27 @@ public class BenchmarkEngine {
         long sum = 0L;
         metrics.startMemoryTiming();
 
-        // Pass 1: Sequential copy (reads src + writes dst = 2 * workingSetBytes)
+        // Pass 1: STREAM Copy (reads src + writes dst = 2 * workingSetBytes)
         System.arraycopy(src, 0, dst, 0, elementCount);
 
-        // Pass 2: Strided read-modify-write across all elements (reads src + reads dst + writes dst = 3 * workingSetBytes)
-        for (int offset = 0; offset < MEMORY_STRIDE; offset++) {
-            for (int i = offset; i < elementCount; i += MEMORY_STRIDE) {
-                dst[i] += src[i];
-            }
+        // Pass 2: STREAM Scale (reads src + writes dst = 2 * workingSetBytes)
+        for (int i = 0; i < elementCount; i++) {
+            dst[i] = src[i] * 3 + 1;
         }
 
-        // Pass 3: Sequential reduction sum (reads dst = 1 * workingSetBytes)
+        // Pass 3: STREAM Triad (reads src + reads dst + writes dst = 3 * workingSetBytes)
+        for (int i = 0; i < elementCount; i++) {
+            dst[i] += src[i];
+        }
+
+        // Pass 4: STREAM Sum / Reduction (reads dst = 1 * workingSetBytes)
         for (int i = 0; i < elementCount; i++) {
             sum += dst[i];
         }
 
         metrics.endMemoryTiming();
-        metrics.setMemoryBytesTransferred(6L * elementCount * 4L);
-        blackholeSink ^= sum;
+        metrics.setMemoryBytesTransferred(8L * elementCount * 4L);
+        blackholeSink = sum;
 
         if (progressCallback != null) {
             progressCallback.onTestComplete("Memory Bandwidth", metrics.getMemoryBandwidthTime());
@@ -581,7 +574,7 @@ public class BenchmarkEngine {
         for (long acc : threadAccumulators) {
             combinedAcc ^= acc;
         }
-        blackholeSink ^= combinedAcc;
+        blackholeSink = combinedAcc;
 
         if (progressCallback != null) {
             progressCallback.onTestComplete("Multi-threaded", metrics.getMultiThreadedTime());
