@@ -10,6 +10,7 @@ firebaseCrashlytics = "21.1.0"
 firebaseCrashlyticsPlugin = "3.0.8"
 gmsGoogleServices = "4.6.0"
 googleFirebasePerf = "2.0.2"
+json = "20260814"
 junit = "4.13.2"
 junitVersion = "1.3.0"
 material = "1.14.0"
@@ -39,8 +40,8 @@ firebase-appcheck-playintegrity = { group = "com.google.firebase", name = "fireb
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
 firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics", version.ref = "firebaseCrashlytics" }
 firebase-crashlytics-ndk = { module = "com.google.firebase:firebase-crashlytics-ndk" }
-firebase-firestore = { module = "com.google.firebase:firebase-firestore" }
 firebase-perf = { module = "com.google.firebase:firebase-perf" }
+json = { module = "org.json:json", version.ref = "json" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 material-icons-extended = { module = "androidx.compose.material:material-icons-extended" }

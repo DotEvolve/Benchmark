@@ -1,9 +1,0 @@
-User-agent: *
-Allow: /
-
-# Sitemap location
-Sitemap: https://benchmark.dotevolve.net/sitemap.xml
-
-# Disallow test pages
-Disallow: /test-accessibility.html
-Disallow: /test-performance.html

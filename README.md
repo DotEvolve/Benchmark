@@ -1,7 +1,7 @@
 # Benchmark - Android Performance Testing App
 
 <div align="center">
-  <img src="public/images/cropped_circle_image.png" alt="Benchmark App Icon" width="120" height="120">
+  <img src="screens/logo.png" alt="Benchmark App Icon" width="120" height="120">
   
   [![Android](https://img.shields.io/badge/Platform-Android-green.svg)](https://android.com)
   [![API](https://img.shields.io/badge/API-23%2B-brightgreen.svg)](https://android-arsenal.com/api?level=23)
@@ -37,9 +37,9 @@ Benchmark is a comprehensive Android performance testing application that provid
 ## Screenshots
 
 <div align="center">
-  <img src="public/images/screenshot-main.jpg" alt="Main Screen" width="200">
-  <img src="public/images/screenshot-results.jpg" alt="Results Screen" width="200">
-  <img src="public/images/screenshot-tablet-main.jpeg" alt="Tablet Main" width="300">
+  <img src="screens/1.jpg" alt="Main Screen" width="200">
+  <img src="screens/2.jpg" alt="Results Screen" width="200">
+  <img src="screens/tablet1.jpeg" alt="Tablet Main" width="300">
 </div>
 
 ## Technical Stack
@@ -213,11 +213,8 @@ The project uses Jacoco for code coverage reporting. Generate reports with:
 3. Upload to Google Play Console
 4. Update release notes
 
-### Website Deployment
-The companion website is deployed using Firebase Hosting:
-```bash
-firebase deploy
-```
+### Website & Analytics Dashboard
+The companion website and live analytics dashboard are deployed at [benchmark.dotevolve.net](https://benchmark.dotevolve.net) from the repository [`DotEvolve/benchmark.dotevolve.net`](https://github.com/DotEvolve/benchmark.dotevolve.net).
 
 ## Privacy & Security
 
