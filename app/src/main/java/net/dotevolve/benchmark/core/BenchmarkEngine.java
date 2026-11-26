@@ -584,7 +584,7 @@ public class BenchmarkEngine {
     private static int computeSafeMemoryWorkingSetBytes() {
         long maxHeap = Runtime.getRuntime().maxMemory();
         long tenthHeap = maxHeap > 0 ? maxHeap / 10L : PerformanceMetrics.MEMORY_TEST_SIZE;
-        int capped = (int) Math.min(PerformanceMetrics.MEMORY_TEST_SIZE, Math.max(1024L * 1024L, tenthHeap));
+        int capped = (int) Math.clamp(tenthHeap, 1024L * 1024L, PerformanceMetrics.MEMORY_TEST_SIZE);
         return (capped / 4) * 4;
     }
 
