@@ -1,6 +1,7 @@
 package net.dotevolve.benchmark.data.remote;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -18,6 +19,8 @@ public class BenchmarkApiClientTest {
         result.setClientRunId("550e8400-e29b-41d4-a716-446655440000");
         result.setRunType("full");
         result.setDeviceModel("Pixel 8 Pro");
+        result.setDeviceManufacturer("  Google  ");
+        result.setDeviceBrand(" google ");
         result.setAndroidVersion("Android 14");
         result.setCpuCores(8);
         result.setTotalMemory(536870912L);
@@ -49,6 +52,8 @@ public class BenchmarkApiClientTest {
         assertEquals("550e8400-e29b-41d4-a716-446655440000", payload.getString("clientRunId"));
         assertEquals("full", payload.getString("runType"));
         assertEquals("Pixel 8 Pro", payload.getString("deviceModel"));
+        assertEquals("Google", payload.getString("deviceManufacturer"));
+        assertEquals("google", payload.getString("deviceBrand"));
         assertEquals("Android 14", payload.getString("androidVersion"));
         assertEquals(8, payload.getInt("cpuCores"));
         assertEquals(536870912L, payload.getLong("totalMemory"));
@@ -108,5 +113,27 @@ public class BenchmarkApiClientTest {
 
         assertNotNull(firstId);
         assertEquals(firstId, secondId);
+    }
+
+    @Test
+    public void testBuildPayloadFromBenchmarkResult_omitsBlankOrNullManufacturerAndBrand() throws Exception {
+        BenchmarkResult result = new BenchmarkResult();
+        result.setClientRunId("550e8400-e29b-41d4-a716-446655440001");
+        result.setRunType("full");
+        result.setDeviceModel("TB310XU");
+        result.setDeviceManufacturer(null);
+        result.setDeviceBrand("   ");
+        result.setAndroidVersion("Android 13");
+        result.setCpuCores(8);
+        result.setTotalMemory(536870912L);
+        result.setArchitecture("arm64-v8a");
+        result.setBenchmarkVersion("2.0.0");
+
+        BenchmarkApiClient client = new BenchmarkApiClient("https://benchmark-dev.dotevolve.net");
+        JSONObject payload = client.buildPayload(result);
+
+        assertEquals("TB310XU", payload.getString("deviceModel"));
+        assertFalse(payload.has("deviceManufacturer"));
+        assertFalse(payload.has("deviceBrand"));
     }
 }

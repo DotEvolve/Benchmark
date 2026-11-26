@@ -56,6 +56,8 @@ public class PerformanceMetrics {
     
     // System information
     private String deviceModel;
+    private String deviceManufacturer;
+    private String deviceBrand;
     private String androidVersion;
     private int cpuCores;
     private long totalMemory;
@@ -104,12 +106,16 @@ public class PerformanceMetrics {
     
     private void initializeSystemInfo(Context context) {
         deviceModel = Build.MODEL;
+        deviceManufacturer = Build.MANUFACTURER;
+        deviceBrand = Build.BRAND;
         androidVersion = "Android " + Build.VERSION.RELEASE;
         cpuCores = Runtime.getRuntime().availableProcessors();
         totalMemory = Runtime.getRuntime().maxMemory();
         architecture = Build.SUPPORTED_ABIS[0];
         
         Log.d(TAG, "System Info - Model: " + deviceModel + 
+              ", Manufacturer: " + deviceManufacturer +
+              ", Brand: " + deviceBrand +
               ", Android: " + androidVersion + 
               ", Cores: " + cpuCores + 
               ", Memory: " + formatBytes(totalMemory));
@@ -691,6 +697,8 @@ public class PerformanceMetrics {
     public int getEfficiencyScore() { return efficiencyScore; }
     public int getStabilityScore() { return stabilityScore; }
     public String getDeviceModel() { return deviceModel; }
+    public String getDeviceManufacturer() { return deviceManufacturer; }
+    public String getDeviceBrand() { return deviceBrand; }
     public String getAndroidVersion() { return androidVersion; }
     public int getCpuCores() { return cpuCores; }
     public long getTotalMemory() { return totalMemory; }

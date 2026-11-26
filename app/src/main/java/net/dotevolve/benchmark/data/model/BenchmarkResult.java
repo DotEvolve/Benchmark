@@ -17,6 +17,8 @@ public class BenchmarkResult implements Serializable {
     private long id;
     private long timestamp;
     private String deviceModel;
+    private String deviceManufacturer;
+    private String deviceBrand;
     private String androidVersion;
     private int cpuCores;
     private long totalMemory;
@@ -63,6 +65,8 @@ public class BenchmarkResult implements Serializable {
     public BenchmarkResult(PerformanceMetrics metrics, AdvancedMetrics advancedMetrics) {
         this.timestamp = System.currentTimeMillis();
         this.deviceModel = metrics.getDeviceModel();
+        this.deviceManufacturer = metrics.getDeviceManufacturer();
+        this.deviceBrand = metrics.getDeviceBrand();
         this.androidVersion = metrics.getAndroidVersion();
         this.cpuCores = metrics.getCpuCores();
         this.totalMemory = metrics.getTotalMemory();
@@ -104,6 +108,12 @@ public class BenchmarkResult implements Serializable {
     
     public String getDeviceModel() { return deviceModel; }
     public void setDeviceModel(String deviceModel) { this.deviceModel = deviceModel; }
+
+    public String getDeviceManufacturer() { return deviceManufacturer; }
+    public void setDeviceManufacturer(String deviceManufacturer) { this.deviceManufacturer = deviceManufacturer; }
+
+    public String getDeviceBrand() { return deviceBrand; }
+    public void setDeviceBrand(String deviceBrand) { this.deviceBrand = deviceBrand; }
     
     public String getAndroidVersion() { return androidVersion; }
     public void setAndroidVersion(String androidVersion) { this.androidVersion = androidVersion; }
