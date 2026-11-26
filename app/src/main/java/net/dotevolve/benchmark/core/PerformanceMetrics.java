@@ -614,6 +614,11 @@ public class PerformanceMetrics {
         return PerformanceCategory.fromScore(score);
     }
     
+    public synchronized void resetRunIds() {
+        this.lastClientRunId = null;
+        this.lastRemoteId = null;
+    }
+
     public synchronized String ensureClientRunId() {
         if (lastClientRunId == null || lastClientRunId.trim().isEmpty()) {
             lastClientRunId = UUID.randomUUID().toString();
