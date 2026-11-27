@@ -520,7 +520,7 @@ public class BenchmarkEngine {
 
     private void runMultiThreadedBenchmark() {
         logDebug("Running multi-threaded SHA-512 benchmark...");
-        int numThreads = Math.clamp(metrics.getCpuCores(), 1, 8);
+        int numThreads = Math.max(1, Math.min(8, metrics.getCpuCores()));
         byte[] basePayload = buildDeterministicPayload(testString, HASH_PAYLOAD_BYTES, 0x517CC1B727220A95L);
         int totalIterations = PerformanceMetrics.SHA1_ITERATIONS;
         int baseIterations = totalIterations / numThreads;
@@ -595,7 +595,8 @@ public class BenchmarkEngine {
     private static int computeSafeMemoryWorkingSetBytes() {
         long maxHeap = Runtime.getRuntime().maxMemory();
         long tenthHeap = maxHeap > 0 ? maxHeap / 10L : PerformanceMetrics.MEMORY_TEST_SIZE;
-        int capped = (int) Math.clamp(tenthHeap, 1024L * 1024L, PerformanceMetrics.MEMORY_TEST_SIZE);
+        long cappedLong = Math.max(1024L * 1024L, Math.min(PerformanceMetrics.MEMORY_TEST_SIZE, tenthHeap));
+        int capped = (int) cappedLong;
         return (capped / 4) * 4;
     }
 
