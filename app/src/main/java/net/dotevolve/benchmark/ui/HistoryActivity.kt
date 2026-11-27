@@ -265,7 +265,7 @@ fun HistoryScreen(
                                 .padding(vertical = 8.dp)
                             ) {
                                 Text("Score: ${result.overallScore}", fontWeight = FontWeight.Bold)
-                                Text("Date: ${result.timestamp}", fontSize = 12.sp)
+                                Text("Date: ${result.formattedDate}, ${result.formattedTime}", fontSize = 12.sp)
                                 HorizontalDivider()
                             }
                         }
