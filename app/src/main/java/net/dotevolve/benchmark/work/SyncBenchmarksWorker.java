@@ -1,6 +1,7 @@
 package net.dotevolve.benchmark.work;
 
 import android.content.Context;
+import android.os.Build;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -13,6 +14,7 @@ import androidx.work.WorkManager;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
+import net.dotevolve.benchmark.core.DeviceIdentityProvider;
 import net.dotevolve.benchmark.data.db.PerformanceDatabaseHelper;
 import net.dotevolve.benchmark.data.model.BenchmarkResult;
 import net.dotevolve.benchmark.data.remote.BenchmarkApiClient;
@@ -53,6 +55,15 @@ public class SyncBenchmarksWorker extends Worker {
                 String generatedId = java.util.UUID.randomUUID().toString();
                 result.setClientRunId(generatedId);
                 dbHelper.updateClientRunId(result.getId(), generatedId);
+            }
+            if (result.getDeviceManufacturer() == null || result.getDeviceManufacturer().trim().isEmpty()) {
+                result.setDeviceManufacturer(Build.MANUFACTURER);
+            }
+            if (result.getDeviceBrand() == null || result.getDeviceBrand().trim().isEmpty()) {
+                result.setDeviceBrand(Build.BRAND);
+            }
+            if (result.getClientDeviceId() == null || result.getClientDeviceId().trim().isEmpty()) {
+                result.setClientDeviceId(DeviceIdentityProvider.getOrCreateClientDeviceId(context));
             }
             BenchmarkApiClient.ApiResult apiResult = client.uploadBenchmark(result);
             if (apiResult.status == BenchmarkApiClient.ApiResultStatus.SUCCESS) {

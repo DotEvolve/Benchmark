@@ -115,8 +115,11 @@ public class BenchmarkApiClient {
     public JSONObject buildPayload(PerformanceMetrics metrics, String clientRunId) throws JSONException {
         JSONObject json = new JSONObject();
         json.put("clientRunId", clientRunId);
+        putOptionalTrimmedString(json, "clientDeviceId", metrics.getClientDeviceId());
         json.put("runType", metrics.getRunType());
         json.put("deviceModel", metrics.getDeviceModel());
+        putOptionalTrimmedString(json, "deviceManufacturer", metrics.getDeviceManufacturer());
+        putOptionalTrimmedString(json, "deviceBrand", metrics.getDeviceBrand());
         json.put("androidVersion", metrics.getAndroidVersion());
         json.put("cpuCores", metrics.getCpuCores());
         json.put("totalMemory", metrics.getTotalMemory());
@@ -154,8 +157,11 @@ public class BenchmarkApiClient {
             clientRunId = java.util.UUID.nameUUIDFromBytes(seed.getBytes(StandardCharsets.UTF_8)).toString();
         }
         json.put("clientRunId", clientRunId);
+        putOptionalTrimmedString(json, "clientDeviceId", result.getClientDeviceId());
         json.put("runType", result.getRunType());
         json.put("deviceModel", result.getDeviceModel());
+        putOptionalTrimmedString(json, "deviceManufacturer", result.getDeviceManufacturer());
+        putOptionalTrimmedString(json, "deviceBrand", result.getDeviceBrand());
         json.put("androidVersion", result.getAndroidVersion());
         json.put("cpuCores", result.getCpuCores());
         json.put("totalMemory", result.getTotalMemory());
@@ -183,6 +189,16 @@ public class BenchmarkApiClient {
 
         json.put("clientTimestampMs", result.getTimestamp() > 0 ? result.getTimestamp() : System.currentTimeMillis());
         return json;
+    }
+
+    private static void putOptionalTrimmedString(JSONObject json, String key, @Nullable String value) throws JSONException {
+        if (value == null) {
+            return;
+        }
+        String trimmed = value.trim();
+        if (!trimmed.isEmpty()) {
+            json.put(key, trimmed);
+        }
     }
 
     public ApiResult executeUpload(JSONObject payload) {

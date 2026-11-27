@@ -17,6 +17,8 @@ public class BenchmarkResult implements Serializable {
     private long id;
     private long timestamp;
     private String deviceModel;
+    private String deviceManufacturer;
+    private String deviceBrand;
     private String androidVersion;
     private int cpuCores;
     private long totalMemory;
@@ -53,6 +55,7 @@ public class BenchmarkResult implements Serializable {
     
     // Cloudflare API sync tracking
     private String clientRunId;
+    private String clientDeviceId;
     private String runType = "full";
     private int synced = 0;
     private String remoteId;
@@ -63,6 +66,11 @@ public class BenchmarkResult implements Serializable {
     public BenchmarkResult(PerformanceMetrics metrics, AdvancedMetrics advancedMetrics) {
         this.timestamp = System.currentTimeMillis();
         this.deviceModel = metrics.getDeviceModel();
+        this.deviceManufacturer = metrics.getDeviceManufacturer();
+        this.deviceBrand = metrics.getDeviceBrand();
+        this.clientDeviceId = metrics.getClientDeviceId();
+        this.clientRunId = metrics.getClientRunId();
+        this.remoteId = metrics.getRemoteId();
         this.androidVersion = metrics.getAndroidVersion();
         this.cpuCores = metrics.getCpuCores();
         this.totalMemory = metrics.getTotalMemory();
@@ -104,6 +112,12 @@ public class BenchmarkResult implements Serializable {
     
     public String getDeviceModel() { return deviceModel; }
     public void setDeviceModel(String deviceModel) { this.deviceModel = deviceModel; }
+
+    public String getDeviceManufacturer() { return deviceManufacturer; }
+    public void setDeviceManufacturer(String deviceManufacturer) { this.deviceManufacturer = deviceManufacturer; }
+
+    public String getDeviceBrand() { return deviceBrand; }
+    public void setDeviceBrand(String deviceBrand) { this.deviceBrand = deviceBrand; }
     
     public String getAndroidVersion() { return androidVersion; }
     public void setAndroidVersion(String androidVersion) { this.androidVersion = androidVersion; }
@@ -240,6 +254,9 @@ public class BenchmarkResult implements Serializable {
     
     public String getClientRunId() { return clientRunId; }
     public void setClientRunId(String clientRunId) { this.clientRunId = clientRunId; }
+
+    public String getClientDeviceId() { return clientDeviceId; }
+    public void setClientDeviceId(String clientDeviceId) { this.clientDeviceId = clientDeviceId; }
     
     public String getRunType() { return runType != null ? runType : "full"; }
     public void setRunType(String runType) { this.runType = runType; }

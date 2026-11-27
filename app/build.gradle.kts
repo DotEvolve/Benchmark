@@ -24,8 +24,8 @@ android {
         applicationId = "net.dotevolve.benchmark"
         minSdk = 24
         targetSdk = 37
-        versionCode = 22
-        versionName = "22"
+        versionCode = 27
+        versionName = "27"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         
@@ -257,6 +257,7 @@ tasks.register<Exec>("publishToAptoide") {
 
 afterEvaluate {
     val zipReleaseNativeDebugSymbols = tasks.register<Zip>("zipReleaseNativeDebugSymbols") {
+        description = ""
         val symbolDir = layout.buildDirectory.dir("intermediates/native_debug_metadata/release/extractReleaseNativeDebugMetadata/out")
         from(symbolDir)
         destinationDirectory.set(layout.buildDirectory.dir("outputs/native-debug-symbols/release"))
