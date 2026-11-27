@@ -71,6 +71,27 @@ public class PerformanceMetrics {
     private long multiThreadedTime;
     private long memoryBytesTransferred;
 
+    // Active timer start timestamps (kept separate so aborted tests never corrupt *TotalTime)
+    private long sha1StartTime;
+    private long md5StartTime;
+    private long aesStartTime;
+    private long loopStartTime;
+    private long matrixStartTime;
+    private long sortStartTime;
+    private long compressionStartTime;
+    private long memoryStartTime;
+    private long multiThreadedStartTime;
+
+    private boolean sha1TimingActive;
+    private boolean md5TimingActive;
+    private boolean aesTimingActive;
+    private boolean loopTimingActive;
+    private boolean matrixTimingActive;
+    private boolean sortTimingActive;
+    private boolean compressionTimingActive;
+    private boolean memoryTimingActive;
+    private boolean multiThreadedTimingActive;
+
     // Iteration / workload constants
     static final int SHA1_ITERATIONS = 500_000;
     static final int MD5_ITERATIONS = 500_000;
@@ -237,6 +258,26 @@ public class PerformanceMetrics {
         multiThreadedTime = 0L;
         memoryBytesTransferred = 0L;
 
+        sha1StartTime = 0L;
+        md5StartTime = 0L;
+        aesStartTime = 0L;
+        loopStartTime = 0L;
+        matrixStartTime = 0L;
+        sortStartTime = 0L;
+        compressionStartTime = 0L;
+        memoryStartTime = 0L;
+        multiThreadedStartTime = 0L;
+
+        sha1TimingActive = false;
+        md5TimingActive = false;
+        aesTimingActive = false;
+        loopTimingActive = false;
+        matrixTimingActive = false;
+        sortTimingActive = false;
+        compressionTimingActive = false;
+        memoryTimingActive = false;
+        multiThreadedTimingActive = false;
+
         sha1Samples.clear();
         md5Samples.clear();
         aesSamples.clear();
@@ -257,84 +298,129 @@ public class PerformanceMetrics {
 
     // Timing methods
     public void startSha1Timing() {
-        sha1TotalTime = System.nanoTime();
+        sha1TotalTime = 0L;
+        sha1StartTime = System.nanoTime();
+        sha1TimingActive = true;
     }
 
     public void endSha1Timing() {
-        sha1TotalTime = Math.max(1L, System.nanoTime() - sha1TotalTime);
-        logDebug("SHA-512 Total Time: " + formatNanoTime(sha1TotalTime));
+        if (sha1TimingActive) {
+            sha1TotalTime = Math.max(1L, System.nanoTime() - sha1StartTime);
+            sha1TimingActive = false;
+            logDebug("SHA-512 Total Time: " + formatNanoTime(sha1TotalTime));
+        }
     }
 
     public void startMd5Timing() {
-        md5TotalTime = System.nanoTime();
+        md5TotalTime = 0L;
+        md5StartTime = System.nanoTime();
+        md5TimingActive = true;
     }
 
     public void endMd5Timing() {
-        md5TotalTime = Math.max(1L, System.nanoTime() - md5TotalTime);
-        logDebug("MD5 Total Time: " + formatNanoTime(md5TotalTime));
+        if (md5TimingActive) {
+            md5TotalTime = Math.max(1L, System.nanoTime() - md5StartTime);
+            md5TimingActive = false;
+            logDebug("MD5 Total Time: " + formatNanoTime(md5TotalTime));
+        }
     }
 
     public void startAesTiming() {
-        aesTotalTime = System.nanoTime();
+        aesTotalTime = 0L;
+        aesStartTime = System.nanoTime();
+        aesTimingActive = true;
     }
 
     public void endAesTiming() {
-        aesTotalTime = Math.max(1L, System.nanoTime() - aesTotalTime);
-        logDebug("AES Total Time: " + formatNanoTime(aesTotalTime));
+        if (aesTimingActive) {
+            aesTotalTime = Math.max(1L, System.nanoTime() - aesStartTime);
+            aesTimingActive = false;
+            logDebug("AES Total Time: " + formatNanoTime(aesTotalTime));
+        }
     }
 
     public void startLoopTiming() {
-        loopOverheadTime = System.nanoTime();
+        loopOverheadTime = 0L;
+        loopStartTime = System.nanoTime();
+        loopTimingActive = true;
     }
 
     public void endLoopTiming() {
-        loopOverheadTime = Math.max(1L, System.nanoTime() - loopOverheadTime);
-        logDebug("Loop ALU/FP Time: " + formatNanoTime(loopOverheadTime));
+        if (loopTimingActive) {
+            loopOverheadTime = Math.max(1L, System.nanoTime() - loopStartTime);
+            loopTimingActive = false;
+            logDebug("Loop ALU/FP Time: " + formatNanoTime(loopOverheadTime));
+        }
     }
 
     public void startMatrixTiming() {
-        matrixMultiplicationTime = System.nanoTime();
+        matrixMultiplicationTime = 0L;
+        matrixStartTime = System.nanoTime();
+        matrixTimingActive = true;
     }
 
     public void endMatrixTiming() {
-        matrixMultiplicationTime = Math.max(1L, System.nanoTime() - matrixMultiplicationTime);
-        logDebug("Matrix Multiplication Time: " + formatNanoTime(matrixMultiplicationTime));
+        if (matrixTimingActive) {
+            matrixMultiplicationTime = Math.max(1L, System.nanoTime() - matrixStartTime);
+            matrixTimingActive = false;
+            logDebug("Matrix Multiplication Time: " + formatNanoTime(matrixMultiplicationTime));
+        }
     }
 
     public void startSortTiming() {
-        sortingTime = System.nanoTime();
+        sortingTime = 0L;
+        sortStartTime = System.nanoTime();
+        sortTimingActive = true;
     }
 
     public void endSortTiming() {
-        sortingTime = Math.max(1L, System.nanoTime() - sortingTime);
-        logDebug("Sorting Time: " + formatNanoTime(sortingTime));
+        if (sortTimingActive) {
+            sortingTime = Math.max(1L, System.nanoTime() - sortStartTime);
+            sortTimingActive = false;
+            logDebug("Sorting Time: " + formatNanoTime(sortingTime));
+        }
     }
 
     public void startCompressionTiming() {
-        compressionTime = System.nanoTime();
+        compressionTime = 0L;
+        compressionStartTime = System.nanoTime();
+        compressionTimingActive = true;
     }
 
     public void endCompressionTiming() {
-        compressionTime = Math.max(1L, System.nanoTime() - compressionTime);
-        logDebug("Compression Time: " + formatNanoTime(compressionTime));
+        if (compressionTimingActive) {
+            compressionTime = Math.max(1L, System.nanoTime() - compressionStartTime);
+            compressionTimingActive = false;
+            logDebug("Compression Time: " + formatNanoTime(compressionTime));
+        }
     }
 
     public void startMemoryTiming() {
-        memoryBandwidthTime = System.nanoTime();
+        memoryBandwidthTime = 0L;
+        memoryStartTime = System.nanoTime();
+        memoryTimingActive = true;
     }
 
     public void endMemoryTiming() {
-        memoryBandwidthTime = Math.max(1L, System.nanoTime() - memoryBandwidthTime);
-        logDebug("Memory Bandwidth Time: " + formatNanoTime(memoryBandwidthTime));
+        if (memoryTimingActive) {
+            memoryBandwidthTime = Math.max(1L, System.nanoTime() - memoryStartTime);
+            memoryTimingActive = false;
+            logDebug("Memory Bandwidth Time: " + formatNanoTime(memoryBandwidthTime));
+        }
     }
 
     public void startMultiThreadedTiming() {
-        multiThreadedTime = System.nanoTime();
+        multiThreadedTime = 0L;
+        multiThreadedStartTime = System.nanoTime();
+        multiThreadedTimingActive = true;
     }
 
     public void endMultiThreadedTiming() {
-        multiThreadedTime = Math.max(1L, System.nanoTime() - multiThreadedTime);
-        logDebug("Multi-threaded Time: " + formatNanoTime(multiThreadedTime));
+        if (multiThreadedTimingActive) {
+            multiThreadedTime = Math.max(1L, System.nanoTime() - multiThreadedStartTime);
+            multiThreadedTimingActive = false;
+            logDebug("Multi-threaded Time: " + formatNanoTime(multiThreadedTime));
+        }
     }
 
     // Macro-batch sample collection for statistical stability analysis

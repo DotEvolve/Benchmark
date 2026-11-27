@@ -10,6 +10,7 @@ import net.dotevolve.benchmark.R;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.util.Arrays;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -21,6 +22,7 @@ import java.util.zip.Deflater;
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
+import javax.crypto.spec.GCMParameterSpec;
 
 /**
  * Enhanced benchmark engine (v2.0.0) with isolated kernel timing, warm-up,
@@ -162,10 +164,15 @@ public class BenchmarkEngine {
             keyGen.init(256);
             SecretKey key = keyGen.generateKey();
             Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
-            cipher.init(Cipher.ENCRYPT_MODE, key);
+            byte[] warmupIv = new byte[12];
+            new SecureRandom().nextBytes(warmupIv);
             byte[] aesInput = buildDeterministicPayload(testString, 256, 0x9E3779B97F4A7C15L);
+            byte[] aesOut = new byte[256 + 16];
             for (int i = 0; i < 100; i++) {
-                acc ^= cipher.doFinal(aesInput)[0];
+                incrementNonce(warmupIv);
+                cipher.init(Cipher.ENCRYPT_MODE, key, new GCMParameterSpec(128, warmupIv));
+                int outLen = cipher.doFinal(aesInput, 0, aesInput.length, aesOut, 0);
+                acc ^= aesOut[outLen - 1];
             }
         } catch (Exception ignored) {
             // Warm-up fallback: continue cleanly if provider differs
@@ -296,7 +303,9 @@ public class BenchmarkEngine {
             keyGen.init(256);
             SecretKey secretKey = keyGen.generateKey();
             Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
-            cipher.init(Cipher.ENCRYPT_MODE, secretKey);
+            byte[] iv = new byte[12];
+            new SecureRandom().nextBytes(iv);
+            byte[] outputBuffer = new byte[AES_PAYLOAD_BYTES + 16];
 
             metrics.startAesTiming();
 
@@ -305,8 +314,10 @@ public class BenchmarkEngine {
                 int count = Math.min(batchSize, totalIterations - completed);
                 long batchStart = System.nanoTime();
                 for (int i = 0; i < count; i++) {
-                    byte[] encrypted = cipher.doFinal(inputBytes);
-                    localAcc ^= encrypted[encrypted.length - 1];
+                    incrementNonce(iv);
+                    cipher.init(Cipher.ENCRYPT_MODE, secretKey, new GCMParameterSpec(128, iv));
+                    int outLen = cipher.doFinal(inputBytes, 0, inputBytes.length, outputBuffer, 0);
+                    localAcc ^= outputBuffer[outLen - 1];
                 }
                 long batchEnd = System.nanoTime();
                 metrics.addAesSample(Math.max(1L, batchEnd - batchStart));
@@ -614,6 +625,14 @@ public class BenchmarkEngine {
             }
         }
         return payload;
+    }
+
+    private static void incrementNonce(byte[] iv) {
+        for (int i = iv.length - 1; i >= 0; i--) {
+            if (++iv[i] != 0) {
+                break;
+            }
+        }
     }
 
     private static long xorshift64(long x) {

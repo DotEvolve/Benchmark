@@ -153,6 +153,35 @@ public class PerformanceMetricsTest {
         assertEquals(0L, metrics.getRsaTotalTime());
     }
 
+    @Test
+    public void abortedTiming_doesNotLeakNanoTimestampIntoTotalTime() {
+        PerformanceMetrics metrics = new PerformanceMetrics();
+        metrics.startSha1Timing();
+        metrics.startMd5Timing();
+        metrics.startAesTiming();
+        metrics.startLoopTiming();
+        metrics.startMatrixTiming();
+        metrics.startSortTiming();
+        metrics.startCompressionTiming();
+        metrics.startMemoryTiming();
+        metrics.startMultiThreadedTiming();
+
+        assertEquals(0L, metrics.getSha1TotalTime());
+        assertEquals(0L, metrics.getMd5TotalTime());
+        assertEquals(0L, metrics.getAesTotalTime());
+        assertEquals(0L, metrics.getLoopOverheadTime());
+        assertEquals(0L, metrics.getMatrixMultiplicationTime());
+        assertEquals(0L, metrics.getSortingTime());
+        assertEquals(0L, metrics.getCompressionTime());
+        assertEquals(0L, metrics.getMemoryBandwidthTime());
+        assertEquals(0L, metrics.getMultiThreadedTime());
+
+        // Calling end without active start should also remain 0
+        metrics.resetForNewRun();
+        metrics.endAesTiming();
+        assertEquals(0L, metrics.getAesTotalTime());
+    }
+
     private static void addUniformSamples(PerformanceMetrics metrics, long base, long jitter) {
         for (int i = 0; i < 20; i++) {
             long delta = (i % 2 == 0) ? jitter : -jitter;
